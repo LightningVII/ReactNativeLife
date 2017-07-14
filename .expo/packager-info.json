@@ -1,3 +1,8 @@
 {
-  "expoServerPort": null
+  "expoServerPort": 19000,
+  "expoServerNgrokUrl": "https://by-qh6.whiteace.react-native-life.exp.direct",
+  "packagerNgrokUrl": "https://packager.by-qh6.whiteace.react-native-life.exp.direct",
+  "ngrokPid": 28384,
+  "packagerPort": 19003,
+  "packagerPid": 28242
 }
