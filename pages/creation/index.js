@@ -3,7 +3,7 @@ import Icon from 'react-native-vector-icons/Ionicons'
 import Popup from '../../components/popup'
 import NoMore from '../../components/nomore'
 import Loading from '../../components/loading'
-// import Detail from './detail'
+import Detail from './detail'
 import Item from './item'
 
 import {bindActionCreators} from 'redux'

@@ -1,56 +1,56 @@
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 
-import {bindActionCreators} from 'redux'
-import {connect} from 'react-redux'
-
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
+import { StyleSheet, Text, View } from 'react-native';
 import Login from '../pages/account/login'
 import Slider from '../pages/slider/index'
 import Boot from '../components/boot'
 import Tabs from './tabs'
 import * as appActions from '../actions/app'
 
-// import {AsyncStorage} from 'react-native'
+import {AsyncStorage} from 'react-native';
 
-// AsyncStorage.multiRemove(['booted', 'user', 'logined', 'entered'])
+AsyncStorage.multiRemove(['booted', 'user', 'logined', 'entered']);
 
 class App extends React.Component {
-  constructor (props) {
-    super(props)
-  }
-
-  componentDidMount () {
-    this.props.willEnterApp()
-  }
-
-  render () {
-    if (!this.props.booted) {
-      return <Boot {...this.props} />
+    constructor(props) {
+        super(props)
     }
 
-    if (!this.props.entered) {
-      return <Slider {...this.props} />
+    componentDidMount() {
+        this.props.willEnterApp()
     }
 
-    if (!this.props.logined) {
-      return <Login {...this.props} />
-    }
+    render() {
+        if (!this.props.booted) {
+          return <Boot {...this.props} />
+        }
 
-    return <Tabs {...this.props} />
-  }
+        if (!this.props.entered) {
+          return <Slider {...this.props} />
+        }
+
+        if (!this.props.logined) {
+          return <Login {...this.props} />
+        }
+
+        return <Tabs/>
+    }
 }
 
-function mapStateToProps (state) {
-  return {
-    booted: state.get('app').booted,
-    logined: state.get('app').logined,
-    entered: state.get('app').entered,
-    banners: state.get('app').banners,
-    popup: state.get('app').popup
-  }
+function mapStateToProps(state) {
+    return {
+        booted: state.get('app').booted,
+        logined: state.get('app').logined,
+        entered: state.get('app').entered,
+        banners: state.get('app').banners,
+        popup: state.get('app').popup
+    }
 }
 
-function mapDispatchToProps (dispatch) {
-  return bindActionCreators(appActions, dispatch)
+function mapDispatchToProps(dispatch) {
+    return bindActionCreators(appActions, dispatch)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(App)

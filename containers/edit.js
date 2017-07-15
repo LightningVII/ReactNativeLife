@@ -1,8 +1,10 @@
 import React, {Component} from 'react'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
-
-import Edit from '../pages/creation/edit'
+import {
+  Text
+} from 'react-native'
+// import Edit from '../pages/creation/edit'
 import * as creationActions from '../actions/creation'
 
 class EditContainer extends React.Component {
@@ -12,18 +14,19 @@ class EditContainer extends React.Component {
 
   render () {
     return (
-      <Edit {...this.props} />
+      // <Edit {...this.props} />
+      <Text>asdfasd</Text>
     )
   }
 }
 
 function mapStateToProps (state) {
-  const {
-    user
-  } = state.get('app')
+  // const {
+  //   user
+  // } = state.get('app')
 
   return {
-    user
+    user: state.user
   }
 }
 

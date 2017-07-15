@@ -13,7 +13,7 @@ import request from '../../common/request'
 import config from '../../common/config'
 import Popup from '../../components/popup'
 
-import React, {Component} from 'react'
+import React from 'react'
 import {
   StyleSheet,
   Text,
@@ -26,7 +26,7 @@ import {
 } from 'react-native'
 
 const {width} = Dimensions.get('window')
-
+console.log("============="+width)
 export default class Login extends React.Component {
   constructor (props) {
     super(props)
@@ -66,17 +66,19 @@ export default class Login extends React.Component {
 
     const signupURL = config.api.signup
 
-    request.post(signupURL, body)
-      .then((data) => {
-        if (data && data.success) {
-          that._showVerifyCode()
-        } else {
-          that.props.popAlert('呜呜~', '获取验证码失败，请检查手机号是否正确')
-        }
-      })
-      .catch((err) => {
-        that.props.popAlert('呜呜~', '获取验证码失败，请检查网络是否良好')
-      })
+    // request.post(signupURL, body)
+    //   .then((data) => {
+    //     if (data && data.success) {
+    //       this._showVerifyCode()
+    //     } else {
+    //       this.props.popAlert('呜呜~', '获取验证码失败，请检查手机号是否正确')
+    //     }
+    //   })
+    //   .catch((err) => {
+    //     this.props.popAlert('呜呜~', '获取验证码失败，请检查网络是否良好')
+    //   })
+
+      this._showVerifyCode()
   }
 
   _submit () {
@@ -95,17 +97,19 @@ export default class Login extends React.Component {
 
     const verifyURL = config.api.verify
 
-    request.post(verifyURL, body)
-      .then((data) => {
-        if (data && data.success) {
-          that.props.afterLogin(data.data)
-        } else {
-          that.props.popAlert('呜呜~', '获取验证码失败，请检查手机号是否正确')
-        }
-      })
-      .catch((err) => {
-        that.props.popAlert('呜呜~', '获取验证码失败，请检查网络是否良好')
-      })
+    // request.post(verifyURL, body)
+    //   .then((data) => {
+    //     if (data && data.success) {
+    //       that.props.afterLogin(data.data)
+    //     } else {
+    //       that.props.popAlert('呜呜~', '获取验证码失败，请检查手机号是否正确')
+    //     }
+    //   })
+    //   .catch((err) => {
+    //     that.props.popAlert('呜呜~', '获取验证码失败，请检查网络是否良好')
+    //   })
+
+    this.props.afterLogin({user: "Ace"})
   }
 
   _alert (title, content) {
@@ -201,13 +205,14 @@ export default class Login extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
+    width: width,
     flex: 1,
     padding: 10,
     backgroundColor: '#f9f9f9'
   },
 
   signupBox: {
-    marginTop: 30
+    marginTop: 130
   },
 
   title: {
