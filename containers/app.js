@@ -23,13 +23,13 @@ class App extends React.Component {
     }
 
     render() {
-        if (!this.props.booted) {
-          return <Boot {...this.props} />
-        }
+        // if (!this.props.booted) {
+        //   return <Boot {...this.props} />
+        // }
 
-        if (!this.props.entered) {
-          return <Slider {...this.props} />
-        }
+        // if (!this.props.entered) {
+        //   return <Slider {...this.props} />
+        // }
 
         if (!this.props.logined) {
           return <Login {...this.props} />

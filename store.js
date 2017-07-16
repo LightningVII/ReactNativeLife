@@ -3,7 +3,7 @@ import { fromJS } from 'immutable'
 import thunk from 'redux-thunk'
 import { createLogger } from 'redux-logger'
 import promiseMiddleware from 'redux-promise'
-import reducers from './reducers'
+import rootReducer from './reducers'
 
 const logger = createLogger()
 
@@ -13,10 +13,9 @@ const middlewares = [
     logger
 ]
 
-function configureStore(initialState = fromJS({})) {
+export default function configureStore(initialState = fromJS({})) {
     const enhancer = applyMiddleware(...middlewares)
-    const store = createStore(reducers(), initialState, enhancer)
-
+    const store = createStore(rootReducer, initialState, enhancer)
 
     if (module.hot) {
         module.hot.accept(() => {
@@ -26,5 +25,3 @@ function configureStore(initialState = fromJS({})) {
 
     return store
 }
-
-export default configureStore

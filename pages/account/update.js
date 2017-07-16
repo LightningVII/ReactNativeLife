@@ -51,7 +51,7 @@ export default class AccountUpdate extends React.Component {
   }
 
   componentDidMount() {
-    this.props.checkUserStatus()
+    // this.props.checkUserStatus()
   }
 
   _getQiniuToken() {

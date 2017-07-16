@@ -23,7 +23,7 @@ import {TabNavigator, StackNavigator} from 'react-navigation'
 
 const headerStyle = {
   ios: {
-    height: 52, 
+    height: 52,
     paddingTop: 14,
     width: width,
     backgroundColor: '#ee735c'
@@ -36,7 +36,13 @@ const headerStyle = {
 
 const ListTab = StackNavigator({
   List: {
-    screen: List
+    screen: List,
+    navigationOptions: {
+      headerStyle: {
+        height: 0,
+        paddingTop: 0
+      }
+    }
   },
   Detail: {
     screen: Detail,
@@ -72,7 +78,23 @@ const ListTab = StackNavigator({
 
 const AccountTab = StackNavigator({
   Account: {
-    screen: Account
+    screen: Account,
+    navigationOptions: ({navigation}) => ({
+      headerTitle: '狗狗账户',
+      headerStyle: headerStyle[Platform.OS],
+      headerTintColor: '#fff',
+      // tabBarLabel: '账户资料', tabBarIcon: ({tintColor, focused}) => (<Icon
+      // name={focused   ? 'ios-person'   : 'ios-person-outline'}   color={tintColor}
+      //  size={28}/>),
+      headerRight: (
+        <Text
+          style={{
+          color: '#fff',
+          paddingRight: 10
+        }}
+          onPress={() => navigation.navigate('AccountUpdate')}>编辑</Text>
+      )
+    })
   },
   AccountUpdate: {
     screen: AccountUpdate,
@@ -135,11 +157,11 @@ const barOptions = {
 
 const Tabs = TabNavigator({
   ListTab: {
-    screen: List,
+    screen: ListTab,
     navigationOptions: {
       tabBarLabel: '狗狗说',
-      headerTitle: '编辑视频',
       headerStyle: headerStyle[Platform.OS],
+      headerTitle: '编辑视频',
       headerTintColor: '#fff',
       tabBarIcon: ({tintColor, focused}) => (<Icon
         name={focused
@@ -168,24 +190,19 @@ const Tabs = TabNavigator({
   AccountTab: {
     screen: AccountTab,
     navigationOptions: ({navigation}) => ({
-      headerTitle: '狗狗账户',
-      headerStyle: headerStyle[Platform.OS],
-      headerTintColor: '#fff',
-      tabBarLabel: '账户资料',
+      headerTitle: '',
+      headerStyle: {
+        width: width,
+        paddingTop: 0,
+        height: 0
+      },
       tabBarIcon: ({tintColor, focused}) => (<Icon
         name={focused
         ? 'ios-person'
         : 'ios-person-outline'}
         color={tintColor}
         size={28}/>),
-      headerRight: (
-        <Text
-          style={{
-          color: '#fff',
-          paddingRight: 10
-        }}
-          onPress={() => navigation.navigate('AccountUpdate')}>编辑</Text>
-      )
+      headerRight: ('')
     })
   }
 }, barOptions[Platform.OS])
@@ -194,8 +211,6 @@ const SimpleApp = StackNavigator({
   Home: {
     screen: Tabs
   }
-}, {
-  headerMode: 'float',
 });
 
 export default SimpleApp
