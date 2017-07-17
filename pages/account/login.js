@@ -97,19 +97,19 @@ export default class Login extends React.Component {
 
     const verifyURL = config.api.verify
 
-    // request.post(verifyURL, body)
-    //   .then((data) => {
-    //     if (data && data.success) {
-    //       that.props.afterLogin(data.data)
-    //     } else {
-    //       that.props.popAlert('呜呜~', '获取验证码失败，请检查手机号是否正确')
-    //     }
-    //   })
-    //   .catch((err) => {
-    //     that.props.popAlert('呜呜~', '获取验证码失败，请检查网络是否良好')
-    //   })
+    request.post(verifyURL, body)
+      .then((data) => {
+        if (data && data.success) {
+          this.props.afterLogin(data.data)
+        } else {
+          this.props.popAlert('呜呜~', '获取验证码失败，请检查手机号是否正确')
+        }
+      })
+      .catch((err) => {
+        this.props.popAlert('呜呜~', '获取验证码失败，请检查网络是否良好')
+      })
 
-    this.props.afterLogin({user: "Ace"})
+    // this.props.afterLogin({user: "Ace"})
   }
 
   _alert (title, content) {

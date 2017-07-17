@@ -58,7 +58,7 @@ export const checkUserStatus = () => {
 export const updateUserInfo = (userInfo) => {
   return (dispatch, getState) => {
     const url = config.api.update
-
+    console.log(userInfo)
     return request
       .post(url, userInfo)
       .then(data => {
