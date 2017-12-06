@@ -94,6 +94,9 @@ class imoocApp extends React.Component {
 
   _afterLogin(user) {
     let that = this
+
+    console.log(this)
+    console.log(that)
     user = JSON.stringify(user)
 
     AsyncStorage.setItem('user', user)

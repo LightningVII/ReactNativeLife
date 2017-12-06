@@ -2,7 +2,6 @@ import sha1 from 'sha1'
 import Icon from 'react-native-vector-icons/Ionicons'
 import Button from 'react-native-button'
 import {Circle} from 'react-native-progress'
-// import ImageCropPicker from 'react-native-image-crop-picker';
 import ImagePicker from 'react-native-image-picker'
 import request from '../../common/request'
 import Popup from '../../components/popup'
@@ -69,7 +68,7 @@ export default class AccountUpdate extends React.Component {
     })
   }
 
-  _pickPhoto = () => {
+  _pickPhoto() {
     let that = this
 
     ImagePicker.showImagePicker(photoOptions, (res) => {

@@ -10,7 +10,7 @@ const logger = createLogger()
 const middlewares = [
     thunk,
     promiseMiddleware,
-    // logger
+    logger
 ]
 
 export default function configureStore(initialState = fromJS({})) {

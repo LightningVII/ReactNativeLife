@@ -21,6 +21,7 @@ class CommentContainer extends React.Component {
   }
 
   render () {
+    console.log(this.props)
     const rowData = this.props.navigation.state.params.rowData
 
     return (
