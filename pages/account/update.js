@@ -1,6 +1,6 @@
 import sha1 from 'sha1'
 import Icon from 'react-native-vector-icons/Ionicons'
-import Button from 'react-native-button'
+import { Button } from 'react-native-elements';
 import {Circle} from 'react-native-progress'
 // import ImageCropPicker from 'react-native-image-crop-picker';
 import ImagePicker from 'react-native-image-picker'

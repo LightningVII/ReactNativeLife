@@ -1,23 +1,26 @@
 import React from 'react';
+import { Provider } from 'react-redux';
+import AppContainer from './containers/app';
+import configureStore from './store';
 import { StyleSheet, Text, View } from 'react-native';
-
+const store = configureStore();
 export default class App extends React.Component {
-  render() {
-    return (
-      <View style={styles.container}>
-        <Text>Open up App.js to start working on your app!</Text>
-        <Text>Changes you make will automatically reload.</Text>
-        <Text>Shake your phone to open the developer menu.</Text>
-      </View>
-    );
-  }
+    render() {
+        return (
+            <Provider store={store}>
+                <View style={styles.container}>
+                    <AppContainer />
+                </View>
+            </Provider>
+        );
+    }
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+    container: {
+        flex: 1,
+        backgroundColor: '#ccc',
+        alignItems: 'center',
+        justifyContent: 'center'
+    }
 });

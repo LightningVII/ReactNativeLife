@@ -7,9 +7,6 @@
  * @flow
  */
 
-// ES5
-const Swiper = require('react-native-swiper')
-
 import React, {Component} from 'react'
 import {
   StyleSheet,
@@ -43,25 +40,13 @@ export default class Slider extends React.Component {
 
   render() {
     return (
-      <Swiper
-        dot={<View style={styles.dot} />}
-        activeDot={<View style={styles.activeDot} />}
-        paginationStyle={styles.pagination}
-        loop={this.state.loop}>
-        <View style={styles.slide}>
-          <Image style={styles.image} source={this.state.banners[0]} />
-        </View>
-        <View style={styles.slide}>
-          <Image style={styles.image} source={this.state.banners[1]} />
-        </View>
-        <View style={styles.slide}>
-          <Image style={styles.image} source={this.state.banners[2]}>
-            <TouchableHighlight style={styles.btn} onPress={this._enter.bind(this)}>
-              <Text style={styles.btnText}>马上体验</Text>
-            </TouchableHighlight>
-          </Image>
-        </View>
-      </Swiper>
+      <View style={styles.slide}>
+      <Image style={styles.image} source={this.state.banners[2]}>
+        <TouchableHighlight style={styles.btn} onPress={this._enter.bind(this)}>
+          <Text style={styles.btnText}>马上体验</Text>
+        </TouchableHighlight>
+      </Image>
+    </View>
     )
   }
 }

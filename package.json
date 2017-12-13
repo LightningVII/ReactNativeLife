@@ -1,10 +1,10 @@
 {
-  "name": "AwesomeProject",
+  "name": "rf-life",
   "version": "0.1.0",
   "private": true,
   "devDependencies": {
-    "react-native-scripts": "1.8.1",
     "jest-expo": "23.0.0",
+    "react-native-scripts": "1.8.1",
     "react-test-renderer": "16.0.0"
   },
   "main": "./node_modules/react-native-scripts/build/bin/crna-entry.js",
@@ -20,7 +20,21 @@
   },
   "dependencies": {
     "expo": "^23.0.4",
+    "immutable": "^3.8.2",
+    "query-string": "^5.0.1",
     "react": "16.0.0",
-    "react-native": "0.50.3"
+    "react-native": "0.50.3",
+    "react-native-elements": "^0.18.4",
+    "react-native-image-picker": "^0.26.7",
+    "react-native-progress": "^3.4.0",
+    "react-native-swiper": "^1.5.13",
+    "react-native-vector-icons": "^4.4.2",
+    "react-native-video": "^2.0.0",
+    "react-navigation": "^1.0.0-beta.21",
+    "redux-immutable": "^4.0.0",
+    "redux-logger": "^3.0.6",
+    "redux-promise": "^0.5.3",
+    "redux-thunk": "^2.2.0",
+    "sha1": "^1.1.1"
   }
 }

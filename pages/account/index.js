@@ -1,5 +1,5 @@
 import Icon from 'react-native-vector-icons/Ionicons'
-import Button from 'react-native-button'
+import { Button } from 'react-native-elements';
 import config from '../../common/config'
 import util from '../../common/util'
 

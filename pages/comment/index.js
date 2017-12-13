@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import Icon from 'react-native-vector-icons/Ionicons'
-import Button from 'react-native-button'
+import { Button } from 'react-native-elements';
 
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'

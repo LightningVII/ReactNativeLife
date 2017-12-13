@@ -2,11 +2,10 @@ import _ from 'lodash'
 import Icon from 'react-native-vector-icons/Ionicons'
 import Video from 'react-native-video'
 import ImagePicker from 'react-native-image-picker'
-import {CountDownText} from 'react-native-sk-countdown'
 import {AudioRecorder, AudioUtils} from 'react-native-audio'
 import Sound from 'react-native-sound'
 import {Circle} from 'react-native-progress'
-import Button from 'react-native-button'
+import { Button } from 'react-native-elements';
 import Popup from '../../components/popup'
 
 
