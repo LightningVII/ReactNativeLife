@@ -2,6 +2,7 @@ import { Button, FormLabel, FormInput, SearchBar } from 'react-native-elements';
 import request from '../../common/request';
 import config from '../../common/config';
 import Popup from '../../components/popup';
+import CountDown from '../../components/CountDown';
 
 import React from 'react';
 import {
@@ -31,22 +32,21 @@ export default class Login extends React.Component {
         };
     }
 
-    _showVerifyCode() {
+    _showVerifyCode = () => {
         this.setState({
             codeSent: true
         });
-    }
+    };
 
-    _countingDone() {
+    _countingDone = () => {
         this.setState({
             countingDone: true
         });
-    }
+    };
 
-    _sendVerifyCode() {
+    _sendVerifyCode = () => {
         this.input.blur();
-        this.input.clearText();
-        return;
+        // return;
         let that = this;
         const phoneNumber = this.state.phoneNumber;
 
@@ -72,10 +72,12 @@ export default class Login extends React.Component {
         //     this.props.popAlert('呜呜~', '获取验证码失败，请检查网络是否良好')
         //   })
 
-        this._showVerifyCode();
-    }
+        this.setState({countingDone: false});
 
-    _submit() {
+        this._showVerifyCode();
+    };
+
+    _submit = () => {
         let that = this;
         const phoneNumber = this.state.phoneNumber;
         const verifyCode = this.state.verifyCode;
@@ -104,7 +106,7 @@ export default class Login extends React.Component {
         //   })
 
         this.props.afterLogin({ user: 'Ace' });
-    }
+    };
 
     _alert(title, content) {
         var that = this;
@@ -131,7 +133,7 @@ export default class Login extends React.Component {
             <ImageBackground
                 source={require('../../static/images/WechatIMG21.jpeg')}
                 style={styles.container}
-                onPress={()=>this.this.input.blur()}
+                onPress={() => this.this.input.blur()}
             >
                 <SearchBar
                     containerStyle={{ marginTop: 40 }}
@@ -146,7 +148,7 @@ export default class Login extends React.Component {
                     <FormInput
                         containerStyle={styles.inputField}
                         placeholder="输入手机号"
-                        ref={input => this.input = input}
+                        ref={input => (this.input = input)}
                         // autoCaptialize={'none'}
                         // autoCorrect={false}
                         keyboardType={'number-pad'}
@@ -159,38 +161,56 @@ export default class Login extends React.Component {
 
                     {this.state.codeSent ? (
                         <View style={styles.verifyCodeBox}>
-                            <TextInput
-                                placeholder="输入验证码"
-                                underlineColorAndroid="transparent"
-                                autoCaptialize={'none'}
-                                autoCorrect={false}
+                            <FormInput
+                                containerStyle={styles.verifyCodeInput}
+                                placeholder="请输入验证码"
+                                // ref={input => (this.input = input)}
                                 keyboardType={'number-pad'}
-                                style={[styles.inputField, styles.verifyField]}
                                 onChangeText={text => {
                                     this.setState({
                                         verifyCode: text
                                     });
                                 }}
                             />
-
-                            <Button onPress={this._sendVerifyCode.bind(this)}>
-                                获取验证码
-                            </Button>
+                            {this.state.countingDone ? (
+                                <Button
+                                    buttonStyle={{
+                                        borderRadius: 4
+                                    }}
+                                    containerViewStyle={{
+                                        marginLeft: 0,
+                                        marginRight: 0
+                                    }}
+                                    fontSize={14}
+                                    onPress={this._sendVerifyCode}
+                                    title={'获取验证码'}
+                                />
+                            ) : (
+                                <CountDown
+                                    buttonStyle={styles.countBtn}
+                                    afterEnd={this._countingDone} // 结束回调
+                                    time={20} // 正向计时 时间起点为0秒
+                                    text={sec => `剩余(${sec})秒`} // 定时的文本回调
+                                />
+                            )}
                         </View>
                     ) : null}
 
                     {this.state.codeSent ? (
                         <Button
-                            style={{
-                                marginBottom: 10,
-                                width: '100%',
-                                backgroundColor: '#fff'
+                            raised
+                            containerViewStyle={{
+                                marginTop: 20,
+                                marginLeft: 20,
+                                marginRight: 20
                             }}
-                            type="ghost"
-                            onPress={this._submit.bind(this)}
-                        >
-                            登录
-                        </Button>
+                            buttonStyle={{
+                                backgroundColor: 'orange',
+                                borderRadius: 4
+                            }}
+                            onPress={this._submit}
+                            title={'登录'}
+                        />
                     ) : (
                         <Button
                             raised
@@ -199,15 +219,18 @@ export default class Login extends React.Component {
                                 marginTop: 20,
                                 marginLeft: 20,
                                 marginRight: 20
-                                // width: '100%'
                             }}
-                            buttonStyle={{ backgroundColor: 'orange' }}
-                            onPress={this._sendVerifyCode.bind(this)}
+                            buttonStyle={{
+                                backgroundColor: 'orange',
+                                borderRadius: 4
+                            }}
+                            onPress={this._sendVerifyCode}
                             title={'获取验证码'}
                         />
                     )}
                 </View>
 
+                {/* make flex layout convenience */}
                 <View />
                 <Popup {...this.props} />
             </ImageBackground>
@@ -233,44 +256,39 @@ const styles = StyleSheet.create({
         marginTop: 130
     },
     inputField: {
-        // height: 40,
-        // padding: 5,
-        // color: '#666',
-        // fontSize: 16,
         borderBottomWidth: 0,
         backgroundColor: 'rgba(255,255,255,0.8)',
-        // marginLeft: 0,
-        // flex: 1,
-        // width: '100%',
         paddingLeft: 20,
-        // borderColor: 'rgba(0,0,0,0.3)',
         borderRadius: 4
     },
-
+    verifyCodeInput: {
+        width: width - 140,
+        height: 38,
+        borderBottomWidth: 0,
+        backgroundColor: 'rgba(255,255,255,0.8)',
+        paddingLeft: 20,
+        marginLeft: 0,
+        marginRight: 0,
+        borderRadius: 4
+    },
     verifyField: {
         width: width - 140
     },
-
     verifyCodeBox: {
-        marginTop: 10,
+        marginLeft: 20,
+        marginRight: 20,
+        marginTop: 20,
         flexDirection: 'row',
         justifyContent: 'space-between'
+        // backgroundColor: '#CCC'
     },
-
     countBtn: {
-        width: 110,
-        height: 40,
+        minWidth: 90,
         padding: 10,
-        marginLeft: 8,
         backgroundColor: '#ee735c',
         borderColor: '#ee735c',
-        color: '#fff',
-        textAlign: 'left',
-        fontWeight: '600',
-        fontSize: 15,
         borderRadius: 2
     },
-
     btn: {
         marginTop: 10,
         padding: 10,
