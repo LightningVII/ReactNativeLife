@@ -6,7 +6,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import Login from '../pages/account/login'
 import Slider from '../pages/slider/index'
 import Boot from '../components/boot'
-import Tabs from './tabs'
+import Tabs from './tab'
 import * as appActions from '../actions/app'
 
 import {AsyncStorage} from 'react-native';

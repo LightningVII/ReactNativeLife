@@ -4647,6 +4647,10 @@ react-devtools-core@^2.5.0:
     shell-quote "^1.6.1"
     ws "^2.0.3"
 
+react-native-audio@^3.5.0:
+  version "3.5.0"
+  resolved "http://registry.npm.taobao.org/react-native-audio/download/react-native-audio-3.5.0.tgz#fcb752fda8e08fdc9ddaa33fdcd6dd56a4c876ee"
+
 react-native-branch@2.0.0-beta.3:
   version "2.0.0-beta.3"
   resolved "http://registry.npm.taobao.org/react-native-branch/download/react-native-branch-2.0.0-beta.3.tgz#2167af86bbc9f964bd45bd5f37684e5b54965e32"
@@ -4722,6 +4726,10 @@ react-native-scripts@1.8.1:
     rimraf "^2.6.1"
     xdl "47.0.4"
 
+react-native-sound@^0.10.4:
+  version "0.10.4"
+  resolved "http://registry.npm.taobao.org/react-native-sound/download/react-native-sound-0.10.4.tgz#242286558f457e023dbed42e8c6cbe52cfd313d4"
+
 "react-native-svg@https://github.com/expo/react-native-svg/archive/5.5.1-exp.1.tar.gz":
   version "5.5.1"
   resolved "https://github.com/expo/react-native-svg/archive/5.5.1-exp.1.tar.gz#0c6e373dbe63cfcbdd465f5b2965ebe011c8962f"
@@ -4756,9 +4764,9 @@ react-native-video@^2.0.0:
     keymirror "0.1.1"
     prop-types "^15.5.10"
 
-react-native@0.50.3:
+"react-native@https://github.com/expo/react-native/archive/sdk-23.0.0.tar.gz":
   version "0.50.3"
-  resolved "http://registry.npm.taobao.org/react-native/download/react-native-0.50.3.tgz#91282bd5356cc7d794969cdc443cc764389b9af4"
+  resolved "https://github.com/expo/react-native/archive/sdk-23.0.0.tar.gz#4c1f6efcf4d8a7726b8efe4501053165bbfaeb32"
   dependencies:
     absolute-path "^0.0.0"
     art "^0.10.0"
