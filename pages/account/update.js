@@ -3,7 +3,7 @@ import Icon from 'react-native-vector-icons/Ionicons'
 import { Button } from 'react-native-elements';
 import {Circle} from 'react-native-progress'
 // import ImageCropPicker from 'react-native-image-crop-picker';
-import ImagePicker from 'react-native-image-picker'
+import { ImagePicker } from 'expo';
 import request from '../../common/request'
 import Popup from '../../components/popup'
 import config from '../../common/config'
@@ -72,33 +72,33 @@ export default class AccountUpdate extends React.Component {
   _pickPhoto = () => {
     let that = this
 
-    ImagePicker.showImagePicker(photoOptions, (res) => {
-      if (res.didCancel) {
-        return
-      }
+    // ImagePicker.showImagePicker(photoOptions, (res) => {
+    //   if (res.didCancel) {
+    //     return
+    //   }
 
-      const avatarData = 'data:image/jpeg;base64,' + res.data
-      const uri = res.uri
+    //   const avatarData = 'data:image/jpeg;base64,' + res.data
+    //   const uri = res.uri
 
-      that._getQiniuToken()
-        .then((data) => {
-          if (data && data.success) {
-            const token = data.data.token
-            const key = data.data.key
-            let body = new FormData()
+    //   that._getQiniuToken()
+    //     .then((data) => {
+    //       if (data && data.success) {
+    //         const token = data.data.token
+    //         const key = data.data.key
+    //         let body = new FormData()
 
-            body.append('token', token)
-            body.append('key', key)
-            body.append('file', {
-              type: 'image/jpeg',
-              uri: uri,
-              name: key
-            })
+    //         body.append('token', token)
+    //         body.append('key', key)
+    //         body.append('file', {
+    //           type: 'image/jpeg',
+    //           uri: uri,
+    //           name: key
+    //         })
 
-            that._upload(body)
-          }
-        })
-    })
+    //         that._upload(body)
+    //       }
+    //     })
+    // })
   }
 
   _upload(body) {

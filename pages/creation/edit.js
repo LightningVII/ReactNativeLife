@@ -1,9 +1,7 @@
 import _ from 'lodash';
 import Icon from 'react-native-vector-icons/Ionicons';
-import Video from 'react-native-video';
-import ImagePicker from 'react-native-image-picker';
-// import {AudioUtils} from 'react-native-audio'
-// import Sound from 'react-native-sound'
+// import Video from 'react-native-video';
+// import { AudioRecorder, AudioUtils } from 'react-native-audio';
 import { Circle } from 'react-native-progress';
 import { Button } from 'react-native-elements';
 import Popup from '../../components/popup';
@@ -120,11 +118,12 @@ const defaultState = {
     repeat: false
 };
 
+import { ImagePicker } from 'expo';
+
 class Edit extends React.Component {
     constructor(props) {
         super(props);
-        const state = _.clone(defaultState);
-
+        const state = { ...defaultState, image: null };
         this.state = state;
     }
 
@@ -152,12 +151,11 @@ class Edit extends React.Component {
             newState.recording = false;
             newState.paused = true;
 
-            // try {
-            //   const filePath = await AudioRecorder.stopRecording()
-            // }
-            // catch (e) {
-            //   console.log(e)
-            // }
+            try {
+                // const filePath = await AudioRecorder.stopRecording();
+            } catch (e) {
+                console.log(e);
+            }
         } else if (this.state.audioPlaying) {
             newState.audioPlaying = false;
             newState.paused = true;
@@ -180,24 +178,29 @@ class Edit extends React.Component {
             audioPlaying: true
         });
 
-        /* let sound = new Sound(this.state.audioPath, '', (error) => {
-      if (error) {
-        console.log('Failed to load sound', error)
-      }
-    })
-
-    setTimeout(() => {
-      this.videoPlayer.seek(0)
-
-      sound.play((success) => {
-        if (success) {
-          console.log('Finished playing')
+        const soundObject = new Expo.Audio.Sound();
+        // this.state.audioPath
+        try {
+            await soundObject.loadAsync(
+                require('./assets/sounds/lesson_16.mp3')
+            );
+            await soundObject.playAsync();
+            // Your sound is playing!
+        } catch (error) {
+            // An error occurred!
         }
-        else {
-          console.log('play failed')
-        }
-      })
-    }, 100) */
+
+        // setTimeout(() => {
+        //     this.videoPlayer.seek(0);
+
+        //     sound.play(success => {
+        //         if (success) {
+        //             console.log('Finished playing');
+        //         } else {
+        //             console.log('play failed');
+        //         }
+        //     });
+        // }, 100);
     }
 
     async _record() {
@@ -224,7 +227,7 @@ class Edit extends React.Component {
             },
             () => {
                 try {
-                    // AudioRecorder.startRecording()
+                    // AudioRecorder.startRecording();
                 } catch (error) {
                     console.log(error);
                 }
@@ -419,24 +422,66 @@ class Edit extends React.Component {
     _pickVideo() {
         let that = this;
 
-        ImagePicker.showImagePicker(videoOptions, res => {
-            if (res.didCancel) {
-                return;
-            }
+        // ImagePicker.showImagePicker(videoOptions, res => {
+        //     if (res.didCancel) {
+        //         return;
+        //     }
 
-            let state = _.clone(defaultState);
+        //     let state = {...defaultState};
+        //     const uri = res.uri;
+
+        //     state.previewVideo = uri;
+        //     that.setState(state);
+
+        //     that
+        //         ._getToken({
+        //             type: 'video',
+        //             cloud: 'qiniu'
+        //         })
+        //         .catch(err => {
+        //             that.props.popAlert('呜呜~', '上传出错');
+        //         })
+        //         .then(data => {
+        //             if (data && data.success) {
+        //                 const token = data.data.token;
+        //                 const key = data.data.key;
+        //                 let body = new FormData();
+
+        //                 body.append('token', token);
+        //                 body.append('key', key);
+        //                 body.append('file', {
+        //                     type: 'video/mp4',
+        //                     uri: uri,
+        //                     name: key
+        //                 });
+
+        //                 that._upload(body, 'video');
+        //             }
+        //         });
+        // });
+    }
+
+    pickImage = async () => {
+        let result = await ImagePicker.launchImageLibraryAsync({
+            allowsEditing: true,
+            mediaTypes: 'Videos',
+            aspect: [4, 3]
+        });
+
+        if (!result.cancelled) {
+            // this.setState({ image: result.uri });
+            let state = { ...defaultState };
             const uri = res.uri;
 
             state.previewVideo = uri;
-            that.setState(state);
+            this.setState(state);
 
-            that
-                ._getToken({
-                    type: 'video',
-                    cloud: 'qiniu'
-                })
+            this._getToken({
+                type: 'video',
+                cloud: 'qiniu'
+            })
                 .catch(err => {
-                    that.props.popAlert('呜呜~', '上传出错');
+                    this.props.popAlert('呜呜~', '上传出错');
                 })
                 .then(data => {
                     if (data && data.success) {
@@ -452,11 +497,11 @@ class Edit extends React.Component {
                             name: key
                         });
 
-                        that._upload(body, 'video');
+                        this._upload(body, 'video');
                     }
                 });
-        });
-    }
+        }
+    };
 
     async _uploadAudio() {
         let that = this;
@@ -530,14 +575,15 @@ class Edit extends React.Component {
 
     prepareRecordingPath(audioPath) {
         // AudioRecorder.prepareRecordingAtPath(audioPath, {
-        //   SampleRate: 22050,
-        //   Channels: 1,
-        //   AudioQuality: 'Low',
-        //   AudioEncoding: 'aac'
-        // })
+        //     SampleRate: 22050,
+        //     Channels: 1,
+        //     AudioQuality: 'Low',
+        //     AudioEncoding: 'aac'
+        // });
     }
 
     componentDidMount() {
+        // this._preview();
         this._checkPermission().then(hasPermission => {
             this.setState({ hasPermission });
 
@@ -545,13 +591,13 @@ class Edit extends React.Component {
 
             this.prepareRecordingPath(this.state.audioPath);
 
-            // AudioRecorder.onProgress = (data) => {
-            //   console.log(Math.floor(data.currentTime))
-            // }
+            // AudioRecorder.onProgress = data => {
+            //     console.log(Math.floor(data.currentTime));
+            // };
 
-            // AudioRecorder.onFinished = (data) => {
-            //   console.log('recording done!')
-            // }
+            // AudioRecorder.onFinished = data => {
+            //     console.log('recording done!');
+            // };
         });
     }
 
@@ -706,7 +752,7 @@ class Edit extends React.Component {
                     {this.state.previewVideo ? (
                         <View style={styles.videoContainer}>
                             <View style={styles.videoBox}>
-                                <Video
+                                {/* <Video
                                     ref={ref => {
                                         this.videoPlayer = ref;
                                     }}
@@ -723,7 +769,7 @@ class Edit extends React.Component {
                                     onProgress={this._onProgress.bind(this)}
                                     onEnd={this._onEnd.bind(this)}
                                     onError={this._onError.bind(this)}
-                                />
+                                /> */}
                                 {!this.state.videoUploaded &&
                                 this.state.videoUploading ? (
                                     <View style={styles.progressTipBox}>
@@ -768,7 +814,7 @@ class Edit extends React.Component {
                     ) : (
                         <TouchableOpacity
                             style={styles.uploadContainer}
-                            onPress={this._pickVideo.bind(this)}
+                            onPress={this.pickImage}
                         >
                             <View style={styles.uploadBox}>
                                 <Image
