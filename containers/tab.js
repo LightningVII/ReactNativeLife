@@ -15,47 +15,29 @@ import Edit from './edit';
 import Account from './account';
 import AccountUpdate from './accountUpdate';
 
-const MyNavScreen = ({ navigation, banner }) => (
-    <ScrollView>
-        <SafeAreaView forceInset={{ horizontal: 'always' }}>
-            <Text>{banner}</Text>
-            <Button
-                onPress={() =>
-                    navigation.navigate('Profile', { name: 'Jordan' })
-                }
-                title="Open profile screen"
+/* Account: {
+    screen: Account,
+    navigationOptions: ({ navigation }) => ({
+        headerTitle: '狗狗的账户',
+        headerStyle: headerStyle[Platform.OS],
+        headerTintColor: '#fff',
+        headerRight: (
+            <Text
+                style={{ color: '#fff', paddingRight: 10 }}
+                onPress={() => navigation.navigate('AccountUpdate')}
+            >
+                编辑
+            </Text>
+        ),
+        tabBarIcon: ({ tintColor, focused }) => (
+            <Icon
+                name={focused ? 'ios-person' : 'ios-person-outline'}
+                color={tintColor}
+                size={28}
             />
-            <Button
-                onPress={() => navigation.navigate('NotifSettings')}
-                title="Open notifications screen"
-            />
-            <Button
-                onPress={() => navigation.navigate('SettingsTab')}
-                title="Go to settings tab"
-            />
-            <Button onPress={() => navigation.goBack(null)} title="Go back" />
-        </SafeAreaView>
-    </ScrollView>
-);
-
-const MyHomeScreen = ({ navigation }) => (
-    <MyNavScreen banner="Home Screen" navigation={navigation} />
-);
-
-const MyProfileScreen = ({ navigation }) => (
-    <MyNavScreen
-        banner={`${navigation.state.params.name}s Profile`}
-        navigation={navigation}
-    />
-);
-
-const MyNotificationsSettingsScreen = ({ navigation }) => (
-    <MyNavScreen banner="Notifications Screen" navigation={navigation} />
-);
-
-const MySettingsScreen = ({ navigation }) => (
-    <MyNavScreen banner="Settings Screen" navigation={navigation} />
-);
+        )
+    })
+}, */
 
 const TabNav = TabNavigator(
     {
@@ -93,9 +75,17 @@ const TabNav = TabNavigator(
         SettingsTab: {
             screen: Account,
             path: '/settings',
-            navigationOptions: {
+            navigationOptions: ({ navigation, screenProps }) => ({
                 title: '我的',
                 tabBarLabel: 'Account',
+                headerRight: (
+                    <Text
+                        style={{ color: '#ee735c', paddingRight: 10 }}
+                        onPress={() => navigation.navigate('AccountUpdate')}
+                    >
+                        编辑
+                    </Text>
+                ),
                 tabBarIcon: ({ tintColor, focused }) => (
                     <Ionicons
                         name={focused ? 'ios-settings' : 'ios-settings-outline'}
@@ -103,7 +93,7 @@ const TabNav = TabNavigator(
                         style={{ color: tintColor }}
                     />
                 )
-            }
+            })
         }
     },
     {
@@ -120,19 +110,26 @@ const StacksOverTabs = StackNavigator({
     Root: {
         screen: TabNav
     },
-    NotifSettings: {
-        screen: MyNotificationsSettingsScreen,
+    AccountUpdate: {
+        screen: AccountUpdate,
         navigationOptions: {
-            title: 'Notifications'
-        }
-    },
-    Profile: {
-        screen: MyProfileScreen,
-        path: '/people/:name',
-        navigationOptions: ({ navigation }) => {
-            title: `${navigation.state.params.name}'s Profile!`;
+            title: '更新资料'
         }
     }
+    // ,
+    // NotifSettings: {
+    //     screen: MyNotificationsSettingsScreen,
+    //     navigationOptions: {
+    //         title: 'Notifications'
+    //     }
+    // },
+    // Profile: {
+    //     screen: MyProfileScreen,
+    //     path: '/people/:name',
+    //     navigationOptions: ({ navigation }) => {
+    //         title: `${navigation.state.params.name}'s Profile!`;
+    //     }
+    // }
 });
 
 export default StacksOverTabs;

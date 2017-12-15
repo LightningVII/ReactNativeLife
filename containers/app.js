@@ -31,9 +31,9 @@ class App extends React.Component {
         //   return <Slider {...this.props} />
         // }
 
-        if (!this.props.logined) {
-          return <Login {...this.props} />
-        }
+        // if (!this.props.logined) {
+        //   return <Login {...this.props} />
+        // }
 
         return <Tabs/>
     }

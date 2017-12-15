@@ -12,7 +12,7 @@ export default class Account extends React.Component {
     }
 
     render() {
-        const user = this.props.user;
+        const user = this.props.user || {};
 
         return (
             <View style={styles.container}>
