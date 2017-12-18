@@ -16,6 +16,7 @@ import {
     TextInput,
     Platform,
     Image,
+    ImageBackground,
     TouchableOpacity,
     Dimensions
 } from 'react-native';
@@ -40,7 +41,17 @@ export default class AccountUpdate extends React.Component {
     constructor(props) {
         super(props);
 
-        const user = this.props.user || {};
+        const user = this.props.user || {
+            nickname: '小狗宝',
+            avatar: 'http://7xpwuf.com1.z0.glb.clouddn.com/WechatIMG13.jpeg',
+            phoneNumber: '2',
+            verifyCode: '6531',
+            accessToken: 'ed72a720-8852-4721-8af4-2853dacaaf93',
+            __v: 0,
+            age: '1',
+            breed: '2ha',
+            gender: 'male'
+        };
 
         this.state = {
             user: user,
@@ -54,11 +65,11 @@ export default class AccountUpdate extends React.Component {
     }
 
     getQiniuToken() {
-		
-        const accessToken = this.state.user.accessToken || 'ed72a720-8852-4721-8af4-2853dacaaf93';
+        const accessToken =
+            this.state.user.accessToken ||
+            'ed72a720-8852-4721-8af4-2853dacaaf93';
         const signatureURL = config.api.signature;
 
-		console.warn(signatureURL)
         return request
             .post(signatureURL, {
                 accessToken: accessToken,
@@ -71,8 +82,6 @@ export default class AccountUpdate extends React.Component {
     }
 
     pickImage = async () => {
-        let that = this;
-
         let result = await ImagePicker.launchImageLibraryAsync({
             allowsEditing: true,
             aspect: [4, 3]
@@ -84,106 +93,97 @@ export default class AccountUpdate extends React.Component {
 
             this.getQiniuToken().then(data => {
                 if (data && data.success) {
-					console.warn(data)
-                    // const token = data.data.token;
-                    // const key = data.data.key;
-                    // let body = new FormData();
+                    const token = data.data.token;
+                    const key = data.data.key;
+                    let body = new FormData();
 
-                    // body.append('token', token);
-                    // body.append('key', key);
-                    // body.append('file', {
-                    //     type: 'image/jpeg',
-                    //     uri: uri,
-                    //     name: key
-                    // });
+                    body.append('token', token);
+                    body.append('key', key);
+                    body.append('file', {
+                        type: 'image/jpeg',
+                        uri: uri,
+                        name: key
+                    });
 
-                    // this._upload(body);
+                    this.upload(body);
                 }
             });
         }
-
-        // ImagePicker.showImagePicker(photoOptions, (res) => {
-        //   if (res.didCancel) {
-        //     return
-        //   }
-        // })
     };
 
-    _upload(body) {
-        let that = this;
-        const xhr = new XMLHttpRequest();
-        const url = config.qiniu.upload;
-
+    upload = fromData => {
         this.setState({
             avatarUploading: true,
             avatarProgress: 0
         });
 
-        xhr.open('POST', url);
-        xhr.onload = () => {
-            if (xhr.status !== 200) {
-                that.prop.popAlert('呜呜~', '上传失败，稍后重试');
+        const uploadUrl = 'http://upload.qiniup.com';
 
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', uploadUrl, true);
+
+        xhr.onreadystatechange = response => {
+            if (xhr.status !== 200) {
+                this.props.popAlert('呜呜~', '上传失败，稍后重试');
                 return;
             }
 
             if (!xhr.responseText) {
-                that.prop.popAlert('呜呜~', '服务器异常，稍后重试');
-
+                this.props.popAlert('呜呜~', '服务器异常，稍后重试');
                 return;
             }
 
-            let response;
+            let res;
 
             try {
-                response = JSON.parse(xhr.response);
+                res = JSON.parse(xhr.response);
             } catch (e) {
-                that.prop.popAlert('呜呜~', '返回数据异常，稍后重试');
+                this.props.popAlert('呜呜~', '返回数据异常，稍后重试');
             }
 
-            if (response) {
+            if (
+                xhr.readyState == 4 &&
+                xhr.status == 200 &&
+                xhr.responseText !== ''
+            ) {
                 let user = this.state.user;
-
-                if (response.public_id) {
-                    user.avatar = response.public_id;
+                if (res.key) {
+                    user.avatar =
+                        'http://7xpwuf.com1.z0.glb.clouddn.com/' + res.key;
                 }
 
-                if (response.key) {
-                    user.avatar = response.key;
-                }
-
-                that.setState({
+                this.setState({
                     avatarUploading: false,
                     avatarProgress: 0,
                     user: user
                 });
 
-                that._asyncUser(true);
+                this.asyncUser(true);
             }
         };
 
         if (xhr.upload) {
-            xhr.upload.onprogress = event => {
+            xhr.upload.addEventListener('progress', event => {
                 if (event.lengthComputable) {
                     let percent = Number(
                         (event.loaded / event.total).toFixed(2)
                     );
 
-                    that.setState({
+                    this.setState({
                         avatarProgress: percent
                     });
                 }
-            };
+            });
         }
 
-        xhr.send(body);
-    }
+        xhr.send(fromData);
+    };
 
-    _asyncUser() {
+    asyncUser = () => {
         this.props.updateUserInfo(this.state.user).then(() => {
             this.props.popAlert('汪汪~', '头像更新成功');
         });
-    }
+    };
 
     _changeUserState(key, value) {
         let user = this.state.user;
@@ -196,16 +196,15 @@ export default class AccountUpdate extends React.Component {
     }
 
     render() {
-        const user = this.state.user || {};
-
+        const user = this.state.user;
         return (
             <View style={styles.container}>
                 {user.avatar ? (
                     <TouchableOpacity
-                        onPress={this.pickImage.bind(this)}
+                        onPress={this.pickImage}
                         style={styles.avatarContainer}
                     >
-                        <Image
+                        <ImageBackground
                             source={{ uri: util.avatar(user.avatar, 'image') }}
                             style={styles.avatarContainer}
                         >
@@ -230,7 +229,7 @@ export default class AccountUpdate extends React.Component {
                                 )}
                             </View>
                             <Text style={styles.avatarTip}>戳这里换头像</Text>
-                        </Image>
+                        </ImageBackground>
                     </TouchableOpacity>
                 ) : (
                     <TouchableOpacity
@@ -330,11 +329,19 @@ export default class AccountUpdate extends React.Component {
                     </View>
 
                     <Button
-                        style={styles.btn}
-                        onPress={this._asyncUser.bind(this)}
-                    >
-                        保存资料
-                    </Button>
+                        raised
+                        containerViewStyle={{
+                            marginTop: 20,
+                            marginLeft: 20,
+                            marginRight: 20
+                        }}
+                        buttonStyle={{
+                            backgroundColor: 'orange',
+                            borderRadius: 4
+                        }}
+                        onPress={this.asyncUser}
+                        title={'保存资料'}
+                    />
                 </View>
 
                 <Popup {...this.props} />

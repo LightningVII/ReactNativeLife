@@ -47,11 +47,10 @@ export default class Login extends React.Component {
     _sendVerifyCode = () => {
         this.input.blur();
         // return;
-        let that = this;
         const phoneNumber = this.state.phoneNumber;
 
         if (!phoneNumber) {
-            return that.props.popAlert('呜呜~', '手机号不能为空！');
+            return this.props.popAlert('呜呜~', '手机号不能为空！');
         }
 
         let body = {
@@ -82,12 +81,11 @@ export default class Login extends React.Component {
     };
 
     _submit = () => {
-        let that = this;
         const phoneNumber = this.state.phoneNumber;
         const verifyCode = this.state.verifyCode;
 
         if (!phoneNumber || !verifyCode) {
-            return that.props.popAlert('呜呜~', '手机号或验证码不能为空！');
+            return this.props.popAlert('呜呜~', '手机号或验证码不能为空！');
         }
 
         let body = {
@@ -120,8 +118,6 @@ export default class Login extends React.Component {
     };
 
     _alert(title, content) {
-        var that = this;
-
         this.setState(
             {
                 pop: {
@@ -131,7 +127,7 @@ export default class Login extends React.Component {
             },
             function() {
                 setTimeout(function() {
-                    that.setState({
+                    this.setState({
                         pop: null
                     });
                 }, 1500);
@@ -146,14 +142,12 @@ export default class Login extends React.Component {
                 style={styles.container}
                 onPress={() => this.this.input.blur()}
             >
-                <SearchBar
+                {/* <SearchBar
                     containerStyle={{ marginTop: 40 }}
                     round
                     lightTheme
-                    // onChangeText={someMethod}
-                    // onClearText={someMethod}
                     placeholder="Type Here..."
-                />
+                /> */}
                 <View style={{ width: '100%' }}>
                     {/* <FormLabel>Name</FormLabel> */}
                     <FormInput
@@ -241,8 +235,6 @@ export default class Login extends React.Component {
                     )}
                 </View>
 
-                {/* make flex layout convenience */}
-                <View />
                 <Popup {...this.props} />
             </ImageBackground>
         );
@@ -253,15 +245,7 @@ const styles = StyleSheet.create({
     container: {
         width: width,
         flex: 1,
-        // padding: 10,
-        // alignItems: 'stretch',
-        justifyContent: 'space-between',
-        height: null,
-        //不加这句，就是按照屏幕高度自适应
-        //加上这几，就是按照屏幕自适应
-        // resizeMode:ImageBackground.resizeMode.contain,
-        //祛除内部元素的白色背景
-        backgroundColor: 'rgba(0,0,0,0)'
+        justifyContent: 'center'
     },
     signupBox: {
         marginTop: 130
