@@ -1,5 +1,3 @@
-const Swiper = require('react-native-swiper')
-
 import React, {Component} from 'react'
 import {
   StyleSheet,
@@ -45,13 +43,9 @@ export default class Slider extends React.Component {
     })
 
     return (
-      <Swiper
-        dot={<View style={styles.dot} />}
-        activeDot={<View style={styles.activeDot} />}
-        paginationStyle={styles.pagination}
-        loop={sliderLoop}>
+      <View>
         {bannersSlider}
-      </Swiper>
+      </View>
     )
   }
 }
