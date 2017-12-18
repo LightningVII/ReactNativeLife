@@ -121,8 +121,8 @@ ajv@^4.9.1:
     json-stable-stringify "^1.0.1"
 
 ajv@^5.1.0, ajv@^5.2.2:
-  version "5.5.1"
-  resolved "http://registry.npm.taobao.org/ajv/download/ajv-5.5.1.tgz#b38bb8876d9e86bee994956a04e721e88b248eb2"
+  version "5.5.2"
+  resolved "http://registry.npm.taobao.org/ajv/download/ajv-5.5.2.tgz#73b5eeca3fab653e3d3f9422b341ad42205dc965"
   dependencies:
     co "^4.6.0"
     fast-deep-equal "^1.0.0"
@@ -2693,8 +2693,8 @@ idx@^2.1.0:
   resolved "http://registry.npm.taobao.org/idx/download/idx-2.2.0.tgz#8544749f9faba6409822b5d9488ba5bc77b8fbfe"
 
 image-size@^0.6.0:
-  version "0.6.1"
-  resolved "http://registry.npm.taobao.org/image-size/download/image-size-0.6.1.tgz#98122a562d59dcc097ef1b2c8191866eb8f5d663"
+  version "0.6.2"
+  resolved "http://registry.npm.taobao.org/image-size/download/image-size-0.6.2.tgz#8ee316d4298b028b965091b673d5f1537adee5b4"
 
 immediate@^3.2.2:
   version "3.2.3"
@@ -3939,8 +3939,8 @@ mkdirp@*, "mkdirp@>=0.5 0", mkdirp@^0.5.0, mkdirp@^0.5.1, mkdirp@~0.5.1:
     minimist "0.0.8"
 
 moment@2.x.x, moment@^2.10.6:
-  version "2.19.4"
-  resolved "http://registry.npm.taobao.org/moment/download/moment-2.19.4.tgz#17e5e2c6ead8819c8ecfad83a0acccb312e94682"
+  version "2.20.0"
+  resolved "http://registry.npm.taobao.org/moment/download/moment-2.20.0.tgz#53396358994dd3a551e966a66af715ecb6c30ad0"
 
 morgan@~1.6.1:
   version "1.6.1"
@@ -5409,8 +5409,8 @@ slugid@^1.1.0:
     uuid "^2.0.1"
 
 slugify@^1.0.2:
-  version "1.2.6"
-  resolved "http://registry.npm.taobao.org/slugify/download/slugify-1.2.6.tgz#98c8f7e3c78f06af71e44670d8086715d86fc528"
+  version "1.2.7"
+  resolved "http://registry.npm.taobao.org/slugify/download/slugify-1.2.7.tgz#49998fa5f26e001ca366298937ad25fb6e9742cf"
 
 smart-buffer@^1.0.13:
   version "1.1.15"
