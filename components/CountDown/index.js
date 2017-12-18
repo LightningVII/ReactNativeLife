@@ -60,34 +60,21 @@ export default class CountDown extends React.Component {
         const { disabled, text } = this.state;
         const { buttonStyle, textStyle } = this.props;
 
-        if (this.state.disabled) {
+        if (disabled) {
             style.push(this.props.disabledTextStyle);
-            component = (
-                <View style={[styles.wrapper, this.props.buttonStyle]}>
-                    <Text style={[style]}>{text}</Text>
-                </View>
-            );
-        } else {
-            component = (
-                <TouchableHighlight
-                    style={[styles.wrapper, buttonStyle]}
-                    onPress={this.onPress}
-                >
-                    <Text style={[style, textStyle]}>{text}</Text>
-                </TouchableHighlight>
-            );
         }
-        return component;
+        return disabled ? (
+            <View style={buttonStyle}>
+                <Text style={[style]}>{text}</Text>
+            </View>
+        ) : null;
     }
 }
 
 const styles = StyleSheet.create({
     text: {
-        color: '#fff',
+        color: '#ee735c',
         fontSize: 14,
         textAlign: 'center'
-    },
-    wrapper: {
-        backgroundColor: '#e5e5e5'
     }
 });

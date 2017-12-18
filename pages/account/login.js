@@ -32,21 +32,20 @@ export default class Login extends React.Component {
         };
     }
 
-    _showVerifyCode = () => {
+    showVerifyCode = () => {
         this.setState({
             codeSent: true
         });
     };
 
-    _countingDone = () => {
+    countingDone = () => {
         this.setState({
             countingDone: true
         });
     };
 
-    _sendVerifyCode = () => {
+    sendVerifyCode = () => {
         this.input.blur();
-        // return;
         const phoneNumber = this.state.phoneNumber;
 
         if (!phoneNumber) {
@@ -64,7 +63,7 @@ export default class Login extends React.Component {
             .post(signupURL, body)
             .then(data => {
                 if (data && data.success) {
-                    this._showVerifyCode();
+                    this.showVerifyCode();
                 } else {
                     this.props.popAlert(
                         '呜呜~',
@@ -80,7 +79,7 @@ export default class Login extends React.Component {
             });
     };
 
-    _submit = () => {
+    submit = () => {
         const phoneNumber = this.state.phoneNumber;
         const verifyCode = this.state.verifyCode;
 
@@ -142,20 +141,11 @@ export default class Login extends React.Component {
                 style={styles.container}
                 onPress={() => this.this.input.blur()}
             >
-                {/* <SearchBar
-                    containerStyle={{ marginTop: 40 }}
-                    round
-                    lightTheme
-                    placeholder="Type Here..."
-                /> */}
                 <View style={{ width: '100%' }}>
-                    {/* <FormLabel>Name</FormLabel> */}
                     <FormInput
                         containerStyle={styles.inputField}
                         placeholder="输入手机号"
                         ref={input => (this.input = input)}
-                        // autoCaptialize={'none'}
-                        // autoCorrect={false}
                         keyboardType={'number-pad'}
                         onChangeText={text => {
                             this.setState({
@@ -180,21 +170,22 @@ export default class Login extends React.Component {
                             {this.state.countingDone ? (
                                 <Button
                                     buttonStyle={{
-                                        borderRadius: 4
+                                        borderRadius: 4,
+                                        backgroundColor: 'orange'
                                     }}
                                     containerViewStyle={{
                                         marginLeft: 0,
                                         marginRight: 0
                                     }}
                                     fontSize={14}
-                                    onPress={this._sendVerifyCode}
+                                    onPress={this.sendVerifyCode}
                                     title={'获取验证码'}
                                 />
                             ) : (
                                 <CountDown
                                     buttonStyle={styles.countBtn}
-                                    afterEnd={this._countingDone} // 结束回调
-                                    time={20} // 正向计时 时间起点为0秒
+                                    afterEnd={this.countingDone} // 结束回调
+                                    time={5} // 正向计时 时间起点为0秒
                                     text={sec => `剩余(${sec})秒`} // 定时的文本回调
                                 />
                             )}
@@ -205,6 +196,7 @@ export default class Login extends React.Component {
                         <Button
                             raised
                             containerViewStyle={{
+                                borderRadius: 4,
                                 marginTop: 20,
                                 marginLeft: 20,
                                 marginRight: 20
@@ -213,7 +205,7 @@ export default class Login extends React.Component {
                                 backgroundColor: 'orange',
                                 borderRadius: 4
                             }}
-                            onPress={this._submit}
+                            onPress={this.submit}
                             title={'登录'}
                         />
                     ) : (
@@ -229,7 +221,7 @@ export default class Login extends React.Component {
                                 backgroundColor: 'orange',
                                 borderRadius: 4
                             }}
-                            onPress={this._sendVerifyCode}
+                            onPress={this.sendVerifyCode}
                             title={'获取验证码'}
                         />
                     )}
@@ -275,14 +267,12 @@ const styles = StyleSheet.create({
         marginTop: 20,
         flexDirection: 'row',
         justifyContent: 'space-between'
-        // backgroundColor: '#CCC'
     },
     countBtn: {
         minWidth: 90,
         padding: 10,
-        backgroundColor: '#ee735c',
-        borderColor: '#ee735c',
-        borderRadius: 2
+        backgroundColor: '#ccc',
+        borderRadius: 4
     },
     btn: {
         marginTop: 10,
