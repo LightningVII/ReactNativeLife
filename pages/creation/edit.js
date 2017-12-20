@@ -1,17 +1,11 @@
-import _ from 'lodash';
 import Icon from 'react-native-vector-icons/Ionicons';
-// import Video from 'react-native-video';
-// import { AudioRecorder, AudioUtils } from 'react-native-audio';
 import { Circle } from 'react-native-progress';
 import { Button } from 'react-native-elements';
 import Popup from '../../components/popup';
-
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as appActions from '../../actions/app';
-
 const ProgressBar = require('ProgressBarAndroid');
-
 import React, { Component } from 'react';
 import {
     StyleSheet,
@@ -56,21 +50,6 @@ import request from '../../common/request';
 import config from '../../common/config';
 
 const { width, height } = Dimensions.get('window');
-
-const videoOptions = {
-    title: '选择视频',
-    cancelButtonTitle: '取消',
-    takePhotoButtonTitle: '录制 15 秒视频',
-    chooseFromLibraryButtonTitle: '选择已有视频',
-    videoQuality: 'medium',
-    mediaType: 'video',
-    durationLimit: 15,
-    noData: false,
-    storageOptions: {
-        skipBackup: true,
-        path: 'images'
-    }
-};
 
 const defaultState = {
     previewVideo: null,
@@ -118,69 +97,74 @@ const defaultState = {
     repeat: false
 };
 
-import { ImagePicker } from 'expo';
+import { ImagePicker, Video, Audio } from 'expo';
 
 class Edit extends React.Component {
     constructor(props) {
         super(props);
-        const state = { ...defaultState, image: null };
-        this.state = state;
+        this.state = { ...defaultState };
     }
 
-    _onLoadStart() {
+    onLoadStart = () => {
         console.log('load start');
-    }
+    };
 
-    _onLoad(data) {
+    onLoad = data => {
         this.setState({
             duration: data.duration
         });
-    }
+    };
 
-    async _onProgress(data) {
+    onProgress = async data => {
         this.setState({
             currentTime: data.currentTime
         });
-    }
+    };
 
-    async _onEnd() {
-        let newState = {};
+    onPlaybackStatusUpdate = async status => {
+        if (status.didJustFinish) {
+            console.log(
+                '====== onPlaybackStatusUpdate ======',
+                status,
+                status.didJustFinish
+            );
+            let newState = {};
+            if (this.state.recording) {
+                newState.recordDone = true;
+                newState.recording = false;
+                newState.paused = true;
 
-        if (this.state.recording) {
-            newState.recordDone = true;
-            newState.recording = false;
-            newState.paused = true;
-
-            try {
-                // const filePath = await AudioRecorder.stopRecording();
-            } catch (e) {
-                console.log(e);
+                try {
+                    await this.audio.stopAndUnloadAsync();
+                    this.filePath = this.audio.getURI();
+                } catch (e) {
+                    console.log(e);
+                }
+            } else if (this.state.audioPlaying) {
+                newState.audioPlaying = false;
+                newState.paused = true;
+            } else {
+                newState.videoUploaded = true;
+                newState.paused = true;
             }
-        } else if (this.state.audioPlaying) {
-            newState.audioPlaying = false;
-            newState.paused = true;
-        } else {
-            newState.videoUploaded = true;
-            newState.paused = true;
+
+            this.setState(newState);
         }
+    };
 
-        this.setState(newState);
-    }
-
-    _onError(e) {
+    onError = e => {
         this.setState({
             videoOk: false
         });
-    }
+    };
 
-    async _preview() {
+    preview = async () => {
         this.setState({
             audioPlaying: true
         });
-
-        const soundObject = new Expo.Audio.Sound();
-        // this.state.audioPath
+        const soundObject = new Audio.Sound();
         try {
+            await this.videoPlayer.playFromPositionAsync(0);
             await soundObject.loadAsync(
                 require('./assets/sounds/lesson_16.mp3')
             );
@@ -189,22 +173,10 @@ class Edit extends React.Component {
         } catch (error) {
             // An error occurred!
         }
+    };
 
-        // setTimeout(() => {
-        //     this.videoPlayer.seek(0);
-
-        //     sound.play(success => {
-        //         if (success) {
-        //             console.log('Finished playing');
-        //         } else {
-        //             console.log('play failed');
-        //         }
-        //     });
-        // }, 100);
-    }
-
-    async _record() {
-        let hasPermission = await this._checkPermission();
+    record = async () => {
+        let hasPermission = await this.checkPermission();
 
         if (!hasPermission) {
             console.warn('Cannot Record no permission');
@@ -217,7 +189,7 @@ class Edit extends React.Component {
             return;
         }
 
-        this.videoPlayer.seek(0);
+        await this.videoPlayer.playAsync();
         this.setState(
             {
                 counting: false,
@@ -227,38 +199,36 @@ class Edit extends React.Component {
             },
             () => {
                 try {
-                    // AudioRecorder.startRecording();
+                    this.audio.startAsync();
                 } catch (error) {
                     console.log(error);
                 }
             }
         );
-    }
+    };
 
-    _tick() {
-        let that = this;
+    tick = () => {
         let countText = this.state.countText;
 
         countText--;
 
         if (countText === 0) {
-            this._record();
+            this.record();
         } else {
-            setTimeout(function() {
-                that.setState(
+            setTimeout(() => {
+                this.setState(
                     {
-                        countText: countText
+                        countText
                     },
-                    function() {
-                        that._tick();
+                    () => {
+                        this.tick();
                     }
                 );
             }, 1000);
         }
-    }
+    };
 
-    _counting() {
-        let that = this;
+    counting = () => {
         let countText = 3;
 
         if (
@@ -271,25 +241,22 @@ class Edit extends React.Component {
                     counting: true,
                     countText: countText
                 },
-                function() {
-                    that._tick();
+                () => {
+                    this.tick();
                 }
             );
-
-            this.videoPlayer.seek(this.state.videoTotal - 0.01);
         }
-    }
+    };
 
-    _getToken(body) {
+    getToken = body => {
         const signatureURL = config.api.signature;
 
         body.accessToken = this.props.user.accessToken;
 
         return request.post(signatureURL, body);
-    }
+    };
 
-    _upload(body, type) {
-        let that = this;
+    upload = (body, type) => {
         let xhr = new XMLHttpRequest();
         let url = config.qiniu.upload;
 
@@ -299,7 +266,7 @@ class Edit extends React.Component {
 
         let state = {};
 
-        state[type + 'UploadedProgress'] = 0;
+        state[type + 'UploadedProgress'] = 1;
         state[type + 'Uploading'] = true;
         state[type + 'Uploaded'] = false;
 
@@ -315,14 +282,14 @@ class Edit extends React.Component {
         };
         xhr.onload = () => {
             if (xhr.status !== 200) {
-                that.props.popAlert('呜呜~', '请求失败');
+                this.props.popAlert('呜呜~', '请求失败');
                 console.log(xhr.responseText);
 
                 return;
             }
 
             if (!xhr.responseText) {
-                that.props.popAlert('呜呜~', '未获得服务器响应');
+                this.props.popAlert('呜呜~', '未获得服务器响应');
 
                 return;
             }
@@ -343,7 +310,7 @@ class Edit extends React.Component {
                 newState[type + 'Uploading'] = false;
                 newState[type + 'Uploaded'] = true;
 
-                that.setState(newState);
+                this.setState(newState);
 
                 const updateURL = config.api[type];
                 const accessToken = this.props.user.accessToken;
@@ -354,7 +321,7 @@ class Edit extends React.Component {
                 updateBody[type] = response;
 
                 if (type === 'audio') {
-                    updateBody.videoId = that.state.videoId;
+                    updateBody.videoId = this.state.videoId;
                 }
 
                 request
@@ -362,12 +329,12 @@ class Edit extends React.Component {
                     .catch(err => {
                         console.log(err);
                         if (type === 'video') {
-                            that.props.popAlert(
+                            this.props.popAlert(
                                 '呜呜~',
                                 '视频同步出错，请重新上传！'
                             );
                         } else if (type === 'audio') {
-                            that.props.popAlert(
+                            this.props.popAlert(
                                 '呜呜~',
                                 '音频同步出错，请重新上传！'
                             );
@@ -384,15 +351,15 @@ class Edit extends React.Component {
                                 mediaState.willPublish = true;
                             }
 
-                            that.setState(mediaState);
+                            this.setState(mediaState);
                         } else {
                             if (type === 'video') {
-                                that.props.popAlert(
+                                this.props.popAlert(
                                     '呜呜~',
                                     '视频同步出错，请重新上传！'
                                 );
                             } else if (type === 'audio') {
-                                that.props.popAlert(
+                                this.props.popAlert(
                                     '呜呜~',
                                     '音频同步出错，请重新上传！'
                                 );
@@ -411,57 +378,63 @@ class Edit extends React.Component {
                     let progressState = {};
 
                     progressState[type + 'UploadedProgress'] = percent;
-                    that.setState(progressState);
+                    this.setState(progressState);
                 }
             };
         }
 
         xhr.send(body);
-    }
+    };
 
-    _pickVideo() {
-        let that = this;
+    pickVideo = () => {
+        const type = 'audio';
+        const updateURL = config.api[type];
+        const accessToken = 'ed72a720-8852-4721-8af4-2853dacaaf93';
+        let updateBody = {
+            accessToken: accessToken
+        };
 
-        // ImagePicker.showImagePicker(videoOptions, res => {
-        //     if (res.didCancel) {
-        //         return;
-        //     }
+        updateBody[type] = { audioId: '1111' };
 
-        //     let state = {...defaultState};
-        //     const uri = res.uri;
+        if (type === 'audio') {
+            updateBody.videoId = '5a38aa4df9dec34e34b2a6c0';
+        }
 
-        //     state.previewVideo = uri;
-        //     that.setState(state);
+        request
+            .post(updateURL, updateBody)
+            .catch(err => {
+                console.log(err);
+                this.props.popAlert('呜呜~', '音频同步出错，请重新上传！');
+            })
+            .then(data => {
+                if (data && data.success) {
+                    let mediaState = {};
 
-        //     that
-        //         ._getToken({
-        //             type: 'video',
-        //             cloud: 'qiniu'
-        //         })
-        //         .catch(err => {
-        //             that.props.popAlert('呜呜~', '上传出错');
-        //         })
-        //         .then(data => {
-        //             if (data && data.success) {
-        //                 const token = data.data.token;
-        //                 const key = data.data.key;
-        //                 let body = new FormData();
+                    mediaState[type + 'Id'] = data.data;
 
-        //                 body.append('token', token);
-        //                 body.append('key', key);
-        //                 body.append('file', {
-        //                     type: 'video/mp4',
-        //                     uri: uri,
-        //                     name: key
-        //                 });
+                    if (type === 'audio') {
+                        mediaState.modalVisible = true;
+                        mediaState.willPublish = true;
+                    }
 
-        //                 that._upload(body, 'video');
-        //             }
-        //         });
-        // });
-    }
+                    this.setState(mediaState);
+                } else {
+                    if (type === 'video') {
+                        this.props.popAlert(
+                            '呜呜~',
+                            '视频同步出错，请重新上传！'
+                        );
+                    } else if (type === 'audio') {
+                        this.props.popAlert(
+                            '呜呜~',
+                            '音频同步出错，请重新上传！'
+                        );
+                    }
+                }
+            });
+    };
 
-    pickImage = async () => {
+    pickVideo1 = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
             allowsEditing: true,
             mediaTypes: 'Videos',
@@ -469,14 +442,21 @@ class Edit extends React.Component {
         });
 
         if (!result.cancelled) {
-            // this.setState({ image: result.uri });
             let state = { ...defaultState };
-            const uri = res.uri;
+            const uri = result.uri;
+
+            const type = 'video';
+            state[type + 'UploadedProgress'] = 0;
+            state[type + 'Uploading'] = true;
+            state[type + 'Uploaded'] = true;
 
             state.previewVideo = uri;
+
             this.setState(state);
 
-            this._getToken({
+            return false;
+
+            this.getToken({
                 type: 'video',
                 cloud: 'qiniu'
             })
@@ -497,20 +477,19 @@ class Edit extends React.Component {
                             name: key
                         });
 
-                        this._upload(body, 'video');
+                        this.upload(body, 'video');
                     }
                 });
         }
     };
 
-    async _uploadAudio() {
-        let that = this;
+    uploadAudio = async () => {
         const tags = 'app,audio';
         const folder = 'audio';
         const timestamp = Date.now();
 
         try {
-            const data = await this._getToken({
+            const data = await this.getToken({
                 type: 'audio',
                 timestamp: timestamp,
                 cloud: 'cloudinary'
@@ -530,16 +509,17 @@ class Edit extends React.Component {
                 body.append('resource_type', 'video');
                 body.append('file', {
                     type: 'video/mp4',
-                    uri: 'file://' + that.state.audioPath,
+                    uri: 'file://' + './assets/sounds/lesson_16.mp3',
+                    // this.state.audioPath,
                     name: key
                 });
 
-                that._upload(body, 'audio');
+                this.upload(body, 'audio');
             }
         } catch (e) {
             console.log(err);
         }
-    }
+    };
 
     getCurrentimePercentage() {
         if (this.state.currentTime > 0) {
@@ -552,7 +532,7 @@ class Edit extends React.Component {
         }
     }
 
-    _checkPermission() {
+    checkPermission = () => {
         if (Platform.OS !== 'android') {
             return Promise.resolve(true);
         }
@@ -571,50 +551,45 @@ class Edit extends React.Component {
                 result === true || result === PermissionsAndroid.RESULTS.GRANTED
             );
         });
-    }
+    };
 
-    prepareRecordingPath(audioPath) {
-        // AudioRecorder.prepareRecordingAtPath(audioPath, {
-        //     SampleRate: 22050,
-        //     Channels: 1,
-        //     AudioQuality: 'Low',
-        //     AudioEncoding: 'aac'
-        // });
-    }
+    prepareRecordingPath = async audioPath => {
+        const audio = new Audio.Recording();
+        try {
+            await audio.prepareToRecordAsync(
+                Audio.RECORDING_OPTIONS_PRESET_LOW_QUALITY
+            );
+            this.audio = audio;
+            // await recording.startAsync();
+            // You are now recording!
+        } catch (error) {
+            // An error occurred!
+        }
+    };
 
     componentDidMount() {
-        // this._preview();
-        this._checkPermission().then(hasPermission => {
+        this.checkPermission().then(hasPermission => {
             this.setState({ hasPermission });
 
             if (!hasPermission) return;
 
             this.prepareRecordingPath(this.state.audioPath);
-
-            // AudioRecorder.onProgress = data => {
-            //     console.log(Math.floor(data.currentTime));
-            // };
-
-            // AudioRecorder.onFinished = data => {
-            //     console.log('recording done!');
-            // };
         });
     }
 
-    _closeModal() {
+    closeModal = () => {
         this.setState({
             modalVisible: false
         });
-    }
+    };
 
-    _showModal() {
+    showModal = () => {
         this.setState({
             modalVisible: true
         });
-    }
+    };
 
-    _submit() {
-        let that = this;
+    submit = () => {
         let body = {
             title: this.state.title,
             videoId: this.state.videoId,
@@ -634,24 +609,24 @@ class Edit extends React.Component {
             request
                 .post(creationURL, body)
                 .catch(err => {
-                    that.props.popAlert('呜呜~', '视频发布失败，请稍后重试');
+                    this.props.popAlert('呜呜~', '视频发布失败，请稍后重试');
                 })
                 .then(data => {
                     if (data && data.success) {
-                        that._closeModal();
-                        that.props.popAlert('汪汪~', '视频发布成功');
-                        const state = _.clone(defaultState);
+                        this.closeModal();
+                        this.props.popAlert('汪汪~', '视频发布成功');
+                        const state = { ...defaultState };
 
-                        that.setState(state);
+                        this.setState(state);
                     } else {
                         this.setState({
                             publishing: false
                         });
-                        that.props.popAlert('呜呜~', '视频发布失败');
+                        this.props.popAlert('呜呜~', '视频发布失败');
                     }
                 });
         }
-    }
+    };
 
     renderModal() {
         return (
@@ -665,7 +640,7 @@ class Edit extends React.Component {
                 <View style={styles.modalContainer}>
                     <Icon
                         name="ios-close-outline"
-                        onPress={this._closeModal.bind(this)}
+                        onPress={this.closeModal}
                         style={styles.closeIcon}
                     />
                     {this.state.audioUploaded && !this.state.publishing ? (
@@ -712,10 +687,7 @@ class Edit extends React.Component {
 
                     <View style={styles.submitBox}>
                         {this.state.audioUploaded && !this.state.publishing ? (
-                            <Button
-                                style={styles.btn}
-                                onPress={this._submit.bind(this)}
-                            >
+                            <Button style={styles.btn} onPress={this.submit}>
                                 发布视频
                             </Button>
                         ) : null}
@@ -741,7 +713,7 @@ class Edit extends React.Component {
                     {this.state.previewVideo && this.state.videoUploaded ? (
                         <Text
                             style={styles.toolbarExtra}
-                            onPress={this._pickVideo.bind(this)}
+                            onPress={this.pickVideo}
                         >
                             更换视频
                         </Text>
@@ -752,7 +724,7 @@ class Edit extends React.Component {
                     {this.state.previewVideo ? (
                         <View style={styles.videoContainer}>
                             <View style={styles.videoBox}>
-                                {/* <Video
+                                <Video
                                     ref={ref => {
                                         this.videoPlayer = ref;
                                     }}
@@ -764,12 +736,14 @@ class Edit extends React.Component {
                                     muted={this.state.muted}
                                     resizeMode={this.state.resizeMode}
                                     repeat={this.state.repeat}
-                                    onLoadStart={this._onLoadStart.bind(this)}
-                                    onLoad={this._onLoad.bind(this)}
-                                    onProgress={this._onProgress.bind(this)}
-                                    onEnd={this._onEnd.bind(this)}
-                                    onError={this._onError.bind(this)}
-                                /> */}
+                                    onLoadStart={this.onLoadStart}
+                                    onLoad={this.onLoad}
+                                    onProgress={this.onProgress}
+                                    onPlaybackStatusUpdate={
+                                        this.onPlaybackStatusUpdate
+                                    }
+                                    onError={this.onError}
+                                />
                                 {!this.state.videoUploaded &&
                                 this.state.videoUploading ? (
                                     <View style={styles.progressTipBox}>
@@ -803,7 +777,7 @@ class Edit extends React.Component {
                                         />
                                         <Text
                                             style={styles.previewText}
-                                            onPress={this._preview.bind(this)}
+                                            onPress={this.preview}
                                         >
                                             预览
                                         </Text>
@@ -814,7 +788,7 @@ class Edit extends React.Component {
                     ) : (
                         <TouchableOpacity
                             style={styles.uploadContainer}
-                            onPress={this.pickImage}
+                            onPress={this.pickVideo}
                         >
                             <View style={styles.uploadBox}>
                                 <Image
@@ -847,9 +821,7 @@ class Edit extends React.Component {
                                         {this.state.countText}
                                     </Text>
                                 ) : (
-                                    <TouchableOpacity
-                                        onPress={this._counting.bind(this)}
-                                    >
+                                    <TouchableOpacity onPress={this.counting}>
                                         <Icon
                                             name="ios-mic"
                                             style={styles.recordIcon}
@@ -866,7 +838,7 @@ class Edit extends React.Component {
                             !this.state.audioUploading ? (
                                 <Text
                                     style={styles.uploadAudioText}
-                                    onPress={this._uploadAudio.bind(this)}
+                                    onPress={this.uploadAudio}
                                 >
                                     下一步
                                 </Text>
@@ -991,6 +963,7 @@ const styles = StyleSheet.create({
     },
 
     progressTipBox: {
+        marginTop: 4,
         width: width,
         height: 30,
         backgroundColor: 'rgba(244,244,244,0.65)'

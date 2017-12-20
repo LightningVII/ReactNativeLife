@@ -16,12 +16,10 @@ class EditContainer extends React.Component {
 }
 
 function mapStateToProps(state) {
-    // const {
-    //   user
-    // } = state.get('app')
+    const { user } = state.get('app');
 
     return {
-        user: state.user
+        user
     };
 }
 

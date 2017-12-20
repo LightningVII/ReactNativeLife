@@ -33,20 +33,8 @@ class CreationContainer extends React.Component {
 function mapStateToProps(state) {
     const { user } = state.get('app');
 
-    const {
-        isRefreshing,
-        isLoadingTail,
-        videoList,
-        videoTotal,
-        page
-    } = state.get('creations');
-
     return {
-        isRefreshing,
-        isLoadingTail,
-        videoList,
-        videoTotal,
-        page,
+        ...state.get('creations'),
         user
     };
 }

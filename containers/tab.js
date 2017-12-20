@@ -15,30 +15,6 @@ import Edit from './edit';
 import Account from './account';
 import AccountUpdate from './accountUpdate';
 
-/* Account: {
-    screen: Account,
-    navigationOptions: ({ navigation }) => ({
-        headerTitle: '狗狗的账户',
-        headerStyle: headerStyle[Platform.OS],
-        headerTintColor: '#fff',
-        headerRight: (
-            <Text
-                style={{ color: '#fff', paddingRight: 10 }}
-                onPress={() => navigation.navigate('AccountUpdate')}
-            >
-                编辑
-            </Text>
-        ),
-        tabBarIcon: ({ tintColor, focused }) => (
-            <Icon
-                name={focused ? 'ios-person' : 'ios-person-outline'}
-                color={tintColor}
-                size={28}
-            />
-        )
-    })
-}, */
-
 const TabNav = TabNavigator(
     {
         MainTab: {
