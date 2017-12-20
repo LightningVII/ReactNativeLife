@@ -5,51 +5,122 @@ import Popup from '../../components/popup';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as appActions from '../../actions/app';
-const ProgressBar = require('ProgressBarAndroid');
-import React, { Component } from 'react';
+import React from 'react';
 import {
     StyleSheet,
     Text,
     View,
     Image,
-    AlertIOS,
     Dimensions,
     Platform,
-    AsyncStorage,
-    PermissionsAndroid,
     ProgressViewIOS,
     TouchableOpacity,
     Modal,
     TextInput
 } from 'react-native';
-
-class StatusBar extends React.Component {
-    render() {
-        if (Platform.OS === 'iOS') {
-            return (
-                <ProgressViewIOS
-                    style={styles.progressBar}
-                    progressTintColor="#ee735c"
-                    progress={this.props.progress}
-                />
-            );
-        } else {
-            return (
-                <ProgressBar
-                    styleAttr="Horizontal"
-                    indeterminate={false}
-                    color="#ee735c"
-                    progress={this.props.progress}
-                />
-            );
-        }
-    }
-}
+import { ImagePicker, Video, Audio, Permissions } from 'expo';
 
 import request from '../../common/request';
 import config from '../../common/config';
 
+const ProgressBar = require('ProgressBarAndroid');
 const { width, height } = Dimensions.get('window');
+
+const StatusBar = ({ progress }) => {
+    if (Platform.OS === 'ios') {
+        return (
+            <ProgressViewIOS
+                style={styles.progressBar}
+                progressTintColor="#ee735c"
+                progress={progress}
+            />
+        );
+    } else {
+        return (
+            <ProgressBar
+                styleAttr="Horizontal"
+                indeterminate={false}
+                color="#ee735c"
+                progress={progress}
+            />
+        );
+    }
+};
+
+const ModalPublic = ({
+    publishing,
+    publishProgress,
+    willPublish,
+    title,
+    setTitle,
+    submit,
+    triggerModal
+}) => (
+    <Modal
+        onRequestClose={() => {
+            console.log('closed');
+        }}
+        animationType={'slide'}
+        visible={true}
+    >
+        <View style={styles.modalContainer}>
+            <Icon
+                name="ios-close-outline"
+                onPress={() => triggerModal(false)}
+                style={styles.closeIcon}
+            />
+
+            {!publishing ? (
+                <View style={styles.fieldBox}>
+                    <TextInput
+                        underlineColorAndroid="transparent"
+                        placeholder={'给狗狗一句宣言吧'}
+                        style={styles.inputField}
+                        autoCapitalize={'none'}
+                        autoCorrect={false}
+                        defaultValue={title}
+                        onChangeText={title => setTitle(title)}
+                    />
+                    <Button
+                        raised
+                        containerViewStyle={{
+                            borderRadius: 4,
+                            marginTop: 20,
+                            marginLeft: 20,
+                            marginRight: 20
+                        }}
+                        buttonStyle={{
+                            backgroundColor: 'orange',
+                            borderRadius: 4
+                        }}
+                        onPress={submit}
+                        title={'发布视频'}
+                    />
+                </View>
+            ) : (
+                <View style={styles.loadingBox}>
+                    <Text style={styles.loadingText}>
+                        耐心等一下，拼命为您生成专属视频中...
+                    </Text>
+                    {willPublish ? (
+                        <Text style={styles.loadingText}>
+                            正在合并视频音频...
+                        </Text>
+                    ) : null}
+                    {publishProgress > 0.3 ? (
+                        <Text style={styles.loadingText}>开始上传喽！...</Text>
+                    ) : null}
+                    <Circle
+                        showsText={true}
+                        size={60}
+                        color={'#ee735c'}
+                        progress={publishProgress}
+                    />
+                </View>
+            )}
+        </View>
+    </Modal>
+);
 
 const defaultState = {
     previewVideo: null,
@@ -64,57 +135,30 @@ const defaultState = {
     publishProgress: 0.2,
 
     // video upload
-    video: null,
     videoUploaded: false,
     videoUploading: false,
     videoUploadedProgress: 0.14,
 
     // video loads
     videoProgress: 0.01,
-    duration: 0,
-    currentTime: 0,
 
     // count down
-    countText: '',
+    countText: 3,
     counting: false,
     recording: false,
 
     // audio
-    audio: null,
     audioPlaying: false,
     recordDone: false,
     hasPermission: false,
     // audioPath: AudioUtils.DocumentDirectoryPath + '/gougou.aac',
 
-    audioUploaded: false,
     audioUploading: false,
-    audioUploadedProgress: 0.14,
-
-    // video player
-    rate: 1,
-    muted: true,
-    resizeMode: 'contain',
-    repeat: false
-};
-
-import { ImagePicker, Video, Audio } from 'expo';
+    audioUploadedProgress: 0.14
+}
 
 class Edit extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = { ...defaultState };
-    }
-
-    onLoadStart = () => {
-        console.log('load start');
-    };
-
-    onLoad = data => {
-        this.setState({
-            duration: data.duration
-        });
-    };
-
+    state = {...defaultState};
     onProgress = async data => {
         this.setState({
             currentTime: data.currentTime
@@ -122,25 +166,27 @@ class Edit extends React.Component {
     };
 
     onPlaybackStatusUpdate = async status => {
+        const { positionMillis, playableDurationMillis } = status;
+        const { recording, audioPlaying } = this.state;
+        this.setState({
+            videoProgress: positionMillis / playableDurationMillis
+        });
+
         if (status.didJustFinish) {
-            console.log(
-                '====== onPlaybackStatusUpdate ======',
-                status,
-                status.didJustFinish
-            );
+            this.videoPlayer.stopAsync();
             let newState = {};
-            if (this.state.recording) {
+            if (recording) {
                 newState.recordDone = true;
                 newState.recording = false;
                 newState.paused = true;
 
                 try {
                     await this.audio.stopAndUnloadAsync();
-                    this.filePath = this.audio.getURI();
+                    // this.filePath = this.audio.getURI();
                 } catch (e) {
                     console.log(e);
                 }
-            } else if (this.state.audioPlaying) {
+            } else if (audioPlaying) {
                 newState.audioPlaying = false;
                 newState.paused = true;
             } else {
@@ -152,7 +198,7 @@ class Edit extends React.Component {
         }
     };
 
-    onError = e => {
+    onError = () => {
         this.setState({
             videoOk: false
         });
@@ -176,15 +222,14 @@ class Edit extends React.Component {
     };
 
     record = async () => {
+        const { recording } = this.state;
         let hasPermission = await this.checkPermission();
-
         if (!hasPermission) {
             console.warn('Cannot Record no permission');
-
             return;
         }
 
-        if (this.state.recording) {
+        if (recording) {
             console.log('Already recording!');
             return;
         }
@@ -207,44 +252,26 @@ class Edit extends React.Component {
         );
     };
 
-    tick = () => {
-        let countText = this.state.countText;
-
-        countText--;
-
-        if (countText === 0) {
+    tick = count => {
+        this.setState({
+            countText: count
+        });
+        if (count-- === 0) {
             this.record();
         } else {
-            setTimeout(() => {
-                this.setState(
-                    {
-                        countText
-                    },
-                    () => {
-                        this.tick();
-                    }
-                );
+            global.setTimeout(() => {
+                this.tick(count);
             }, 1000);
         }
     };
 
     counting = () => {
-        let countText = 3;
-
-        if (
-            !this.state.counting &&
-            !this.state.recording &&
-            !this.state.audioPlaying
-        ) {
-            this.setState(
-                {
-                    counting: true,
-                    countText: countText
-                },
-                () => {
-                    this.tick();
-                }
-            );
+        const { counting, recording, audioPlaying } = this.state;
+        if (!counting && !recording && !audioPlaying) {
+            this.setState({
+                counting: true
+            });
+            this.tick(3);
         }
     };
 
@@ -442,44 +469,42 @@ class Edit extends React.Component {
         });
 
         if (!result.cancelled) {
-            let state = { ...defaultState };
+            
             const uri = result.uri;
 
             const type = 'video';
-            state[type + 'UploadedProgress'] = 0;
-            state[type + 'Uploading'] = true;
-            state[type + 'Uploaded'] = true;
-
-            state.previewVideo = uri;
+            const state = {
+                [type + 'UploadedProgress']: 0,
+                [type + 'Uploading']: true,
+                [type + 'Uploaded']: true,
+                previewVideo: uri
+            };
 
             this.setState(state);
 
-            return false;
-
-            this.getToken({
-                type: 'video',
-                cloud: 'qiniu'
-            })
-                .catch(err => {
-                    this.props.popAlert('呜呜~', '上传出错');
-                })
-                .then(data => {
-                    if (data && data.success) {
-                        const token = data.data.token;
-                        const key = data.data.key;
-                        let body = new FormData();
-
-                        body.append('token', token);
-                        body.append('key', key);
-                        body.append('file', {
-                            type: 'video/mp4',
-                            uri: uri,
-                            name: key
-                        });
-
-                        this.upload(body, 'video');
-                    }
+            try {
+                const data = await this.getToken({
+                    type: 'video',
+                    cloud: 'qiniu'
                 });
+                if (data && data.success) {
+                    const token = data.data.token;
+                    const key = data.data.key;
+                    let body = new FormData();
+
+                    body.append('token', token);
+                    body.append('key', key);
+                    body.append('file', {
+                        type: 'video/mp4',
+                        uri: uri,
+                        name: key
+                    });
+
+                    this.upload(body, 'video');
+                }
+            } catch (e) {
+                this.props.popAlert('呜呜~', '上传出错');
+            }
         }
     };
 
@@ -517,49 +542,37 @@ class Edit extends React.Component {
                 this.upload(body, 'audio');
             }
         } catch (e) {
-            console.log(err);
+            console.log(e);
         }
     };
 
-    getCurrentimePercentage() {
-        if (this.state.currentTime > 0) {
-            return (
-                parseFloat(this.state.currentTime) /
-                parseFloat(this.state.duration)
+    checkPermission = async () => {
+        const { status } = await Permissions.askAsync(
+            Permissions.AUDIO_RECORDING
+        );
+        console.log('Permissions.AUDIO_RECORDING', status);
+        if (status !== 'granted') {
+            alert(
+                'Hey! You might want to enable notifications for my app, they are good.'
             );
-        } else {
-            return 0;
+            return false;
         }
-    }
-
-    checkPermission = () => {
-        if (Platform.OS !== 'android') {
-            return Promise.resolve(true);
-        }
-
-        const tip = {
-            title: 'Microphone Permission',
-            message:
-                'GouGou App needs access to your microphone so you can record audio.'
-        };
-
-        return PermissionsAndroid.request(
-            PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
-            tip
-        ).then(result => {
-            return (
-                result === true || result === PermissionsAndroid.RESULTS.GRANTED
-            );
-        });
+        return true;
     };
 
-    prepareRecordingPath = async audioPath => {
+    prepareRecordingPath = async () => {
         const audio = new Audio.Recording();
         try {
             await audio.prepareToRecordAsync(
                 Audio.RECORDING_OPTIONS_PRESET_LOW_QUALITY
             );
             this.audio = audio;
+            console.log(this.audio.getURI());
+
+            await this.audio.startAsync();
+            await setTimeout(() => console.log(123123123123), 5000);
+            console.log('======asdasdf=====');
+            await this.audio.stopAndUnloadAsync();
             // await recording.startAsync();
             // You are now recording!
         } catch (error) {
@@ -567,37 +580,28 @@ class Edit extends React.Component {
         }
     };
 
-    componentDidMount() {
-        this.checkPermission().then(hasPermission => {
-            this.setState({ hasPermission });
-
-            if (!hasPermission) return;
-
-            this.prepareRecordingPath(this.state.audioPath);
-        });
+    async componentDidMount() {
+        const hasPermission = await this.checkPermission();
+        console.log('hasPermission', hasPermission);
+        this.setState({ hasPermission });
+        hasPermission && (await this.prepareRecordingPath());
     }
 
-    closeModal = () => {
+    triggerModal = bool =>
         this.setState({
-            modalVisible: false
+            modalVisible: bool
         });
-    };
 
-    showModal = () => {
-        this.setState({
-            modalVisible: true
-        });
-    };
-
-    submit = () => {
+    submit = async () => {
+        const { title, videoId, audioId } = this.state;
+        const { user, popAlert } = this.props;
         let body = {
-            title: this.state.title,
-            videoId: this.state.videoId,
-            audioId: this.state.audioId
+            title,
+            videoId,
+            audioId
         };
 
         const creationURL = config.api.creations;
-        const user = this.props.user;
 
         if (user && user.accessToken) {
             body.accessToken = user.accessToken;
@@ -606,111 +610,68 @@ class Edit extends React.Component {
                 publishing: true
             });
 
-            request
-                .post(creationURL, body)
-                .catch(err => {
-                    this.props.popAlert('呜呜~', '视频发布失败，请稍后重试');
-                })
-                .then(data => {
-                    if (data && data.success) {
-                        this.closeModal();
-                        this.props.popAlert('汪汪~', '视频发布成功');
-                        const state = { ...defaultState };
+            try {
+                const data = await request.post(creationURL, body);
+                if (data && data.success) {
+                    this.triggerModal(false);
+                    popAlert('汪汪~', '视频发布成功');
+                    const state = { ...defaultState };
 
-                        this.setState(state);
-                    } else {
-                        this.setState({
-                            publishing: false
-                        });
-                        this.props.popAlert('呜呜~', '视频发布失败');
-                    }
-                });
+                    this.setState(state);
+                } else {
+                    this.setState({
+                        publishing: false
+                    });
+                    popAlert('呜呜~', '视频发布失败');
+                }
+            } catch (e) {
+                popAlert('呜呜~', '视频发布失败，请稍后重试');
+            }
         }
     };
 
-    renderModal() {
-        return (
-            <Modal
-                onRequestClose={() => {
-                    console.log('closed');
-                }}
-                animationType={'slide'}
-                visible={true}
-            >
-                <View style={styles.modalContainer}>
-                    <Icon
-                        name="ios-close-outline"
-                        onPress={this.closeModal}
-                        style={styles.closeIcon}
-                    />
-                    {this.state.audioUploaded && !this.state.publishing ? (
-                        <View style={styles.fieldBox}>
-                            <TextInput
-                                underlineColorAndroid="transparent"
-                                placeholder={'给狗狗一句宣言吧'}
-                                style={styles.inputField}
-                                autoCapitalize={'none'}
-                                autoCorrect={false}
-                                defaultValue={this.state.title}
-                                onChangeText={text => {
-                                    this.setState({
-                                        title: text
-                                    });
-                                }}
-                            />
-                        </View>
-                    ) : null}
-
-                    {this.state.publishing ? (
-                        <View style={styles.loadingBox}>
-                            <Text style={styles.loadingText}>
-                                耐心等一下，拼命为您生成专属视频中...
-                            </Text>
-                            {this.state.willPublish ? (
-                                <Text style={styles.loadingText}>
-                                    正在合并视频音频...
-                                </Text>
-                            ) : null}
-                            {this.state.publishProgress > 0.3 ? (
-                                <Text style={styles.loadingText}>
-                                    开始上传喽！...
-                                </Text>
-                            ) : null}
-                            <Circle
-                                showsText={true}
-                                size={60}
-                                color={'#ee735c'}
-                                progress={this.state.publishProgress}
-                            />
-                        </View>
-                    ) : null}
-
-                    <View style={styles.submitBox}>
-                        {this.state.audioUploaded && !this.state.publishing ? (
-                            <Button style={styles.btn} onPress={this.submit}>
-                                发布视频
-                            </Button>
-                        ) : null}
-                    </View>
-                </View>
-            </Modal>
-        );
-    }
-
     render() {
-        const videoProgress = this.getCurrentimePercentage();
+        const {
+            audioPlaying,
+            audioUploading,
+            audioUploadedProgress,
+            videoUploaded,
+            videoUploading,
+            videoUploadedProgress,
+            videoProgress,
+            previewVideo,
+            counting,
+            countText,
+            modalVisible,
+            recording,
+            publishing,
+            publishProgress,
+            willPublish,
+            title,
+            recordDone
+        } = this.state;
 
+        const modalProps = {
+            publishing,
+            publishProgress,
+            willPublish,
+            title,
+            triggerModal: this.triggerModal,
+            submit: this.submit,
+            setTitle: title =>
+                this.setState({
+                    title
+                })
+        };
         return (
             <View style={styles.container}>
-                {this.state.modalVisible && this.renderModal()}
+                {modalVisible && <ModalPublic {...modalProps} />}
 
                 <View style={styles.toolbar}>
                     <Text style={styles.toolbarTitle}>
-                        {this.state.previewVideo
-                            ? '点击按钮配音'
-                            : '理解狗狗，从配音开始'}
+                        {previewVideo ? '点击按钮配音' : '理解狗狗，从配音开始'}
                     </Text>
-                    {this.state.previewVideo && this.state.videoUploaded ? (
+                    {previewVideo && videoUploaded ? (
                         <Text
                             style={styles.toolbarExtra}
                             onPress={this.pickVideo}
@@ -721,47 +682,44 @@ class Edit extends React.Component {
                 </View>
 
                 <View style={styles.page}>
-                    {this.state.previewVideo ? (
+                    {!previewVideo ? (
                         <View style={styles.videoContainer}>
                             <View style={styles.videoBox}>
                                 <Video
                                     ref={ref => {
                                         this.videoPlayer = ref;
                                     }}
-                                    source={{ uri: this.state.previewVideo }}
+                                    source={{
+                                        uri:
+                                            'file:///Users/white/Downloads/WeChatSight22.mp4' ||
+                                            previewVideo
+                                    }}
+                                    rate={1.0}
+                                    volume={1.0}
+                                    muted={false}
+                                    resizeMode={'cover'}
+                                    shouldPlay
                                     style={styles.video}
-                                    volume={5}
-                                    paused={this.state.paused}
-                                    rate={this.state.rate}
-                                    muted={this.state.muted}
-                                    resizeMode={this.state.resizeMode}
-                                    repeat={this.state.repeat}
-                                    onLoadStart={this.onLoadStart}
-                                    onLoad={this.onLoad}
-                                    onProgress={this.onProgress}
                                     onPlaybackStatusUpdate={
                                         this.onPlaybackStatusUpdate
                                     }
                                     onError={this.onError}
                                 />
-                                {!this.state.videoUploaded &&
-                                this.state.videoUploading ? (
+                                {!videoUploaded && videoUploading ? (
                                     <View style={styles.progressTipBox}>
                                         <StatusBar progress={videoProgress} />
                                         <Text style={styles.progressTip}>
                                             正在生成静音视频，已完成{(
-                                                this.state
-                                                    .videoUploadedProgress * 100
+                                                videoUploadedProgress * 100
                                             ).toFixed(2)}%
                                         </Text>
                                     </View>
                                 ) : null}
 
-                                {this.state.recording ||
-                                this.state.audioPlaying ? (
+                                {recording || audioPlaying ? (
                                     <View style={styles.progressTipBox}>
                                         <StatusBar progress={videoProgress} />
-                                        {this.state.recording ? (
+                                        {recording ? (
                                             <Text style={styles.progressTip}>
                                                 录制声音中
                                             </Text>
@@ -769,7 +727,7 @@ class Edit extends React.Component {
                                     </View>
                                 ) : null}
 
-                                {this.state.recordDone ? (
+                                {recordDone ? (
                                     <View style={styles.previewBox}>
                                         <Icon
                                             name="ios-play"
@@ -805,20 +763,18 @@ class Edit extends React.Component {
                         </TouchableOpacity>
                     )}
 
-                    {this.state.videoUploaded ? (
+                    {videoUploaded ? (
                         <View style={styles.recordBox}>
                             <View
                                 style={[
                                     styles.recordIconBox,
-                                    (this.state.recording ||
-                                        this.state.audioPlaying) &&
+                                    (recording || audioPlaying) &&
                                         styles.recordOn
                                 ]}
                             >
-                                {this.state.counting &&
-                                !this.state.recording ? (
+                                {counting && !recording ? (
                                     <Text style={styles.countBtn}>
-                                        {this.state.countText}
+                                        {countText}
                                     </Text>
                                 ) : (
                                     <TouchableOpacity onPress={this.counting}>
@@ -832,10 +788,9 @@ class Edit extends React.Component {
                         </View>
                     ) : null}
 
-                    {this.state.videoUploaded && this.state.recordDone ? (
+                    {videoUploaded && recordDone ? (
                         <View style={styles.uploadAudioBox}>
-                            {!this.state.audioUploaded &&
-                            !this.state.audioUploading ? (
+                            {!audioUploading ? (
                                 <Text
                                     style={styles.uploadAudioText}
                                     onPress={this.uploadAudio}
@@ -844,12 +799,12 @@ class Edit extends React.Component {
                                 </Text>
                             ) : null}
 
-                            {this.state.audioUploading ? (
+                            {audioUploading ? (
                                 <Circle
                                     showsText={true}
                                     size={60}
                                     color={'#ee735c'}
-                                    progress={this.state.audioUploadedProgress}
+                                    progress={audioUploadedProgress}
                                 />
                             ) : null}
                         </View>
@@ -896,7 +851,7 @@ const styles = StyleSheet.create({
     toolbarExtra: {
         position: 'absolute',
         right: 10,
-        top: 26,
+        top: 12,
         color: '#fff',
         textAlign: 'right',
         fontWeight: '600',
@@ -909,7 +864,7 @@ const styles = StyleSheet.create({
     },
 
     uploadContainer: {
-        marginTop: 90,
+        marginTop: 20,
         width: width - 40,
         height: 210,
         paddingBottom: 10,
@@ -1103,22 +1058,5 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         color: '#666',
         fontSize: 14
-    },
-
-    submitBox: {
-        marginTop: 50,
-        padding: 15
-    },
-
-    btn: {
-        marginTop: 65,
-        padding: 10,
-        marginLeft: 10,
-        marginRight: 10,
-        backgroundColor: 'transparent',
-        borderColor: '#ee735c',
-        borderWidth: 1,
-        borderRadius: 4,
-        color: '#ee735c'
     }
 });

@@ -1,25 +1,24 @@
-import React, { Component } from 'react'
+import React from 'react';
 
-import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
-import { StyleSheet, Text, View } from 'react-native';
-import Login from '../pages/account/login'
-import Slider from '../pages/slider/index'
-import Boot from '../components/boot'
-import Tabs from './tab'
-import * as appActions from '../actions/app'
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+// import Login from '../pages/account/login';
+// import Slider from '../pages/slider/index';
+// import Boot from '../components/boot';
+import Tabs from './tab';
+import * as appActions from '../actions/app';
 
-import {AsyncStorage} from 'react-native';
+import { AsyncStorage } from 'react-native';
 
 AsyncStorage.multiRemove(['booted', 'user', 'logined', 'entered']);
 
 class App extends React.Component {
     constructor(props) {
-        super(props)
+        super(props);
     }
 
     componentDidMount() {
-        this.props.willEnterApp()
+        this.props.willEnterApp();
     }
 
     render() {
@@ -31,11 +30,11 @@ class App extends React.Component {
         //   return <Slider {...this.props} />
         // }
 
-        if (!this.props.logined) {
-          return <Login {...this.props} />
-        }
+        // if (!this.props.logined) {
+        //   return <Login {...this.props} />
+        // }
 
-        return <Tabs/>
+        return <Tabs />;
     }
 }
 
@@ -46,11 +45,11 @@ function mapStateToProps(state) {
         entered: state.get('app').entered,
         banners: state.get('app').banners,
         popup: state.get('app').popup
-    }
+    };
 }
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators(appActions, dispatch)
+    return bindActionCreators(appActions, dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(App)
+export default connect(mapStateToProps, mapDispatchToProps)(App);

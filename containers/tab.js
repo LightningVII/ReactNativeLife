@@ -1,19 +1,36 @@
-/**
- * @flow
- */
-
 import React from 'react';
-import { Text, Button, ScrollView } from 'react-native';
-import { SafeAreaView, StackNavigator, TabNavigator } from 'react-navigation';
+import { Text } from 'react-native';
+import { StackNavigator, TabNavigator } from 'react-navigation';
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import List from './creation';
-import Detail from './detail';
-import Comment from './comment';
+// import Detail from './detail';
+// import Comment from './comment';
 import Edit from './edit';
 import Account from './account';
 import AccountUpdate from './accountUpdate';
+
+const addNewProps = (WrappedComponent, newProps) => {
+    return class WrappingComponent extends React.Component {
+        render() {
+            return <WrappedComponent {...this.props} {...newProps} />;
+        }
+    };
+};
+
+const TabBarIcon = ({ tintColor, focused, defaultIcon, focusedIcon }) => (
+    <Ionicons
+        name={focused ? defaultIcon : focusedIcon}
+        size={26}
+        style={{ color: tintColor }}
+    />
+);
+
+const tabBarIcon = (d, f) => ({ tintColor, focused }) => {
+    const Hoc = addNewProps(TabBarIcon, { tintColor, focused });
+    return <Hoc defaultIcon={d} focusedIcon={f} />;
+};
 
 const TabNav = TabNavigator(
     {
@@ -23,13 +40,7 @@ const TabNav = TabNavigator(
             navigationOptions: {
                 title: '狗狗说',
                 tabBarLabel: 'Home',
-                tabBarIcon: ({ tintColor, focused }) => (
-                    <Ionicons
-                        name={focused ? 'ios-home' : 'ios-home-outline'}
-                        size={26}
-                        style={{ color: tintColor }}
-                    />
-                )
+                tabBarIcon: tabBarIcon('ios-home', 'ios-home-outline')
             }
         },
         EditTab: {
@@ -39,19 +50,13 @@ const TabNav = TabNavigator(
                 title: '理解狗狗，从配音开始',
                 headerTitle: '编辑视频',
                 tabBarLabel: '来一段',
-                tabBarIcon: ({ tintColor, focused }) => (
-                    <Ionicons
-                        name={focused ? 'ios-mic' : 'ios-mic-outline'}
-                        size={26}
-                        style={{ color: tintColor }}
-                    />
-                )
+                tabBarIcon: tabBarIcon('ios-mic', 'ios-mic-outline')
             }
         },
         SettingsTab: {
             screen: Account,
             path: '/settings',
-            navigationOptions: ({ navigation, screenProps }) => ({
+            navigationOptions: ({ navigation }) => ({
                 title: '我的',
                 tabBarLabel: 'Account',
                 headerRight: (
@@ -62,13 +67,7 @@ const TabNav = TabNavigator(
                         编辑
                     </Text>
                 ),
-                tabBarIcon: ({ tintColor, focused }) => (
-                    <Ionicons
-                        name={focused ? 'ios-settings' : 'ios-settings-outline'}
-                        size={26}
-                        style={{ color: tintColor }}
-                    />
-                )
+                tabBarIcon: tabBarIcon('ios-settings', 'ios-settings-outline')
             })
         }
     },
