@@ -1,34 +1,26 @@
-import React, {Component} from 'react'
-import {bindActionCreators} from 'redux'
-import {connect} from 'react-redux'
+import React from 'react';
+import { connect } from 'react-redux';
 
-import Detail from '../pages/creation/detail'
+import Detail from '../pages/creation/detail';
 
 class DetailContainer extends React.Component {
-  constructor(props) {
-    super(props)
-  }
+    constructor(props) {
+        super(props);
+    }
 
-  render() {
-    const rowData = this.props.navigation.state.params.rowData
+    render() {
+        const rowData = this.props.navigation.state.params.rowData;
 
-    return (
-      <Detail
-        rowData={rowData}
-        {...this.props}
-      />
-    )
-  }
+        return <Detail rowData={rowData} {...this.props} />;
+    }
 }
 
 function mapStateToProps(state) {
-  const {
-    user
-  } = state.get('app')
+    const { user } = state.get('app');
 
-  return {
-    user
-  }
+    return {
+        user
+    };
 }
 
-export default connect(mapStateToProps)(DetailContainer)
+export default connect(mapStateToProps)(DetailContainer);
