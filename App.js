@@ -2,7 +2,7 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import AppContainer from './containers/app';
 import configureStore from './store';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 const store = configureStore();
 export default class App extends React.Component {
     render() {

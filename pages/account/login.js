@@ -1,21 +1,15 @@
-import { Button, FormLabel, FormInput, SearchBar } from 'react-native-elements';
-import request from '../../common/request';
-import config from '../../common/config';
-import Popup from '../../components/popup';
-import CountDown from '../../components/CountDown';
-
 import React from 'react';
 import {
     StyleSheet,
     ImageBackground,
-    Text,
-    Platform,
     View,
-    TextInput,
-    Dimensions,
-    Alert,
-    AsyncStorage
+    Dimensions
 } from 'react-native';
+import { Button, FormInput } from 'react-native-elements';
+import request from '../../common/request';
+import config from '../../common/config';
+import Popup from '../../components/popup';
+import CountDown from '../../components/CountDown';
 
 const { width } = Dimensions.get('window');
 export default class Login extends React.Component {
@@ -44,7 +38,7 @@ export default class Login extends React.Component {
         });
     };
 
-    sendVerifyCode = () => {
+    sendVerifyCode = async () => {
         this.input.blur();
         const phoneNumber = this.state.phoneNumber;
 
@@ -59,27 +53,22 @@ export default class Login extends React.Component {
         const signupURL = config.api.signup;
         this.setState({ countingDone: false });
 
-        request
-            .post(signupURL, body)
-            .then(data => {
-                if (data && data.success) {
-                    this.showVerifyCode();
-                } else {
-                    this.props.popAlert(
-                        '呜呜~',
-                        '获取验证码失败，请检查手机号是否正确'
-                    );
-                }
-            })
-            .catch(err => {
+        try {
+            const data = await request.post(signupURL, body);
+            if (data && data.success) {
+                this.showVerifyCode();
+            } else {
                 this.props.popAlert(
                     '呜呜~',
-                    '获取验证码失败，请检查网络是否良好'
+                    '获取验证码失败，请检查手机号是否正确'
                 );
-            });
+            }
+        } catch (error) {
+            this.props.popAlert('呜呜~', '获取验证码失败，请检查网络是否良好');
+        }
     };
 
-    submit = () => {
+    submit = async () => {
         const phoneNumber = this.state.phoneNumber;
         const verifyCode = this.state.verifyCode;
 
@@ -93,47 +82,20 @@ export default class Login extends React.Component {
         };
 
         const verifyURL = config.api.verify;
-
-        request
-            .post(verifyURL, body)
-            .then(data => {
-                if (data && data.success) {
-                    this.props.afterLogin(data.data);
-                } else {
-                    this.props.popAlert(
-                        '呜呜~',
-                        '获取验证码失败，请检查手机号是否正确'
-                    );
-                }
-            })
-            .catch(err => {
+        try {
+            const data = await request.post(verifyURL, body);
+            if (data && data.success) {
+                this.props.afterLogin(data.data);
+            } else {
                 this.props.popAlert(
                     '呜呜~',
-                    '获取验证码失败，请检查网络是否良好'
+                    '获取验证码失败，请检查手机号是否正确'
                 );
-            });
-
-        // this.props.afterLogin({ user: 'Ace' });
-    };
-
-    _alert(title, content) {
-        this.setState(
-            {
-                pop: {
-                    title: title,
-                    content: content
-                }
-            },
-            function() {
-                setTimeout(function() {
-                    this.setState({
-                        pop: null
-                    });
-                }, 1500);
             }
-        );
-    }
-
+        } catch (error) {
+            this.props.popAlert('呜呜~', '获取验证码失败，请检查网络是否良好');
+        }
+    };
     render() {
         return (
             <ImageBackground
@@ -159,7 +121,6 @@ export default class Login extends React.Component {
                             <FormInput
                                 containerStyle={styles.verifyCodeInput}
                                 placeholder="请输入验证码"
-                                // ref={input => (this.input = input)}
                                 keyboardType={'number-pad'}
                                 onChangeText={text => {
                                     this.setState({
@@ -239,9 +200,6 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center'
     },
-    signupBox: {
-        marginTop: 130
-    },
     inputField: {
         borderBottomWidth: 0,
         backgroundColor: 'rgba(255,255,255,0.8)',
@@ -258,9 +216,6 @@ const styles = StyleSheet.create({
         marginRight: 0,
         borderRadius: 4
     },
-    verifyField: {
-        width: width - 140
-    },
     verifyCodeBox: {
         marginLeft: 20,
         marginRight: 20,
@@ -273,21 +228,5 @@ const styles = StyleSheet.create({
         padding: 10,
         backgroundColor: '#ccc',
         borderRadius: 4
-    },
-    btn: {
-        marginTop: 10,
-        padding: 10,
-        backgroundColor: 'transparent',
-        borderColor: '#ee735c',
-        borderWidth: 1,
-        ...Platform.select({
-            ios: {
-                borderRadius: 4
-            },
-            android: {
-                borderRadius: 0
-            }
-        }),
-        color: '#ee735c'
     }
 });

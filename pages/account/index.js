@@ -1,16 +1,9 @@
-import Icon from 'react-native-vector-icons/Ionicons';
+import React from 'react';
 import { Button } from 'react-native-elements';
-import config from '../../common/config';
 import util from '../../common/util';
-
-import React, { Component } from 'react';
 import { StyleSheet, Text, Platform, View, Image } from 'react-native';
 
 export default class Account extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-
     render() {
         const user = this.props.user || {};
 
@@ -127,28 +120,5 @@ const styles = StyleSheet.create({
     content: {
         textAlign: 'right',
         color: '#555'
-    },
-    btn: {
-        marginTop: 25,
-        padding: 10,
-        marginLeft: 10,
-        marginRight: 10,
-        backgroundColor: 'transparent',
-        borderColor: '#ee735c',
-        borderWidth: 1,
-        // color: '#ee735c',
-        ...Platform.select({
-            ios: {
-                borderRadius: 4
-            },
-            android: {
-                borderRadius: 0
-            }
-        })
-    },
-
-    normalBtn: {
-        borderColor: '#ccc'
-        // color: '#ccc'
     }
 });

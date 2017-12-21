@@ -2,9 +2,9 @@ import React from 'react';
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-// import Login from '../pages/account/login';
-// import Slider from '../pages/slider/index';
-// import Boot from '../components/boot';
+import Login from '../pages/account/login';
+import Slider from '../pages/slider/index';
+import Boot from '../components/boot';
 import Tabs from './tabs';
 import * as appActions from '../actions/app';
 
@@ -23,15 +23,18 @@ class App extends React.Component {
 
     render() {
         // if (!this.props.booted) {
-        //   return <Boot {...this.props} />
+        //     return <Boot {...this.props} />;
         // }
-
-        // if (!this.props.entered) {
-        //   return <Slider {...this.props} />
-        // }
+        if (!this.props.entered) {
+            return (
+                <Slider
+                {...this.props}
+                />
+            );
+        }
 
         // if (!this.props.logined) {
-        //   return <Login {...this.props} />
+        //     return <Login {...this.props} />;
         // }
 
         return <Tabs />;
