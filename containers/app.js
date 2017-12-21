@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 // import Login from '../pages/account/login';
 // import Slider from '../pages/slider/index';
 // import Boot from '../components/boot';
-import Tabs from './tab';
+import Tabs from './tabs';
 import * as appActions from '../actions/app';
 
 import { AsyncStorage } from 'react-native';
