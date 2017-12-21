@@ -1,19 +1,13 @@
-'use strict'
-
-import React, {Component} from 'react'
-import {
-  StyleSheet,
-  ActivityIndicator,
-} from 'react-native'
+'use strict';
+import React from 'react';
+import { StyleSheet, ActivityIndicator } from 'react-native';
 
 const styles = StyleSheet.create({
-  loading: {
-    marginVertical: 20
-  }
-})
+    loading: {
+        marginVertical: 20
+    }
+});
 
-const Loading = () => (
-  <ActivityIndicator style={styles.loading} />
-)
+const Loading = () => <ActivityIndicator style={styles.loading} />;
 
-export default Loading
+export default Loading;

@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-    Image,
-    Text,
-    View,
-    StyleSheet,
-    TextInput,
-    TouchableHighlight
-} from 'react-native';
+import { Text, View, StyleSheet } from 'react-native';
 
 export default class CountDown extends React.Component {
     setTimeout = GLOBAL.setTimeout;
@@ -56,9 +49,8 @@ export default class CountDown extends React.Component {
 
     render() {
         const style = [styles.text];
-        let component;
         const { disabled, text } = this.state;
-        const { buttonStyle, textStyle } = this.props;
+        const { buttonStyle } = this.props;
 
         if (disabled) {
             style.push(this.props.disabledTextStyle);

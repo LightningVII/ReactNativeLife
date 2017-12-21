@@ -8,9 +8,9 @@ import Boot from '../components/boot';
 import Tabs from './tabs';
 import * as appActions from '../actions/app';
 
-import { AsyncStorage } from 'react-native';
+// import { AsyncStorage } from 'react-native';
 
-AsyncStorage.multiRemove(['booted', 'user', 'logined', 'entered']);
+// AsyncStorage.multiRemove(['booted', 'user', 'logined', 'entered']);
 
 class App extends React.Component {
     constructor(props) {
@@ -22,20 +22,17 @@ class App extends React.Component {
     }
 
     render() {
-        // if (!this.props.booted) {
-        //     return <Boot {...this.props} />;
-        // }
-        if (!this.props.entered) {
-            return (
-                <Slider
-                {...this.props}
-                />
-            );
+        if (!this.props.booted) {
+            return <Boot {...this.props} />;
         }
 
-        // if (!this.props.logined) {
-        //     return <Login {...this.props} />;
-        // }
+        if (!this.props.entered) {
+            return <Slider {...this.props} />;
+        }
+
+        if (!this.props.logined) {
+            return <Login {...this.props} />;
+        }
 
         return <Tabs />;
     }

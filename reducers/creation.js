@@ -8,7 +8,7 @@ const initialState = {
     popup: null
 };
 
-export default (creationReducer = (state = initialState, action) => {
+export default (state = initialState, action) => {
     switch (action.type) {
         case types.SHOW_ALERT:
             return {
@@ -47,4 +47,4 @@ export default (creationReducer = (state = initialState, action) => {
         default:
             return state;
     }
-});
+};
