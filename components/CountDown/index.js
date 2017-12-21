@@ -65,7 +65,7 @@ export default class CountDown extends React.Component {
 
 const styles = StyleSheet.create({
     text: {
-        color: '#ee735c',
+        color: '#eeeeee',
         fontSize: 14,
         textAlign: 'center'
     }

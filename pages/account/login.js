@@ -132,7 +132,7 @@ export default class Login extends React.Component {
                                 <Button
                                     buttonStyle={{
                                         borderRadius: 4,
-                                        backgroundColor: 'orange'
+                                        backgroundColor: '#aaaaaa'
                                     }}
                                     containerViewStyle={{
                                         marginLeft: 0,
@@ -163,7 +163,7 @@ export default class Login extends React.Component {
                                 marginRight: 20
                             }}
                             buttonStyle={{
-                                backgroundColor: 'orange',
+                                backgroundColor: '#aaaaaa',
                                 borderRadius: 4
                             }}
                             onPress={this.submit}
@@ -179,7 +179,7 @@ export default class Login extends React.Component {
                                 marginRight: 20
                             }}
                             buttonStyle={{
-                                backgroundColor: 'orange',
+                                backgroundColor: '#aaaaaa',
                                 borderRadius: 4
                             }}
                             onPress={this.sendVerifyCode}

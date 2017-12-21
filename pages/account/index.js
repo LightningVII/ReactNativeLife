@@ -49,7 +49,7 @@ export default class Account extends React.Component {
                             marginRight: 20
                         }}
                         buttonStyle={{
-                            backgroundColor: 'orange',
+                            backgroundColor: '#aaaaaa',
                             borderRadius: 4
                         }}
                         onPress={() =>
@@ -66,7 +66,7 @@ export default class Account extends React.Component {
                         marginRight: 20
                     }}
                     buttonStyle={{
-                        backgroundColor: 'orange',
+                        backgroundColor: '#aaaaaa',
                         borderRadius: 4
                     }}
                     onPress={() => this.props.logout()}

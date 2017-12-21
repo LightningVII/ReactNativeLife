@@ -32,6 +32,15 @@ const tabBarIcon = (d, f) => ({ tintColor, focused }) => {
     return <Hoc defaultIcon={d} focusedIcon={f} />;
 };
 
+const headerAttr = {
+    headerStyle: {
+        backgroundColor: '#444'
+    },
+    headerTitleStyle: {
+        color: '#eee'
+    }
+};
+
 const TabNav = TabNavigator(
     {
         MainTab: {
@@ -40,6 +49,7 @@ const TabNav = TabNavigator(
             navigationOptions: {
                 title: '狗狗说',
                 tabBarLabel: 'Home',
+                ...headerAttr,
                 tabBarIcon: tabBarIcon('ios-home', 'ios-home-outline')
             }
         },
@@ -50,6 +60,7 @@ const TabNav = TabNavigator(
                 title: '理解狗狗，从配音开始',
                 headerTitle: '编辑视频',
                 tabBarLabel: '来一段',
+                ...headerAttr,
                 tabBarIcon: tabBarIcon('ios-mic', 'ios-mic-outline')
             }
         },
@@ -59,9 +70,10 @@ const TabNav = TabNavigator(
             navigationOptions: ({ navigation }) => ({
                 title: '我的',
                 tabBarLabel: 'Account',
+                ...headerAttr,
                 headerRight: (
                     <Text
-                        style={{ color: '#ee735c', paddingRight: 10 }}
+                        style={{ color: '#eeeeee', paddingRight: 10 }}
                         onPress={() => navigation.navigate('AccountUpdate')}
                     >
                         编辑
@@ -74,7 +86,11 @@ const TabNav = TabNavigator(
     {
         tabBarPosition: 'bottom',
         tabBarOptions: {
-            activeTintColor: '#ee735c'
+            inactiveTintColor: '#aaa',
+            activeTintColor: '#eee',
+            style: {
+                backgroundColor: '#777'
+            }
         },
         animationEnabled: false,
         swipeEnabled: false

@@ -16,7 +16,7 @@ const headerStyle = {
     ios: {
         height: 52,
         paddingTop: 14,
-        backgroundColor: '#ee735c'
+        backgroundColor: '#eeeeee'
     },
     android: {
         height: 0,
@@ -121,7 +121,7 @@ const barOptions = {
         tabBarPosition: 'bottom',
         lazyload: true,
         tabBarOptions: {
-            activeTintColor: '#ee735c',
+            activeTintColor: '#eeeeee',
             inactiveTintColor: '#666',
             showIcon: true,
             showLabel: true,
@@ -139,7 +139,7 @@ const barOptions = {
         tabBarPosition: 'top',
         lazyload: true,
         tabBarOptions: {
-            activeTintColor: '#ee735c',
+            activeTintColor: '#eeeeee',
             inactiveTintColor: '#666',
             showIcon: true,
             showLabel: true,
@@ -147,7 +147,7 @@ const barOptions = {
                 fontSize: 16
             },
             indicatorStyle: {
-                backgroundColor: '#ee735c'
+                backgroundColor: '#eeeeee'
             },
             style: {
                 backgroundColor: '#fff'

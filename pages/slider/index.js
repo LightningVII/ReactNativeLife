@@ -22,7 +22,7 @@ export default class Slider extends React.Component {
                         raised
                         buttonStyle={{
                             borderRadius: 4,
-                            backgroundColor: 'orange'
+                            backgroundColor: '#aaaaaa'
                         }}
                         containerViewStyle={{
                             position: 'absolute',
@@ -83,8 +83,8 @@ const styles = StyleSheet.create({
         marginLeft: 12,
         marginRight: 12,
         borderRadius: 7,
-        borderColor: '#ee735c',
-        backgroundColor: '#ee735c'
+        borderColor: '#eeeeee',
+        backgroundColor: '#eeeeee'
     },
 
     pagination: {

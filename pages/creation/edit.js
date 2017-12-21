@@ -31,7 +31,7 @@ const StatusBar = ({ progress }) => {
         return (
             <ProgressViewIOS
                 style={styles.progressBar}
-                progressTintColor="#ee735c"
+                progressTintColor="#eeeeee"
                 progress={progress}
             />
         );
@@ -40,7 +40,7 @@ const StatusBar = ({ progress }) => {
             <ProgressBar
                 styleAttr="Horizontal"
                 indeterminate={false}
-                color="#ee735c"
+                color="#eeeeee"
                 progress={progress}
             />
         );
@@ -90,7 +90,7 @@ const ModalPublic = ({
                             marginRight: 20
                         }}
                         buttonStyle={{
-                            backgroundColor: 'orange',
+                            backgroundColor: '#aaaaaa',
                             borderRadius: 4
                         }}
                         onPress={submit}
@@ -113,7 +113,7 @@ const ModalPublic = ({
                     <Circle
                         showsText={true}
                         size={60}
-                        color={'#ee735c'}
+                        color={'#eeeeee'}
                         progress={publishProgress}
                     />
                 </View>
@@ -803,7 +803,7 @@ class Edit extends React.Component {
                                 <Circle
                                     showsText={true}
                                     size={60}
-                                    color={'#ee735c'}
+                                    color={'#eeeeee'}
                                     progress={audioUploadedProgress}
                                 />
                             ) : null}
@@ -837,7 +837,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         paddingTop: 12,
         paddingBottom: 12,
-        backgroundColor: '#ee735c'
+        backgroundColor: '#eeeeee'
     },
 
     toolbarTitle: {
@@ -869,7 +869,7 @@ const styles = StyleSheet.create({
         height: 210,
         paddingBottom: 10,
         borderWidth: 1,
-        borderColor: '#ee735c',
+        borderColor: '#eeeeee',
         justifyContent: 'center',
         borderRadius: 6,
         backgroundColor: '#fff'
@@ -945,7 +945,7 @@ const styles = StyleSheet.create({
         height: 68,
         marginTop: -30,
         borderRadius: 34,
-        backgroundColor: '#ee735c',
+        backgroundColor: '#eeeeee',
         borderWidth: 1,
         borderColor: '#fff',
         alignItems: 'center',
@@ -975,7 +975,7 @@ const styles = StyleSheet.create({
         right: 10,
         bottom: 10,
         borderWidth: 1,
-        borderColor: '#ee735c',
+        borderColor: '#eeeeee',
         borderRadius: 3,
         flexDirection: 'row',
         justifyContent: 'center',
@@ -985,13 +985,13 @@ const styles = StyleSheet.create({
     previewIcon: {
         marginRight: 5,
         fontSize: 20,
-        color: '#ee735c',
+        color: '#eeeeee',
         backgroundColor: 'transparent'
     },
 
     previewText: {
         fontSize: 20,
-        color: '#ee735c',
+        color: '#eeeeee',
         backgroundColor: 'transparent'
     },
 
@@ -1007,11 +1007,11 @@ const styles = StyleSheet.create({
         width: width - 20,
         padding: 5,
         borderWidth: 1,
-        borderColor: '#ee735c',
+        borderColor: '#eeeeee',
         borderRadius: 5,
         textAlign: 'center',
         fontSize: 30,
-        color: '#ee735c'
+        color: '#eeeeee'
     },
 
     modalContainer: {
@@ -1026,7 +1026,7 @@ const styles = StyleSheet.create({
         fontSize: 32,
         right: 20,
         top: 30,
-        color: '#ee735c'
+        color: '#eeeeee'
     },
 
     loadingBox: {

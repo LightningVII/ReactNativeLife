@@ -1,4 +1,4 @@
-import sha1 from 'sha1';
+import React from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Button } from 'react-native-elements';
 import { Circle } from 'react-native-progress';
@@ -8,7 +8,6 @@ import Popup from '../../components/popup';
 import config from '../../common/config';
 import util from '../../common/util';
 
-import React, { Component } from 'react';
 import {
     StyleSheet,
     Text,
@@ -22,20 +21,6 @@ import {
 } from 'react-native';
 
 const width = Dimensions.get('window').width;
-
-const photoOptions = {
-    title: '选择头像',
-    cancelButtonTitle: '取消',
-    takePhotoButtonTitle: '拍照',
-    chooseFromLibraryButtonTitle: '选择相册',
-    quality: 0.75,
-    allowsEditing: true,
-    noData: false,
-    storageOptions: {
-        skipBackup: true,
-        path: 'images'
-    }
-};
 
 export default class AccountUpdate extends React.Component {
     constructor(props) {
@@ -88,7 +73,6 @@ export default class AccountUpdate extends React.Component {
         });
 
         if (!result.cancelled) {
-            const avatarData = 'data:image/jpeg;base64,' + result.data;
             const uri = result.uri;
 
             this.getQiniuToken().then(data => {
@@ -122,7 +106,7 @@ export default class AccountUpdate extends React.Component {
         const xhr = new XMLHttpRequest();
         xhr.open('POST', uploadUrl, true);
 
-        xhr.onreadystatechange = response => {
+        xhr.onreadystatechange = () => {
             if (xhr.status !== 200) {
                 this.props.popAlert('呜呜~', '上传失败，稍后重试');
                 return;
@@ -213,7 +197,7 @@ export default class AccountUpdate extends React.Component {
                                     <Circle
                                         showsText={true}
                                         size={75}
-                                        color={'#ee735c'}
+                                        color={'#eeeeee'}
                                         progress={this.state.avatarProgress}
                                     />
                                 ) : (
@@ -336,7 +320,7 @@ export default class AccountUpdate extends React.Component {
                             marginRight: 20
                         }}
                         buttonStyle={{
-                            backgroundColor: 'orange',
+                            backgroundColor: '#aaaaaa',
                             borderRadius: 4
                         }}
                         onPress={this.asyncUser}
@@ -359,7 +343,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         paddingTop: 25,
         paddingBottom: 12,
-        backgroundColor: '#ee735c'
+        backgroundColor: '#eeeeee'
     },
 
     toolbarTitle: {
@@ -447,7 +431,7 @@ const styles = StyleSheet.create({
     },
 
     genderChecked: {
-        backgroundColor: '#ee735c'
+        backgroundColor: '#eeeeee'
     },
 
     inputField: {
@@ -463,9 +447,8 @@ const styles = StyleSheet.create({
         marginLeft: 10,
         marginRight: 10,
         backgroundColor: 'transparent',
-        borderColor: '#ee735c',
+        borderColor: '#eeeeee',
         borderWidth: 1,
-        // color: '#ee735c',
         ...Platform.select({
             ios: {
                 borderRadius: 4

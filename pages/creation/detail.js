@@ -151,7 +151,7 @@ export default class Detail extends React.Component {
 
                     {!this.state.videoLoaded && (
                         <ActivityIndicator
-                            color="#ee735c"
+                            color="#eeeeee"
                             style={styles.loading}
                         />
                     )}
