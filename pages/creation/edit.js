@@ -31,7 +31,7 @@ const StatusBar = ({ progress }) => {
         return (
             <ProgressViewIOS
                 style={styles.progressBar}
-                progressTintColor="#eeeeee"
+                progressTintColor="#333"
                 progress={progress}
             />
         );
@@ -40,7 +40,7 @@ const StatusBar = ({ progress }) => {
             <ProgressBar
                 styleAttr="Horizontal"
                 indeterminate={false}
-                color="#eeeeee"
+                color="#333"
                 progress={progress}
             />
         );
@@ -123,9 +123,9 @@ const ModalPublic = ({
 );
 
 const defaultState = {
-    previewVideo: null,
+    previewVideo: 'file:///Users/white/Downloads/WeChatSight22.mp4' || null,
 
-    videoId: null,
+    videoId: '5a3cb1c0c78ef4059545b2f6' || null,
     audioId: null,
 
     title: '',
@@ -135,7 +135,7 @@ const defaultState = {
     publishProgress: 0.2,
 
     // video upload
-    videoUploaded: false,
+    videoUploaded: true || false,
     videoUploading: false,
     videoUploadedProgress: 0.14,
 
@@ -145,47 +145,42 @@ const defaultState = {
     // count down
     countText: 3,
     counting: false,
-    recording: false,
 
     // audio
     audioPlaying: false,
+    isLoading: false,
+    isRecording: false,
     recordDone: false,
     hasPermission: false,
-    // audioPath: AudioUtils.DocumentDirectoryPath + '/gougou.aac',
-
+    audioPath: null, // || AudioUtils.DocumentDirectoryPath + '/gougou.aac',
     audioUploading: false,
     audioUploadedProgress: 0.14
-}
+};
 
 class Edit extends React.Component {
-    state = {...defaultState};
+    sound = null;
+    audio = null;
+    state = { ...defaultState };
     onProgress = async data => {
         this.setState({
             currentTime: data.currentTime
         });
     };
 
-    onPlaybackStatusUpdate = async status => {
+    statusUpdate = async status => {
         const { positionMillis, playableDurationMillis } = status;
-        const { recording, audioPlaying } = this.state;
+        const { isRecording, audioPlaying } = this.state;
         this.setState({
             videoProgress: positionMillis / playableDurationMillis
         });
 
         if (status.didJustFinish) {
-            this.videoPlayer.stopAsync();
             let newState = {};
-            if (recording) {
+            console.log(isRecording);
+            if (isRecording) {
                 newState.recordDone = true;
-                newState.recording = false;
+                newState.isRecording = false;
                 newState.paused = true;
-
-                try {
-                    await this.audio.stopAndUnloadAsync();
-                    // this.filePath = this.audio.getURI();
-                } catch (e) {
-                    console.log(e);
-                }
             } else if (audioPlaying) {
                 newState.audioPlaying = false;
                 newState.paused = true;
@@ -195,60 +190,78 @@ class Edit extends React.Component {
             }
 
             this.setState(newState);
+            this.audio && this.stopRecording();
         }
     };
 
-    onError = () => {
-        this.setState({
-            videoOk: false
-        });
-    };
+    onError = e => console.warn(e);
 
     preview = async () => {
         this.setState({
             audioPlaying: true
         });
-        const soundObject = new Audio.Sound();
         try {
             await this.videoPlayer.playFromPositionAsync(0);
-            await soundObject.loadAsync(
-                require('./assets/sounds/lesson_16.mp3')
-            );
-            await soundObject.playAsync();
-            // Your sound is playing!
+            this.sound.playAsync
+                ? await this.sound.playAsync()
+                : await this.sound.playFromPositionAsync(0);
         } catch (error) {
             // An error occurred!
         }
     };
 
+    async beginRecording() {
+        this.setState({
+            isLoading: true
+        });
+        if (this.sound !== null) {
+            await this.sound.unloadAsync();
+            this.sound.setOnPlaybackStatusUpdate(null);
+            this.sound = null;
+        }
+        await Audio.setAudioModeAsync({
+            allowsRecordingIOS: true,
+            interruptionModeIOS: Audio.INTERRUPTION_MODE_IOS_DO_NOT_MIX,
+            playsInSilentModeIOS: true,
+            shouldDuckAndroid: true,
+            interruptionModeAndroid: Audio.INTERRUPTION_MODE_ANDROID_DO_NOT_MIX
+        });
+        if (this.audio !== null) {
+            this.audio.setOnRecordingStatusUpdate(null);
+            this.audio = null;
+        }
+
+        const audio = new Audio.Recording();
+
+        try {
+            await audio.prepareToRecordAsync(
+                Audio.RECORDING_OPTIONS_PRESET_LOW_QUALITY
+            );
+            audio.setOnRecordingStatusUpdate(
+                this._updateScreenForRecordingStatus
+            );
+        } catch (error) {
+            // An error occurred!
+        }
+
+        this.audio = audio;
+        await this.videoPlayer.setPositionAsync(0);
+        await this.videoPlayer.playFromPositionAsync(0);
+        await this.audio.startAsync();
+        this.setState({
+            isLoading: false
+        });
+    }
+
     record = async () => {
-        const { recording } = this.state;
-        let hasPermission = await this.checkPermission();
-        if (!hasPermission) {
-            console.warn('Cannot Record no permission');
-            return;
-        }
-
-        if (recording) {
-            console.log('Already recording!');
-            return;
-        }
-
-        await this.videoPlayer.playAsync();
         this.setState(
             {
                 counting: false,
                 recordDone: false,
-                recording: true,
+                isRecording: true,
                 paused: false
             },
-            () => {
-                try {
-                    this.audio.startAsync();
-                } catch (error) {
-                    console.log(error);
-                }
-            }
+            this.beginRecording
         );
     };
 
@@ -266,8 +279,8 @@ class Edit extends React.Component {
     };
 
     counting = () => {
-        const { counting, recording, audioPlaying } = this.state;
-        if (!counting && !recording && !audioPlaying) {
+        const { counting, isRecording, audioPlaying } = this.state;
+        if (!counting && !isRecording && !audioPlaying) {
             this.setState({
                 counting: true
             });
@@ -287,9 +300,9 @@ class Edit extends React.Component {
         let xhr = new XMLHttpRequest();
         let url = config.qiniu.upload;
 
-        if (type === 'audio') {
-            url = config.cloudinary.video;
-        }
+        // if (type === 'audio') {
+        //     url = config.cloudinary.video;
+        // }
 
         let state = {};
 
@@ -299,6 +312,14 @@ class Edit extends React.Component {
 
         this.setState(state);
 
+        const errorPop = type => {
+            if (type === 'video') {
+                this.props.popAlert('呜呜~', '视频同步出错，请重新上传！');
+            } else if (type === 'audio') {
+                this.props.popAlert('呜呜~', '音频同步出错，请重新上传！');
+            }
+        };
+
         xhr.open('POST', url);
 
         xhr.ontimeout = () => {
@@ -307,17 +328,15 @@ class Edit extends React.Component {
         xhr.onerror = err => {
             console.log(err);
         };
-        xhr.onload = () => {
+        xhr.onload = async () => {
+            console.log(xhr)
             if (xhr.status !== 200) {
                 this.props.popAlert('呜呜~', '请求失败');
-                console.log(xhr.responseText);
-
                 return;
             }
 
             if (!xhr.responseText) {
                 this.props.popAlert('呜呜~', '未获得服务器响应');
-
                 return;
             }
 
@@ -338,6 +357,7 @@ class Edit extends React.Component {
                 newState[type + 'Uploaded'] = true;
 
                 this.setState(newState);
+                console.log('newState', newState);
 
                 const updateURL = config.api[type];
                 const accessToken = this.props.user.accessToken;
@@ -351,48 +371,26 @@ class Edit extends React.Component {
                     updateBody.videoId = this.state.videoId;
                 }
 
-                request
-                    .post(updateURL, updateBody)
-                    .catch(err => {
-                        console.log(err);
-                        if (type === 'video') {
-                            this.props.popAlert(
-                                '呜呜~',
-                                '视频同步出错，请重新上传！'
-                            );
-                        } else if (type === 'audio') {
-                            this.props.popAlert(
-                                '呜呜~',
-                                '音频同步出错，请重新上传！'
-                            );
+                try {
+                    const data = await request.post(updateURL, updateBody);
+                    console.log('upload_data', data);
+                    if (data && data.success) {
+                        let mediaState = {};
+
+                        mediaState[type + 'Id'] = data.data;
+
+                        if (type === 'audio') {
+                            mediaState.modalVisible = true;
+                            mediaState.willPublish = true;
                         }
-                    })
-                    .then(data => {
-                        if (data && data.success) {
-                            let mediaState = {};
 
-                            mediaState[type + 'Id'] = data.data;
-
-                            if (type === 'audio') {
-                                mediaState.modalVisible = true;
-                                mediaState.willPublish = true;
-                            }
-
-                            this.setState(mediaState);
-                        } else {
-                            if (type === 'video') {
-                                this.props.popAlert(
-                                    '呜呜~',
-                                    '视频同步出错，请重新上传！'
-                                );
-                            } else if (type === 'audio') {
-                                this.props.popAlert(
-                                    '呜呜~',
-                                    '音频同步出错，请重新上传！'
-                                );
-                            }
-                        }
-                    });
+                        this.setState(mediaState);
+                    } else {
+                        errorPop(type);
+                    }
+                } catch (error) {
+                    errorPop(type);
+                }
             }
         };
 
@@ -413,55 +411,7 @@ class Edit extends React.Component {
         xhr.send(body);
     };
 
-    pickVideo = () => {
-        const type = 'audio';
-        const updateURL = config.api[type];
-        const accessToken = 'ed72a720-8852-4721-8af4-2853dacaaf93';
-        let updateBody = {
-            accessToken: accessToken
-        };
-
-        updateBody[type] = { audioId: '1111' };
-
-        if (type === 'audio') {
-            updateBody.videoId = '5a38aa4df9dec34e34b2a6c0';
-        }
-
-        request
-            .post(updateURL, updateBody)
-            .catch(err => {
-                console.log(err);
-                this.props.popAlert('呜呜~', '音频同步出错，请重新上传！');
-            })
-            .then(data => {
-                if (data && data.success) {
-                    let mediaState = {};
-
-                    mediaState[type + 'Id'] = data.data;
-
-                    if (type === 'audio') {
-                        mediaState.modalVisible = true;
-                        mediaState.willPublish = true;
-                    }
-
-                    this.setState(mediaState);
-                } else {
-                    if (type === 'video') {
-                        this.props.popAlert(
-                            '呜呜~',
-                            '视频同步出错，请重新上传！'
-                        );
-                    } else if (type === 'audio') {
-                        this.props.popAlert(
-                            '呜呜~',
-                            '音频同步出错，请重新上传！'
-                        );
-                    }
-                }
-            });
-    };
-
-    pickVideo1 = async () => {
+    pickVideo = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
             allowsEditing: true,
             mediaTypes: 'Videos',
@@ -469,9 +419,8 @@ class Edit extends React.Component {
         });
 
         if (!result.cancelled) {
-            
             const uri = result.uri;
-
+            console.log('videouri', uri);
             const type = 'video';
             const state = {
                 [type + 'UploadedProgress']: 0,
@@ -509,35 +458,43 @@ class Edit extends React.Component {
     };
 
     uploadAudio = async () => {
-        const tags = 'app,audio';
-        const folder = 'audio';
+        // const tags = 'app,audio';
+        // const folder = 'audio';
         const timestamp = Date.now();
 
         try {
             const data = await this.getToken({
                 type: 'audio',
                 timestamp: timestamp,
-                cloud: 'cloudinary'
+                cloud: 'qiniu' || 'cloudinary'
             });
 
             if (data && data.success) {
                 // data.data
-                const signature = data.data.token;
+                const token = data.data.token;
                 const key = data.data.key;
                 let body = new FormData();
 
-                body.append('folder', folder);
-                body.append('signature', signature);
-                body.append('tags', tags);
-                body.append('timestamp', timestamp);
-                body.append('api_key', config.cloudinary.api_key);
-                body.append('resource_type', 'video');
+                body.append('token', token);
+                body.append('key', key);
                 body.append('file', {
-                    type: 'video/mp4',
-                    uri: 'file://' + './assets/sounds/lesson_16.mp3',
+                    type: 'audio/mp3',
+                    uri:
+                        this.state.audioPath ||
+                        'file:///Users/white/MyProject/MyGithub/ReactNativeLife/pages/creation/assets/sounds/lesson_16.mp3',
                     // this.state.audioPath,
                     name: key
                 });
+
+                // body.append('folder', folder);
+                // body.append('signature', signature);
+                // body.append('tags', tags);
+                // body.append('timestamp', timestamp);
+                // body.append('api_key', config.cloudinary.api_key);
+                // body.append('resource_type', 'video');
+                // body.append('file', {
+                //     type: 'video/mp4'
+                // });
 
                 this.upload(body, 'audio');
             }
@@ -545,47 +502,6 @@ class Edit extends React.Component {
             console.log(e);
         }
     };
-
-    checkPermission = async () => {
-        const { status } = await Permissions.askAsync(
-            Permissions.AUDIO_RECORDING
-        );
-        console.log('Permissions.AUDIO_RECORDING', status);
-        if (status !== 'granted') {
-            alert(
-                'Hey! You might want to enable notifications for my app, they are good.'
-            );
-            return false;
-        }
-        return true;
-    };
-
-    prepareRecordingPath = async () => {
-        const audio = new Audio.Recording();
-        try {
-            await audio.prepareToRecordAsync(
-                Audio.RECORDING_OPTIONS_PRESET_LOW_QUALITY
-            );
-            this.audio = audio;
-            console.log(this.audio.getURI());
-
-            await this.audio.startAsync();
-            await setTimeout(() => console.log(123123123123), 5000);
-            console.log('======asdasdf=====');
-            await this.audio.stopAndUnloadAsync();
-            // await recording.startAsync();
-            // You are now recording!
-        } catch (error) {
-            // An error occurred!
-        }
-    };
-
-    async componentDidMount() {
-        const hasPermission = await this.checkPermission();
-        console.log('hasPermission', hasPermission);
-        this.setState({ hasPermission });
-        hasPermission && (await this.prepareRecordingPath());
-    }
 
     triggerModal = bool =>
         this.setState({
@@ -600,7 +516,7 @@ class Edit extends React.Component {
             videoId,
             audioId
         };
-
+        console.log('upload', body)
         const creationURL = config.api.creations;
 
         if (user && user.accessToken) {
@@ -630,6 +546,68 @@ class Edit extends React.Component {
         }
     };
 
+    async stopRecording() {
+        try {
+            await this.videoPlayer.stopAsync();
+            await this.audio.stopAndUnloadAsync();
+        } catch (error) {
+            // Do nothing -- we are already unloaded.
+        }
+        this.setState({
+            audioPath: this.audio.getURI()
+        });
+        await Audio.setAudioModeAsync({
+            allowsRecordingIOS: false,
+            interruptionModeIOS: Audio.INTERRUPTION_MODE_IOS_DO_NOT_MIX,
+            playsInSilentModeIOS: true,
+            playsInSilentLockedModeIOS: true,
+            shouldDuckAndroid: true,
+            interruptionModeAndroid: Audio.INTERRUPTION_MODE_ANDROID_DO_NOT_MIX
+        });
+        const { sound } = await this.audio.createNewLoadedSound(
+            {
+                // isLooping: true,
+            },
+            () => {}
+        );
+        this.sound = sound;
+    }
+
+    _updateScreenForRecordingStatus = async status => {
+        if (status.canRecord) {
+            this.setState({
+                isRecording: status.isRecording
+            });
+            console.log('======canRecord======', status);
+        } else if (status.isDoneRecording) {
+            this.setState({
+                isRecording: false
+            });
+            console.log('======isDoneRecording======', status);
+            if (!this.state.isLoading) {
+                this.stopRecording();
+            }
+        }
+    };
+
+    checkPermission = async () => {
+        const { status } = await Permissions.askAsync(
+            Permissions.AUDIO_RECORDING
+        );
+        this.setState({
+            hasPermission: status === 'granted'
+        });
+        if (status !== 'granted') {
+            alert(
+                'Hey! You might want to enable notifications for my app, they are good.'
+            );
+        }
+    };
+
+    componentDidMount() {
+        this.checkPermission();
+    }
+
     render() {
         const {
             audioPlaying,
@@ -643,7 +621,7 @@ class Edit extends React.Component {
             counting,
             countText,
             modalVisible,
-            recording,
+            isRecording,
             publishing,
             publishProgress,
             willPublish,
@@ -663,7 +641,16 @@ class Edit extends React.Component {
                     title
                 })
         };
-        return (
+        return !this.state.hasPermission ? (
+            <View style={styles.container}>
+                <View />
+                <Text style={styles.noPermissionsText}>
+                    You must enable audio recording permissions in order to use
+                    this app.
+                </Text>
+                <View />
+            </View>
+        ) : (
             <View style={styles.container}>
                 {modalVisible && <ModalPublic {...modalProps} />}
 
@@ -682,7 +669,7 @@ class Edit extends React.Component {
                 </View>
 
                 <View style={styles.page}>
-                    {!previewVideo ? (
+                    {previewVideo ? (
                         <View style={styles.videoContainer}>
                             <View style={styles.videoBox}>
                                 <Video
@@ -690,19 +677,15 @@ class Edit extends React.Component {
                                         this.videoPlayer = ref;
                                     }}
                                     source={{
-                                        uri:
-                                            'file:///Users/white/Downloads/WeChatSight22.mp4' ||
-                                            previewVideo
+                                        uri: previewVideo
                                     }}
                                     rate={1.0}
                                     volume={1.0}
                                     muted={false}
                                     resizeMode={'cover'}
-                                    shouldPlay
+                                    // shouldPlay
                                     style={styles.video}
-                                    onPlaybackStatusUpdate={
-                                        this.onPlaybackStatusUpdate
-                                    }
+                                    onPlaybackStatusUpdate={this.statusUpdate}
                                     onError={this.onError}
                                 />
                                 {!videoUploaded && videoUploading ? (
@@ -716,10 +699,10 @@ class Edit extends React.Component {
                                     </View>
                                 ) : null}
 
-                                {recording || audioPlaying ? (
+                                {isRecording || audioPlaying ? (
                                     <View style={styles.progressTipBox}>
                                         <StatusBar progress={videoProgress} />
-                                        {recording ? (
+                                        {isRecording ? (
                                             <Text style={styles.progressTip}>
                                                 录制声音中
                                             </Text>
@@ -768,11 +751,11 @@ class Edit extends React.Component {
                             <View
                                 style={[
                                     styles.recordIconBox,
-                                    (recording || audioPlaying) &&
+                                    (isRecording || audioPlaying) &&
                                         styles.recordOn
                                 ]}
                             >
-                                {counting && !recording ? (
+                                {counting && !isRecording ? (
                                     <Text style={styles.countBtn}>
                                         {countText}
                                     </Text>
@@ -830,20 +813,20 @@ export default connect(mapStateToProps, mapDispatchToProps)(Edit);
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1
+        flex: 1,
+        backgroundColor: '#303030'
     },
 
     toolbar: {
         flexDirection: 'row',
         paddingTop: 12,
-        paddingBottom: 12,
-        backgroundColor: '#eeeeee'
+        paddingBottom: 12
     },
 
     toolbarTitle: {
         flex: 1,
         fontSize: 16,
-        color: '#fff',
+        color: '#ddd',
         textAlign: 'center',
         fontWeight: '600'
     },
@@ -914,7 +897,7 @@ const styles = StyleSheet.create({
     video: {
         width: width,
         height: height * 0.6,
-        backgroundColor: '#333'
+        backgroundColor: '#aaa'
     },
 
     progressTipBox: {
@@ -1007,11 +990,11 @@ const styles = StyleSheet.create({
         width: width - 20,
         padding: 5,
         borderWidth: 1,
-        borderColor: '#eeeeee',
+        borderColor: '#ccc',
         borderRadius: 5,
         textAlign: 'center',
-        fontSize: 30,
-        color: '#eeeeee'
+        fontSize: 20,
+        color: '#ccc'
     },
 
     modalContainer: {

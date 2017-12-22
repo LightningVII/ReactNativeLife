@@ -1,9 +1,8 @@
-import React, { Component } from 'react';
-import Icon from 'react-native-vector-icons/Ionicons';
+import React from 'react';
 import Popup from '../../components/popup';
 import NoMore from '../../components/nomore';
 import Loading from '../../components/loading';
-import Detail from './detail';
+// import Detail from './detail'
 import Item from './item';
 
 import { bindActionCreators } from 'redux';
@@ -12,11 +11,8 @@ import * as appActions from '../../actions/app';
 
 import {
     StyleSheet,
-    Text,
     View,
     ListView,
-    Image,
-    Dimensions,
     RefreshControl
 } from 'react-native';
 
@@ -25,44 +21,44 @@ class List extends React.Component {
         super(props);
     }
 
-    popup(title, content) {
+    _popup(title, content) {
         this.props.popAlert(title, content);
     }
 
-    renderRow(row) {
+    _renderRow(row) {
         return (
             <Item
                 key={row._id}
                 user={this.props.user}
-                popAlert={this.popup.bind(this)}
+                popAlert={this._popup.bind(this)}
                 onSelect={() => this.props.onLoadItem(row)}
                 row={row}
             />
         );
     }
 
-    hasMore() {
+    _hasMore() {
         const { videoList, videoTotal } = this.props;
 
         return videoList.length < videoTotal;
     }
 
-    fetchMoreData() {
-        const { isLoadingTail, videoList, fetchCreations } = this.props;
+    _fetchMoreData() {
+        const { isLoadingTail, fetchCreations } = this.props;
 
-        if (this.hasMore() && !isLoadingTail) {
+        if (this._hasMore() && !isLoadingTail) {
             fetchCreations();
         }
     }
 
-    onRefresh() {
+    _onRefresh() {
         this.props.fetchCreations('recent');
     }
 
-    renderFooter() {
+    _renderFooter() {
         const { videoTotal, isLoadingTail } = this.props;
 
-        if (!this.hasMore() && videoTotal !== 0) {
+        if (!this._hasMore() && videoTotal !== 0) {
             return <NoMore />;
         }
 
@@ -76,9 +72,7 @@ class List extends React.Component {
     render() {
         const {
             videoList,
-            fetchCreations,
-            isRefreshing,
-            onRefresh
+            isRefreshing
         } = this.props;
 
         let ds = new ListView.DataSource({
@@ -86,18 +80,18 @@ class List extends React.Component {
         });
 
         let dataSource = ds.cloneWithRows(videoList);
-
+        console.log(dataSource)
         return (
             <View style={styles.container}>
                 <ListView
                     dataSource={dataSource}
-                    renderRow={this.renderRow.bind(this)}
-                    renderFooter={this.renderFooter.bind(this)}
-                    onEndReached={this.fetchMoreData.bind(this)}
+                    renderRow={this._renderRow.bind(this)}
+                    renderFooter={this._renderFooter.bind(this)}
+                    onEndReached={this._fetchMoreData.bind(this)}
                     refreshControl={
                         <RefreshControl
                             refreshing={isRefreshing}
-                            onRefresh={this.onRefresh.bind(this)}
+                            onRefresh={this._onRefresh.bind(this)}
                         />
                     }
                     onEndReachedThreshold={20}

@@ -56,17 +56,16 @@ export default class Item extends React.Component {
 
     render() {
         const row = this.state.row;
-
         return (
             <TouchableHighlight onPress={this.props.onSelect.bind(this)}>
                 <View style={styles.item}>
                     <Text style={styles.title}>{row.title}</Text>
-                    <Image
+                    {/* <Image
                         source={{ uri: util.thumb(row.qiniu_thumb) }}
                         style={styles.thumb}
                     >
                         <Icon name="ios-play" size={28} style={styles.play} />
-                    </Image>
+                    </Image> */}
                     <View style={styles.itemFooter}>
                         <View style={styles.handleBox}>
                             <Icon

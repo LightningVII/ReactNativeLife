@@ -12,7 +12,7 @@ export default {
         avatar: 'http://7xpwuf.com1.z0.glb.clouddn.com/WechatIMG13.jpeg'
     },
     qiniu: {
-        video: 'http://video.iblack7.com/',
+        video: 'http://7xpwuf.com1.z0.glb.clouddn.com/',
         thumb: 'http://video.iblack7.com/',
         avatar: 'http://o9spjqu1b.bkt.clouddn.com/',
         upload: 'http://upload.qiniu.com'

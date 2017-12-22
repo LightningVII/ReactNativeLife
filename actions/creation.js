@@ -3,7 +3,7 @@ import request from '../common/request';
 import * as types from './actionTypes';
 
 export const popAlert = (title, content) => {
-    return (dispatch, getState) => {
+    return dispatch => {
         dispatch({
             type: types.SHOW_ALERT,
             payload: {
@@ -54,7 +54,7 @@ export const fetchCreations = feed => {
 
         request
             .get(url, {
-                accessToken: 'user.accessToken',
+                accessToken: 'ed72a720-8852-4721-8af4-2853dacaaf93' || user.accessToken,
                 feed: feed,
                 cid: cid
             })
@@ -62,13 +62,13 @@ export const fetchCreations = feed => {
                 if (data && data.success) {
                     if (data.data.length > 0) {
                         data.data.map(function(item) {
-                            const votes = item.votes || [];
+                            // const votes = item.votes || [];
 
-                            if (user && votes.indexOf(user._id) > -1) {
-                                item.voted = true;
-                            } else {
-                                item.voted = false;
-                            }
+                            // if (user && votes.indexOf(user._id) > -1) {
+                            //     item.voted = true;
+                            // } else {
+                            //     item.voted = false;
+                            // }
 
                             return item;
                         });

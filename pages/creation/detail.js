@@ -1,6 +1,6 @@
 import React from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
-import Video from 'react-native-video';
+import { Video } from 'expo';
 import util from '../../common/util';
 import CommentList from '../comment/list';
 
@@ -36,31 +36,15 @@ export default class Detail extends React.Component {
         };
     }
 
-    _onLoadStart() {
-        console.log('load start');
-    }
-
-    _onLoad(data) {
+    statusUpdate = async status => {
+        const { positionMillis, playableDurationMillis } = status;
+        const { isRecording } = this.state;
         this.setState({
-            duration: data.duration
+            currentTime: positionMillis,
+            duration: positionMillis / playableDurationMillis
         });
-    }
-
-    getCurrentimePercentage() {
-        if (this.state.currentTime > 0) {
-            return (
-                parseFloat(this.state.currentTime) /
-                parseFloat(this.state.duration)
-            );
-        } else {
-            return 0;
-        }
-    }
-
-    _onProgress(data) {
-        if (data.playableDuration === 0) {
+        if (positionMillis === 0) {
             this.setState({
-                currentTime: this.state.duration,
                 playing: false
             });
         } else {
@@ -70,9 +54,7 @@ export default class Detail extends React.Component {
                 });
             }
 
-            let newState = {
-                currentTime: data.currentTime
-            };
+            let newState = {};
 
             if (!this.state.videoLoaded) {
                 newState.videoLoaded = true;
@@ -84,7 +66,23 @@ export default class Detail extends React.Component {
 
             this.setState(newState);
         }
-    }
+
+        if (status.didJustFinish) {
+            let newState = {};
+            console.log(isRecording);
+            if (isRecording) {
+                newState.recordDone = true;
+                newState.isRecording = false;
+                newState.paused = true;
+            } else {
+                newState.videoUploaded = true;
+                newState.paused = true;
+            }
+
+            this.setState(newState);
+            await this.videoPlayer.stopAsync();
+        }
+    };
 
     _onEnd() {
         this.setState({
@@ -99,30 +97,29 @@ export default class Detail extends React.Component {
         });
     }
 
-    _rePlay() {
-        this.videoPlayer.seek(0);
+    rePlay = () => {
+        this.setState({
+            paused: false
+        });
+        this.videoPlayer.playFromPositionAsync(0);
     }
 
-    _pause() {
-        if (!this.state.paused) {
+    _pause = () => {
+        if (this.state.paused) {
+            this.videoPlayer.playAsync();
+            this.setState({
+                paused: false
+            });
+        } else {
+            this.videoPlayer.pauseAsync();
             this.setState({
                 paused: true
             });
         }
-    }
-
-    _resume() {
-        if (this.state.paused) {
-            this.setState({
-                paused: false
-            });
-        }
-    }
+    };
 
     render() {
         const data = this.props.rowData;
-        const videoCompleted = this.getCurrentimePercentage();
-
         return (
             <View style={styles.container}>
                 <View style={styles.videoBox}>
@@ -130,19 +127,17 @@ export default class Detail extends React.Component {
                         ref={ref => {
                             this.videoPlayer = ref;
                         }}
-                        source={{ uri: util.video(data.qiniu_video) }}
+                        source={{
+                            uri: util.video(data.video.qiniu_key)
+                        }}
+                        rate={1.0}
+                        volume={1.0}
+                        muted={false}
+                        resizeMode={'cover'}
+                        shouldPlay
                         style={styles.video}
-                        volume={5}
-                        paused={this.state.paused}
-                        rate={this.state.rate}
-                        muted={this.state.muted}
-                        resizeMode={this.state.resizeMode}
-                        repeat={this.state.repeat}
-                        onLoadStart={this._onLoadStart.bind(this)}
-                        onLoad={this._onLoad.bind(this)}
-                        onProgress={this._onProgress.bind(this)}
-                        onEnd={this._onEnd.bind(this)}
-                        onError={this._onError.bind(this)}
+                        onPlaybackStatusUpdate={this.statusUpdate}
+                        onError={this.onError}
                     />
 
                     {!this.state.videoOk && (
@@ -158,22 +153,20 @@ export default class Detail extends React.Component {
 
                     {this.state.videoLoaded && !this.state.playing ? (
                         <Icon
-                            onPress={this._rePlay.bind(this)}
+                            onPress={this.rePlay}
                             name="ios-play"
                             size={48}
-                            style={styles.playIcon}
+                            style={styles.resumeIcon}
                         />
-                    ) : //: <Text></Text>
-                    null}
+                    ) : null}
 
                     {this.state.videoLoaded && this.state.playing ? (
                         <TouchableOpacity
-                            onPress={this._pause.bind(this)}
+                            onPress={this._pause}
                             style={styles.pauseBtn}
                         >
                             {this.state.paused ? (
                                 <Icon
-                                    onPress={this._resume.bind(this)}
                                     size={48}
                                     name="ios-play"
                                     style={styles.resumeIcon}
@@ -186,7 +179,7 @@ export default class Detail extends React.Component {
                         <View
                             style={[
                                 styles.progressBar,
-                                { width: width * videoCompleted }
+                                { width: width * this.state.duration }
                             ]}
                         />
                     </View>
@@ -249,9 +242,9 @@ const styles = StyleSheet.create({
         backgroundColor: '#ff6600'
     },
 
-    playIcon: {
+    resumeIcon: {
         position: 'absolute',
-        top: 90,
+        top: 80,
         left: width / 2 - 30,
         width: 60,
         height: 60,
@@ -270,21 +263,6 @@ const styles = StyleSheet.create({
         top: 0,
         width: width,
         height: width * 0.56
-    },
-
-    resumeIcon: {
-        position: 'absolute',
-        top: 80,
-        left: width / 2 - 30,
-        width: 60,
-        height: 60,
-        paddingTop: 8,
-        paddingLeft: 22,
-        backgroundColor: 'transparent',
-        borderColor: '#fff',
-        borderWidth: 1,
-        borderRadius: 30,
-        color: '#ed7b66'
     },
 
     infoBox: {
