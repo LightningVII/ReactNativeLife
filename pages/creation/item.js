@@ -9,7 +9,7 @@ import {
     Text,
     View,
     TouchableHighlight,
-    Image,
+    ImageBackground,
     Dimensions
 } from 'react-native';
 
@@ -60,12 +60,12 @@ export default class Item extends React.Component {
             <TouchableHighlight onPress={this.props.onSelect.bind(this)}>
                 <View style={styles.item}>
                     <Text style={styles.title}>{row.title}</Text>
-                    {/* <Image
+                    <ImageBackground
                         source={{ uri: util.thumb(row.qiniu_thumb) }}
                         style={styles.thumb}
                     >
                         <Icon name="ios-play" size={28} style={styles.play} />
-                    </Image> */}
+                    </ImageBackground>
                     <View style={styles.itemFooter}>
                         <View style={styles.handleBox}>
                             <Icon
@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
     thumb: {
         width: width,
         height: width * 0.56,
-        resizeMode: 'cover'
+        // resizeMode: 'cover'
     },
 
     title: {

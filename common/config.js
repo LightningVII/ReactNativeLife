@@ -13,7 +13,7 @@ export default {
     },
     qiniu: {
         video: 'http://7xpwuf.com1.z0.glb.clouddn.com/',
-        thumb: 'http://video.iblack7.com/',
+        thumb: 'http://7xpwuf.com1.z0.glb.clouddn.com/',
         avatar: 'http://o9spjqu1b.bkt.clouddn.com/',
         upload: 'http://upload.qiniu.com'
     },

@@ -5,8 +5,7 @@ const initialState = {
     commentTotal: 0,
     commentList: [],
     isCommentLoadingTail: false,
-    isCommentRefreshing: false,
-    isSending: false
+    isCommentRefreshing: false
 };
 
 export default ((state = initialState, action) => {
@@ -36,19 +35,16 @@ export default ((state = initialState, action) => {
         case types.SEND_COMMENTS_START:
             return {
                 ...state,
-                isSending: action.payload.isSending
             };
         case types.SEND_COMMENTS_FULLFILLED:
             return {
                 ...state,
                 commentList: action.payload.commentList,
-                commentTotal: action.payload.commentTotal,
-                isSending: action.payload.isSending
+                commentTotal: action.payload.commentTotal
             };
         case types.SEND_COMMENTS_REJECTED:
             return {
-                ...state,
-                isSending: action.payload.isSending
+                ...state
             };
         default:
             return state;

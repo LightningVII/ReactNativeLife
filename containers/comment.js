@@ -31,11 +31,8 @@ class CommentContainer extends React.Component {
 function mapStateToProps(state) {
     const { user } = state.get('app');
 
-    const { isSending } = state.get('comments');
-
     return {
-        user,
-        isSending
+        user
     };
 }
 

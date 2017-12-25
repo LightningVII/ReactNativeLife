@@ -73,13 +73,15 @@ export const fetchCreations = feed => {
                             return item;
                         });
 
-                        let newVideoList;
+                        const newVideoList = data.data;
 
-                        if (feed === 'recent') {
+                        /* if (feed === 'recent') {
                             newVideoList = data.data.concat(videoList);
                         } else {
                             newVideoList = videoList.concat(data.data);
                         }
+
+                        console.log(newVideoList) */
 
                         dispatch({
                             type: types.FETCH_CREATIONS_FULLFILLED,

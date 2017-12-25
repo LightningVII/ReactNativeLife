@@ -120,7 +120,6 @@ class Comment extends React.Component {
 
     render() {
         const { commentList } = this.props;
-
         let ds = new ListView.DataSource({
             rowHasChanged: (r1, r2) => r1 !== r2
         });

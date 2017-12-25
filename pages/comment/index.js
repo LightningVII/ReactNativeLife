@@ -10,7 +10,6 @@ import Popup from '../../components/popup';
 import {
     StyleSheet,
     View,
-    Platform,
     Dimensions,
     TextInput
 } from 'react-native';
@@ -26,17 +25,13 @@ class Comment extends Component {
         };
     }
 
-    _submit() {
+    submit = () => {
         if (!this.state.content) {
             return this.props.popAlert('呜呜~', '留言不能为空');
         }
 
-        if (this.props.isSending) {
-            return this.props.popAlert('呜呜~', '正在评论中！');
-        }
-
         this.props.submit(this.state.content);
-    }
+    };
 
     render() {
         return (
@@ -57,13 +52,21 @@ class Comment extends Component {
                         />
                     </View>
                 </View>
-
                 <Button
-                    style={styles.submitBtn}
-                    onPress={this._submit.bind(this)}
-                >
-                    评论
-                </Button>
+                    raised
+                    containerViewStyle={{
+                        borderRadius: 4,
+                        marginTop: 20,
+                        marginLeft: 20,
+                        marginRight: 20
+                    }}
+                    buttonStyle={{
+                        backgroundColor: '#ccc',
+                        borderRadius: 4
+                    }}
+                    onPress={this.submit}
+                    title={'评论'}
+                />
                 <Popup {...this.props} />
             </View>
         );
@@ -85,41 +88,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(Comment);
 const styles = StyleSheet.create({
     commentContainer: {
         flex: 1,
-        paddingTop: 45,
-        backgroundColor: '#fff'
-    },
-
-    submitBtn: {
-        width: width - 20,
-        padding: 16,
-        marginTop: 20,
-        marginBottom: 20,
-        borderWidth: 1,
-        borderColor: '#ee753c',
-        alignSelf: 'center',
-        fontSize: 18,
-        color: '#ee753c',
-        ...Platform.select({
-            ios: {
-                borderRadius: 4
-            },
-            android: {
-                borderRadius: 0
-            }
-        })
-    },
-
-    header: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
-        width: width,
-        height: 64,
-        paddingTop: 20,
-        paddingLeft: 10,
-        paddingRight: 10,
-        borderBottomWidth: 1,
-        borderColor: 'rgba(0,0,0,0.1)',
         backgroundColor: '#fff'
     },
 
@@ -138,14 +106,5 @@ const styles = StyleSheet.create({
         borderRadius: 4,
         fontSize: 14,
         height: 80
-    },
-
-    commentArea: {
-        width: width,
-        paddingBottom: 6,
-        paddingLeft: 10,
-        paddingRight: 10,
-        borderBottomWidth: 1,
-        borderBottomColor: '#eee'
     }
 });

@@ -37,50 +37,53 @@ export default class Detail extends React.Component {
     }
 
     statusUpdate = async status => {
-        const { positionMillis, playableDurationMillis } = status;
+        const { positionMillis, playableDurationMillis, isLoaded } = status;
         const { isRecording } = this.state;
-        this.setState({
-            currentTime: positionMillis,
-            duration: positionMillis / playableDurationMillis
-        });
-        if (positionMillis === 0) {
+        if (isLoaded) {
+            // console.log(status);
             this.setState({
-                playing: false
+                currentTime: positionMillis,
+                duration: positionMillis / playableDurationMillis
             });
-        } else {
-            if (!this.state.videoLoaded) {
+            if (positionMillis === 0) {
                 this.setState({
-                    videoLoaded: true
+                    playing: false
                 });
-            }
-
-            let newState = {};
-
-            if (!this.state.videoLoaded) {
-                newState.videoLoaded = true;
-            }
-
-            if (!this.state.playing) {
-                newState.playing = true;
-            }
-
-            this.setState(newState);
-        }
-
-        if (status.didJustFinish) {
-            let newState = {};
-            console.log(isRecording);
-            if (isRecording) {
-                newState.recordDone = true;
-                newState.isRecording = false;
-                newState.paused = true;
             } else {
-                newState.videoUploaded = true;
-                newState.paused = true;
+                if (!this.state.videoLoaded) {
+                    this.setState({
+                        videoLoaded: true
+                    });
+                }
+
+                let newState = {};
+
+                if (!this.state.videoLoaded) {
+                    newState.videoLoaded = true;
+                }
+
+                if (!this.state.playing) {
+                    newState.playing = true;
+                }
+
+                this.setState(newState);
             }
 
-            this.setState(newState);
-            await this.videoPlayer.stopAsync();
+            if (status.didJustFinish) {
+                let newState = {};
+                console.log(isRecording);
+                if (isRecording) {
+                    newState.recordDone = true;
+                    newState.isRecording = false;
+                    newState.paused = true;
+                } else {
+                    newState.videoUploaded = true;
+                    newState.paused = true;
+                }
+
+                this.setState(newState);
+                await this.videoPlayer.stopAsync();
+            }
         }
     };
 
@@ -102,7 +105,7 @@ export default class Detail extends React.Component {
             paused: false
         });
         this.videoPlayer.playFromPositionAsync(0);
-    }
+    };
 
     _pause = () => {
         if (this.state.paused) {

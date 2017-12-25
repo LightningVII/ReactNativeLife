@@ -9,12 +9,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as appActions from '../../actions/app';
 
-import {
-    StyleSheet,
-    View,
-    ListView,
-    RefreshControl
-} from 'react-native';
+import { StyleSheet, View, ListView, RefreshControl } from 'react-native';
 
 class List extends React.Component {
     constructor(props) {
@@ -25,7 +20,7 @@ class List extends React.Component {
         this.props.popAlert(title, content);
     }
 
-    _renderRow(row) {
+    renderRow = row => {
         return (
             <Item
                 key={row._id}
@@ -35,7 +30,7 @@ class List extends React.Component {
                 row={row}
             />
         );
-    }
+    };
 
     _hasMore() {
         const { videoList, videoTotal } = this.props;
@@ -70,22 +65,18 @@ class List extends React.Component {
     }
 
     render() {
-        const {
-            videoList,
-            isRefreshing
-        } = this.props;
+        const { videoList, isRefreshing } = this.props;
 
         let ds = new ListView.DataSource({
             rowHasChanged: (r1, r2) => r1 !== r2
         });
 
         let dataSource = ds.cloneWithRows(videoList);
-        console.log(dataSource)
         return (
             <View style={styles.container}>
                 <ListView
                     dataSource={dataSource}
-                    renderRow={this._renderRow.bind(this)}
+                    renderRow={this.renderRow}
                     renderFooter={this._renderFooter.bind(this)}
                     onEndReached={this._fetchMoreData.bind(this)}
                     refreshControl={
