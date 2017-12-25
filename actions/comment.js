@@ -5,11 +5,11 @@ import * as types from './actionTypes';
 export const sendComment = comment => {
     return (dispatch, getState) => {
         const url = config.api.comment;
-        const { user } = getState().get('app');
+        const { user: { accessToken } } = getState().get('app');
 
         const body = {
-            accessToken: user.accessToken,
-            comment: comment
+            accessToken,
+            comment
         };
 
         return request
@@ -39,7 +39,7 @@ export const sendComment = comment => {
 };
 
 export const fetchComments = (cid, feed) => {
-    return dispatch => {
+    return (dispatch, getState) => {
         let url = config.api.comment;
         let isCommentLoadingTail = false;
         let isCommentRefreshing = false;
@@ -48,9 +48,7 @@ export const fetchComments = (cid, feed) => {
 
         // const { creationId, commentList } = getState().get('comments');
 
-        /* const {
-      user
-    } = getState().get('app') */
+        const { user: { accessToken } } = getState().get('app');
 
         /* if (feed === 'recent') {
             isCommentRefreshing = true;
@@ -79,10 +77,10 @@ export const fetchComments = (cid, feed) => {
 
         request
             .get(url, {
-                accessToken: 'user.accessToken',
-                feed: feed,
-                cid: cid,
-                id: id
+                accessToken,
+                feed,
+                cid,
+                id
             })
             .then(data => {
                 if (data && data.success) {

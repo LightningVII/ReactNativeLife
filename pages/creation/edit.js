@@ -362,7 +362,7 @@ class Edit extends React.Component {
                 const updateURL = config.api[type];
                 const accessToken = this.props.user.accessToken;
                 let updateBody = {
-                    accessToken: accessToken
+                    accessToken
                 };
 
                 updateBody[type] = response;
@@ -516,7 +516,6 @@ class Edit extends React.Component {
             videoId,
             audioId
         };
-        console.log('upload', body)
         const creationURL = config.api.creations;
 
         if (user && user.accessToken) {

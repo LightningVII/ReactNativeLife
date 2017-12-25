@@ -23,41 +23,23 @@ import {
 const width = Dimensions.get('window').width;
 
 export default class AccountUpdate extends React.Component {
-    constructor(props) {
-        super(props);
-
-        const user = this.props.user || {
-            nickname: '小狗宝',
-            avatar: 'http://7xpwuf.com1.z0.glb.clouddn.com/WechatIMG13.jpeg',
-            phoneNumber: '2',
-            verifyCode: '6531',
-            accessToken: 'ed72a720-8852-4721-8af4-2853dacaaf93',
-            __v: 0,
-            age: '1',
-            breed: '2ha',
-            gender: 'male'
-        };
-
-        this.state = {
-            user: user,
-            avatarProgress: 0,
-            avatarUploading: false
-        };
-    }
+    state = {
+        user: this.props.user,
+        avatarProgress: 0,
+        avatarUploading: false
+    };
 
     componentDidMount() {
-        // this.props.checkUserStatus()
+        this.props.checkUserStatus();
     }
 
     getQiniuToken() {
-        const accessToken =
-            this.state.user.accessToken ||
-            'ed72a720-8852-4721-8af4-2853dacaaf93';
+        const accessToken = this.state.user.accessToken;
         const signatureURL = config.api.signature;
 
         return request
             .post(signatureURL, {
-                accessToken: accessToken,
+                accessToken,
                 type: 'avatar',
                 cloud: 'qiniu'
             })

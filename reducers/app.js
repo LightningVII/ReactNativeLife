@@ -61,8 +61,8 @@ export default (state = initialState, action) => {
             };
 
         case types.WILL_ENTER_APP: {
-            let userData = action.payload.user;
-            let entered = action.payload.entered;
+            const userData = action.payload.user;
+            const entered = action.payload.entered;
             let newState = {
                 booted: true
             };
@@ -72,7 +72,7 @@ export default (state = initialState, action) => {
             }
 
             if (userData && userData[1]) {
-                let user = JSON.parse(userData[1]);
+                const user = JSON.parse(userData[1]);
 
                 if (user && user.accessToken) {
                     newState.logined = true;

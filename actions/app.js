@@ -34,7 +34,7 @@ export const logout = () => {
 };
 
 export const checkUserStatus = () => {
-    return (dispatch, getState) => {
+    return dispatch => {
         AsyncStorage.getItem('user').then(function(data) {
             data = JSON.parse(data);
 

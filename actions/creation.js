@@ -30,7 +30,7 @@ export const fetchCreations = feed => {
 
         const { videoList } = getState().get('creations');
 
-        const { user } = getState().get('app');
+        const { user: { accessToken } } = getState().get('app');
 
         if (feed === 'recent') {
             isRefreshing = true;
@@ -54,9 +54,9 @@ export const fetchCreations = feed => {
 
         request
             .get(url, {
-                accessToken: 'ed72a720-8852-4721-8af4-2853dacaaf93' || user.accessToken,
-                feed: feed,
-                cid: cid
+                accessToken,
+                feed,
+                cid
             })
             .then(data => {
                 if (data && data.success) {
