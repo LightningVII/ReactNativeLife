@@ -1,30 +1,22 @@
 import React from 'react';
-import {
-    StyleSheet,
-    ImageBackground,
-    View,
-    Dimensions
-} from 'react-native';
+import { StyleSheet, ImageBackground, View, Dimensions } from 'react-native';
 import { Button, FormInput } from 'react-native-elements';
 import request from '../../common/request';
 import config from '../../common/config';
 import Popup from '../../components/popup';
 import CountDown from '../../components/CountDown';
 
+import style from '../../common/style';
 const { width } = Dimensions.get('window');
 export default class Login extends React.Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            pop: null,
-            verifyCode: '',
-            phoneNumber: '',
-            countingDone: false,
-            text: 'Useless Placeholder',
-            codeSent: false
-        };
-    }
+    state = {
+        pop: null,
+        verifyCode: '',
+        phoneNumber: '',
+        countingDone: false,
+        text: 'Useless Placeholder',
+        codeSent: false
+    };
 
     showVerifyCode = () => {
         this.setState({
@@ -97,6 +89,9 @@ export default class Login extends React.Component {
         }
     };
     render() {
+        const btnStyle = this.state.codeSent
+            ? style.btn('登录', this.submit)
+            : style.btn('获取验证码', this.sendVerifyCode);
         return (
             <ImageBackground
                 source={require('../../static/images/WechatIMG21.jpeg')}
@@ -130,17 +125,19 @@ export default class Login extends React.Component {
                             />
                             {this.state.countingDone ? (
                                 <Button
+                                    {...style.btn(
+                                        '获取验证码',
+                                        this.sendVerifyCode
+                                    )}
+                                    containerStyle={{
+                                        marginLeft: 0,
+                                        marginRight: 0
+                                    }}
                                     buttonStyle={{
                                         borderRadius: 4,
                                         backgroundColor: '#aaaaaa'
                                     }}
-                                    containerViewStyle={{
-                                        marginLeft: 0,
-                                        marginRight: 0
-                                    }}
                                     fontSize={14}
-                                    onPress={this.sendVerifyCode}
-                                    title={'获取验证码'}
                                 />
                             ) : (
                                 <CountDown
@@ -152,40 +149,7 @@ export default class Login extends React.Component {
                             )}
                         </View>
                     ) : null}
-
-                    {this.state.codeSent ? (
-                        <Button
-                            raised
-                            containerViewStyle={{
-                                borderRadius: 4,
-                                marginTop: 20,
-                                marginLeft: 20,
-                                marginRight: 20
-                            }}
-                            buttonStyle={{
-                                backgroundColor: '#aaaaaa',
-                                borderRadius: 4
-                            }}
-                            onPress={this.submit}
-                            title={'登录'}
-                        />
-                    ) : (
-                        <Button
-                            raised
-                            containerViewStyle={{
-                                borderRadius: 4,
-                                marginTop: 20,
-                                marginLeft: 20,
-                                marginRight: 20
-                            }}
-                            buttonStyle={{
-                                backgroundColor: '#aaaaaa',
-                                borderRadius: 4
-                            }}
-                            onPress={this.sendVerifyCode}
-                            title={'获取验证码'}
-                        />
-                    )}
+                    <Button {...btnStyle} />
                 </View>
 
                 <Popup {...this.props} />
@@ -201,8 +165,8 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     inputField: {
-        borderBottomWidth: 0,
         backgroundColor: 'rgba(255,255,255,0.8)',
+        marginBottom: 20,
         paddingLeft: 20,
         borderRadius: 4
     },
@@ -217,9 +181,9 @@ const styles = StyleSheet.create({
         borderRadius: 4
     },
     verifyCodeBox: {
+        marginBottom: 20,
         marginLeft: 20,
         marginRight: 20,
-        marginTop: 20,
         flexDirection: 'row',
         justifyContent: 'space-between'
     },

@@ -1,5 +1,4 @@
 import React from 'react';
-
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import Login from '../pages/account/login';
@@ -7,7 +6,6 @@ import Slider from '../pages/slider/index';
 import Boot from '../components/boot';
 import Tabs from './tabs';
 import * as appActions from '../actions/app';
-
 // import { AsyncStorage } from 'react-native';
 
 // AsyncStorage.multiRemove(['booted', 'user', 'logined', 'entered']);

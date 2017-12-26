@@ -1,9 +1,8 @@
 import React from 'react';
 import { StyleSheet, View, ImageBackground, Dimensions } from 'react-native';
 import { Button } from 'react-native-elements';
-
 import Swiper from 'react-native-swiper';
-// const Swiper = require('react-native-swiper');
+import style from '../../common/style';
 const { width, height } = Dimensions.get('window');
 
 export default class Slider extends React.Component {
@@ -13,38 +12,19 @@ export default class Slider extends React.Component {
 
     render() {
         const { banners, enteredSlide, sliderLoop } = this.props;
-        const bannersSlider = banners.map((item, i) => {
-            let innerButton = null;
 
-            if (i + 1 === banners.length) {
-                innerButton = (
+        const bannersSlider = banners.map((item, i) => (
+            <ImageBackground key={i} style={styles.image} source={item}>
+                {i + 1 === banners.length && (
                     <Button
-                        raised
-                        buttonStyle={{
-                            borderRadius: 4,
-                            backgroundColor: '#aaaaaa'
-                        }}
-                        containerViewStyle={{
+                        {...style.btn('马上体验', enteredSlide, {
                             position: 'absolute',
-                            bottom: 60,
-                            borderRadius: 4,
-                            width: width - 40,
-                            marginLeft: 20,
-                            marginRight: 20
-                        }}
-                        fontSize={14}
-                        onPress={enteredSlide}
-                        title={'马上体验'}
+                            bottom: 60
+                        })}
                     />
-                );
-            }
-
-            return (
-                <ImageBackground key={i} style={styles.image} source={item}>
-                    {innerButton}
-                </ImageBackground>
-            );
-        });
+                )}
+            </ImageBackground>
+        ));
 
         return (
             <Swiper

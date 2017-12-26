@@ -123,7 +123,9 @@ const ModalPublic = ({
 );
 
 const defaultState = {
-    previewVideo: 'file:///Users/white/Downloads/WeChatSight22.mp4' || null,
+    previewVideo:
+        // 'file:///Users/white/Downloads/WeChatSight22.mp4' ||
+        null,
 
     videoId: '5a3cb1c0c78ef4059545b2f6' || null,
     audioId: null,
@@ -329,7 +331,7 @@ class Edit extends React.Component {
             console.log(err);
         };
         xhr.onload = async () => {
-            console.log(xhr)
+            console.log(xhr);
             if (xhr.status !== 200) {
                 this.props.popAlert('呜呜~', '请求失败');
                 return;
