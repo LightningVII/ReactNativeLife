@@ -127,16 +127,13 @@ export default class Login extends React.Component {
                                 <Button
                                     {...style.btn(
                                         '获取验证码',
-                                        this.sendVerifyCode
+                                        this.sendVerifyCode,
+                                        {
+                                            width: 'auto',
+                                            marginLeft: 0,
+                                            marginRight: 0
+                                        }
                                     )}
-                                    containerStyle={{
-                                        marginLeft: 0,
-                                        marginRight: 0
-                                    }}
-                                    buttonStyle={{
-                                        borderRadius: 4,
-                                        backgroundColor: '#aaaaaa'
-                                    }}
                                     fontSize={14}
                                 />
                             ) : (
@@ -190,7 +187,7 @@ const styles = StyleSheet.create({
     countBtn: {
         minWidth: 90,
         padding: 10,
-        backgroundColor: '#ccc',
+        backgroundColor: '#999',
         borderRadius: 4
     }
 });
