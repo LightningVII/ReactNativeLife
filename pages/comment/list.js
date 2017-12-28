@@ -11,7 +11,7 @@ import {
     Text,
     View,
     Dimensions,
-    ListView,
+    FlatList,
     Image,
     TextInput
 } from 'react-native';
@@ -27,9 +27,9 @@ class Comment extends React.Component {
         this.props.fetchComments(this.props.rowData._id);
     }
 
-    _renderRow(row) {
+    renderRow = ({ item: row }) => {
         return (
-            <View key={row._id} style={styles.replyBox}>
+            <View style={styles.replyBox}>
                 <Image
                     style={styles.replyAvatar}
                     source={{ uri: util.avatar(row.replyBy.avatar) }}
@@ -42,7 +42,7 @@ class Comment extends React.Component {
                 </View>
             </View>
         );
-    }
+    };
 
     _focus() {
         this.props.navigation.navigate('Comment', {
@@ -50,7 +50,7 @@ class Comment extends React.Component {
         });
     }
 
-    _renderHeader() {
+    renderHeader = () => {
         const data = this.props.rowData;
 
         return (
@@ -84,9 +84,9 @@ class Comment extends React.Component {
                 </View>
             </View>
         );
-    }
+    };
 
-    _renderFooter() {
+    renderFooter = () => {
         const { commentTotal, isCommentLoadingTail } = this.props;
 
         if (!this._hasMore() || commentTotal === 0) {
@@ -98,7 +98,7 @@ class Comment extends React.Component {
         }
 
         return null;
-    }
+    };
 
     _hasMore() {
         const { commentList, commentTotal } = this.props;
@@ -120,18 +120,14 @@ class Comment extends React.Component {
 
     render() {
         const { commentList } = this.props;
-        let ds = new ListView.DataSource({
-            rowHasChanged: (r1, r2) => r1 !== r2
-        });
-
-        let dataSource = ds.cloneWithRows(commentList);
 
         return (
-            <ListView
-                dataSource={dataSource}
-                renderRow={this._renderRow.bind(this)}
-                renderHeader={this._renderHeader.bind(this)}
-                renderFooter={this._renderFooter.bind(this)}
+            <FlatList
+                data={commentList}
+                keyExtractor={item => item._id}
+                renderItem={this.renderRow}
+                ListFooterComponent={this.renderFooter}
+                ListHeaderComponent={this.renderHeader}
                 onEndReached={this._fetchMoreData.bind(this)}
                 onEndReachedThreshold={20}
                 enableEmptySections
