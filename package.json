@@ -45,7 +45,8 @@
   "precommit.silent": true,
   "standard": {
     "ignore": [
-      "/__tests__/"
+      "/__tests__/",
+      "App.test.js"
     ],
     "parser": "babel-eslint",
     "globals": [

@@ -7,7 +7,7 @@ import Boot from '../components/boot'
 import Tabs from './tabs'
 import * as appActions from '../actions/app'
 
-import Repast from '../Repast'
+// import Repast from '../Repast'
 // import { AsyncStorage } from 'react-native'
 
 // AsyncStorage.multiRemove(['booted', 'user', 'logined', 'entered'])

@@ -1,8 +1,8 @@
-import React from 'react';
-import Icon from 'react-native-vector-icons/Ionicons';
-import { Video } from 'expo';
-import util from '../../common/util';
-import CommentList from '../comment/list';
+import React from 'react'
+import Icon from 'react-native-vector-icons/Ionicons'
+import { Video } from 'expo'
+import util from '../../common/util'
+import CommentList from '../comment/list'
 
 import {
     StyleSheet,
@@ -11,356 +11,356 @@ import {
     TouchableOpacity,
     Dimensions,
     ActivityIndicator
-} from 'react-native';
+} from 'react-native'
 
-const { width } = Dimensions.get('window');
+const { width } = Dimensions.get('window')
 
 export default class Detail extends React.Component {
-    constructor(props) {
-        super(props);
+  constructor (props) {
+    super(props)
 
-        this.state = {
+    this.state = {
             // video loads
-            videoOk: true,
-            videoLoaded: false,
-            playing: false,
-            paused: false,
-            videoTotal: 0.0,
-            currentTime: 0.0,
+      videoOk: true,
+      videoLoaded: false,
+      playing: false,
+      paused: false,
+      videoTotal: 0.0,
+      currentTime: 0.0,
 
             // video player
-            rate: 1,
-            muted: false,
-            resizeMode: 'contain',
-            repeat: false
-        };
+      rate: 1,
+      muted: false,
+      resizeMode: 'contain',
+      repeat: false
     }
+  }
 
-    statusUpdate = async status => {
-        const { positionMillis, playableDurationMillis, isLoaded } = status;
-        const { isRecording } = this.state;
-        if (isLoaded) {
+  statusUpdate = async status => {
+    const { positionMillis, playableDurationMillis, isLoaded } = status
+    const { isRecording } = this.state
+    if (isLoaded) {
             // console.log(status);
-            this.setState({
-                currentTime: positionMillis,
-                duration: positionMillis / playableDurationMillis
-            });
-            if (positionMillis === 0) {
-                this.setState({
-                    playing: false
-                });
-            } else {
-                if (!this.state.videoLoaded) {
-                    this.setState({
-                        videoLoaded: true
-                    });
-                }
-
-                let newState = {};
-
-                if (!this.state.videoLoaded) {
-                    newState.videoLoaded = true;
-                }
-
-                if (!this.state.playing) {
-                    newState.playing = true;
-                }
-
-                this.setState(newState);
-            }
-
-            if (status.didJustFinish) {
-                let newState = {};
-                console.log(isRecording);
-                if (isRecording) {
-                    newState.recordDone = true;
-                    newState.isRecording = false;
-                    newState.paused = true;
-                } else {
-                    newState.videoUploaded = true;
-                    newState.paused = true;
-                }
-
-                this.setState(newState);
-                await this.videoPlayer.stopAsync();
-            }
+      this.setState({
+        currentTime: positionMillis,
+        duration: positionMillis / playableDurationMillis
+      })
+      if (positionMillis === 0) {
+        this.setState({
+          playing: false
+        })
+      } else {
+        if (!this.state.videoLoaded) {
+          this.setState({
+            videoLoaded: true
+          })
         }
-    };
 
-    _onEnd() {
-        this.setState({
-            currentTime: this.state.duration,
-            playing: false
-        });
-    }
+        let newState = {}
 
-    _onError() {
-        this.setState({
-            videoOk: false
-        });
-    }
+        if (!this.state.videoLoaded) {
+          newState.videoLoaded = true
+        }
 
-    rePlay = () => {
-        this.setState({
-            paused: false
-        });
-        this.videoPlayer.playFromPositionAsync(0);
-    };
+        if (!this.state.playing) {
+          newState.playing = true
+        }
 
-    _pause = () => {
-        if (this.state.paused) {
-            this.videoPlayer.playAsync();
-            this.setState({
-                paused: false
-            });
+        this.setState(newState)
+      }
+
+      if (status.didJustFinish) {
+        let newState = {}
+        console.log(isRecording)
+        if (isRecording) {
+          newState.recordDone = true
+          newState.isRecording = false
+          newState.paused = true
         } else {
-            this.videoPlayer.pauseAsync();
-            this.setState({
-                paused: true
-            });
+          newState.videoUploaded = true
+          newState.paused = true
         }
-    };
 
-    render() {
-        const data = this.props.rowData;
-        return (
-            <View style={styles.container}>
-                <View style={styles.videoBox}>
-                    <Video
-                        ref={ref => {
-                            this.videoPlayer = ref;
-                        }}
-                        source={{
-                            uri: util.video(data.video.qiniu_key)
-                        }}
-                        rate={1.0}
-                        volume={1.0}
-                        muted={false}
-                        resizeMode={'cover'}
-                        shouldPlay
-                        style={styles.video}
-                        onPlaybackStatusUpdate={this.statusUpdate}
-                        onError={this.onError}
+        this.setState(newState)
+        await this.videoPlayer.stopAsync()
+      }
+    }
+  };
+
+  _onEnd () {
+    this.setState({
+      currentTime: this.state.duration,
+      playing: false
+    })
+  }
+
+  _onError () {
+    this.setState({
+      videoOk: false
+    })
+  }
+
+  rePlay = () => {
+    this.setState({
+      paused: false
+    })
+    this.videoPlayer.playFromPositionAsync(0)
+  };
+
+  _pause = () => {
+    if (this.state.paused) {
+      this.videoPlayer.playAsync()
+      this.setState({
+        paused: false
+      })
+    } else {
+      this.videoPlayer.pauseAsync()
+      this.setState({
+        paused: true
+      })
+    }
+  };
+
+  render () {
+    const data = this.props.rowData
+    return (
+      <View style={styles.container}>
+        <View style={styles.videoBox}>
+          <Video
+            ref={ref => {
+              this.videoPlayer = ref
+            }}
+            source={{
+              uri: util.video(data.video.qiniu_key)
+            }}
+            rate={1.0}
+            volume={1.0}
+            muted={false}
+            resizeMode={'cover'}
+            shouldPlay
+            style={styles.video}
+            onPlaybackStatusUpdate={this.statusUpdate}
+            onError={this.onError}
                     />
 
-                    {!this.state.videoOk && (
-                        <Text style={styles.failText}>视频出错了！很抱歉</Text>
+          {!this.state.videoOk && (
+          <Text style={styles.failText}>视频出错了！很抱歉</Text>
                     )}
 
-                    {!this.state.videoLoaded && (
-                        <ActivityIndicator
-                            color="#eeeeee"
-                            style={styles.loading}
+          {!this.state.videoLoaded && (
+          <ActivityIndicator
+            color='#eeeeee'
+            style={styles.loading}
                         />
                     )}
 
-                    {this.state.videoLoaded && !this.state.playing ? (
-                        <Icon
-                            onPress={this.rePlay}
-                            name="ios-play"
-                            size={48}
-                            style={styles.resumeIcon}
+          {this.state.videoLoaded && !this.state.playing ? (
+            <Icon
+              onPress={this.rePlay}
+              name='ios-play'
+              size={48}
+              style={styles.resumeIcon}
                         />
                     ) : null}
 
-                    {this.state.videoLoaded && this.state.playing ? (
-                        <TouchableOpacity
-                            onPress={this._pause}
-                            style={styles.pauseBtn}
+          {this.state.videoLoaded && this.state.playing ? (
+            <TouchableOpacity
+              onPress={this._pause}
+              style={styles.pauseBtn}
                         >
-                            {this.state.paused ? (
-                                <Icon
-                                    size={48}
-                                    name="ios-play"
-                                    style={styles.resumeIcon}
+              {this.state.paused ? (
+                <Icon
+                  size={48}
+                  name='ios-play'
+                  style={styles.resumeIcon}
                                 />
                             ) : null}
-                        </TouchableOpacity>
+            </TouchableOpacity>
                     ) : null}
 
-                    <View style={styles.progressBox}>
-                        <View
-                            style={[
-                                styles.progressBar,
+          <View style={styles.progressBox}>
+            <View
+              style={[
+                styles.progressBar,
                                 { width: width * this.state.duration }
-                            ]}
+              ]}
                         />
-                    </View>
-                </View>
-                <CommentList
-                    rowData={data}
-                    navigation={this.props.navigation}
+          </View>
+        </View>
+        <CommentList
+          rowData={data}
+          navigation={this.props.navigation}
                 />
-            </View>
-        );
-    }
+      </View>
+    )
+  }
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#ffffff'
-    },
+  container: {
+    flex: 1,
+    backgroundColor: '#ffffff'
+  },
 
-    videoBox: {
-        width: width,
-        height: width * 0.56,
-        backgroundColor: '#000'
-    },
+  videoBox: {
+    width: width,
+    height: width * 0.56,
+    backgroundColor: '#000'
+  },
 
-    video: {
-        width: width,
-        height: width * 0.56,
-        backgroundColor: '#000'
-    },
+  video: {
+    width: width,
+    height: width * 0.56,
+    backgroundColor: '#000'
+  },
 
-    failText: {
-        position: 'absolute',
-        left: 0,
-        top: 90,
-        width: width,
-        textAlign: 'center',
-        color: '#fff',
-        backgroundColor: 'transparent'
-    },
+  failText: {
+    position: 'absolute',
+    left: 0,
+    top: 90,
+    width: width,
+    textAlign: 'center',
+    color: '#fff',
+    backgroundColor: 'transparent'
+  },
 
-    loading: {
-        position: 'absolute',
-        left: 0,
-        top: 80,
-        width: width,
-        alignSelf: 'center',
-        backgroundColor: 'transparent'
-    },
+  loading: {
+    position: 'absolute',
+    left: 0,
+    top: 80,
+    width: width,
+    alignSelf: 'center',
+    backgroundColor: 'transparent'
+  },
 
-    progressBox: {
-        width: width,
-        height: 2,
-        backgroundColor: '#ccc'
-    },
+  progressBox: {
+    width: width,
+    height: 2,
+    backgroundColor: '#ccc'
+  },
 
-    progressBar: {
-        width: 1,
-        height: 2,
-        backgroundColor: '#ff6600'
-    },
+  progressBar: {
+    width: 1,
+    height: 2,
+    backgroundColor: '#ff6600'
+  },
 
-    resumeIcon: {
-        position: 'absolute',
-        top: 80,
-        left: width / 2 - 30,
-        width: 60,
-        height: 60,
-        paddingTop: 8,
-        paddingLeft: 22,
-        backgroundColor: 'transparent',
-        borderColor: '#fff',
-        borderWidth: 1,
-        borderRadius: 30,
-        color: '#ed7b66'
-    },
+  resumeIcon: {
+    position: 'absolute',
+    top: 80,
+    left: width / 2 - 30,
+    width: 60,
+    height: 60,
+    paddingTop: 8,
+    paddingLeft: 22,
+    backgroundColor: 'transparent',
+    borderColor: '#fff',
+    borderWidth: 1,
+    borderRadius: 30,
+    color: '#ed7b66'
+  },
 
-    pauseBtn: {
-        position: 'absolute',
-        left: 0,
-        top: 0,
-        width: width,
-        height: width * 0.56
-    },
+  pauseBtn: {
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    width: width,
+    height: width * 0.56
+  },
 
-    infoBox: {
-        width: width,
-        flexDirection: 'row',
-        justifyContent: 'center',
-        marginTop: 10
-    },
+  infoBox: {
+    width: width,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 10
+  },
 
-    avatar: {
-        width: 60,
-        height: 60,
-        marginRight: 10,
-        marginLeft: 10,
-        borderRadius: 30
-    },
+  avatar: {
+    width: 60,
+    height: 60,
+    marginRight: 10,
+    marginLeft: 10,
+    borderRadius: 30
+  },
 
-    descBox: {
-        flex: 1
-    },
+  descBox: {
+    flex: 1
+  },
 
-    nickname: {
-        fontSize: 18
-    },
+  nickname: {
+    fontSize: 18
+  },
 
-    title: {
-        marginTop: 8,
-        fontSize: 16,
-        color: '#666'
-    },
+  title: {
+    marginTop: 8,
+    fontSize: 16,
+    color: '#666'
+  },
 
-    replyBox: {
-        flexDirection: 'row',
-        justifyContent: 'flex-start',
-        marginTop: 10
-    },
+  replyBox: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    marginTop: 10
+  },
 
-    replyAvatar: {
-        width: 40,
-        height: 40,
-        marginRight: 10,
-        marginLeft: 10,
-        borderRadius: 20
-    },
+  replyAvatar: {
+    width: 40,
+    height: 40,
+    marginRight: 10,
+    marginLeft: 10,
+    borderRadius: 20
+  },
 
-    replyNickname: {
-        color: '#666'
-    },
+  replyNickname: {
+    color: '#666'
+  },
 
-    replyContent: {
-        marginTop: 4,
-        color: '#666'
-    },
+  replyContent: {
+    marginTop: 4,
+    color: '#666'
+  },
 
-    reply: {
-        flex: 1
-    },
+  reply: {
+    flex: 1
+  },
 
-    loadingMore: {
-        marginVertical: 20
-    },
+  loadingMore: {
+    marginVertical: 20
+  },
 
-    loadingText: {
-        color: '#777',
-        textAlign: 'center'
-    },
+  loadingText: {
+    color: '#777',
+    textAlign: 'center'
+  },
 
-    listHeader: {
-        width: width,
-        marginTop: 10
-    },
+  listHeader: {
+    width: width,
+    marginTop: 10
+  },
 
-    commentBox: {
-        marginTop: 10,
-        marginBottom: 10,
-        padding: 8,
-        width: width
-    },
+  commentBox: {
+    marginTop: 10,
+    marginBottom: 10,
+    padding: 8,
+    width: width
+  },
 
-    content: {
-        paddingLeft: 4,
-        color: '#333',
-        borderWidth: 1,
-        borderColor: '#ddd',
-        borderRadius: 4,
-        fontSize: 14,
-        height: 80
-    },
+  content: {
+    paddingLeft: 4,
+    color: '#333',
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 4,
+    fontSize: 14,
+    height: 80
+  },
 
-    commentArea: {
-        width: width,
-        paddingBottom: 6,
-        paddingLeft: 10,
-        paddingRight: 10,
-        borderBottomWidth: 1,
-        borderBottomColor: '#eee'
-    }
-});
+  commentArea: {
+    width: width,
+    paddingBottom: 6,
+    paddingLeft: 10,
+    paddingRight: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee'
+  }
+})
