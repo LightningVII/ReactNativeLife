@@ -19,10 +19,6 @@ import {
 const { width } = Dimensions.get('window')
 
 class Comment extends React.Component {
-  constructor (props) {
-    super(props)
-  }
-
   componentDidMount () {
     this.props.fetchComments(this.props.rowData._id)
   }

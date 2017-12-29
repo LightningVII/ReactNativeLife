@@ -30,6 +30,8 @@ class App extends React.Component {
       return <Login {...this.props} />
     }
 
+    // <Repast title={'asd'} />
+
     return <Tabs />
   }
 }

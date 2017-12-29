@@ -6,10 +6,6 @@ import style from '../../common/style'
 const { width, height } = Dimensions.get('window')
 
 export default class Slider extends React.Component {
-  constructor (props) {
-    super(props)
-  }
-
   render () {
     const { banners, enteredSlide, sliderLoop } = this.props
 

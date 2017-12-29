@@ -12,10 +12,6 @@ import * as appActions from '../../actions/app'
 import { StyleSheet, View, FlatList, RefreshControl } from 'react-native'
 
 class List extends React.Component {
-  constructor (props) {
-    super(props)
-  }
-
   _popup (title, content) {
     this.props.popAlert(title, content)
   }
