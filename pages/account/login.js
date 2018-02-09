@@ -9,28 +9,35 @@ import CountDown from '../../components/CountDown'
 import style from '../../common/style'
 const { width } = Dimensions.get('window')
 export default class Login extends React.Component {
-  state = {
-    pop: null,
-    verifyCode: '',
-    phoneNumber: '',
-    countingDone: false,
-    text: 'Useless Placeholder',
-    codeSent: false
-  };
+  constructor () {
+    super()
+    this.state = {
+      pop: null,
+      verifyCode: '',
+      phoneNumber: '',
+      countingDone: false,
+      text: 'Useless Placeholder',
+      codeSent: false
+    }
+    this.showVerifyCode = this.showVerifyCode.bind(this)
+    this.countingDone = this.countingDone.bind(this)
+    this.sendVerifyCode = this.sendVerifyCode.bind(this)
+    this.submit = this.submit.bind(this)
+  }
 
-  showVerifyCode = () => {
+  showVerifyCode () {
     this.setState({
       codeSent: true
     })
-  };
+  }
 
-  countingDone = () => {
+  countingDone () {
     this.setState({
       countingDone: true
     })
-  };
+  }
 
-  sendVerifyCode = async () => {
+  async sendVerifyCode () {
     this.input.blur()
     const phoneNumber = this.state.phoneNumber
 
@@ -50,17 +57,14 @@ export default class Login extends React.Component {
       if (data && data.success) {
         this.showVerifyCode()
       } else {
-        this.props.popAlert(
-                    '呜呜~',
-                    '获取验证码失败，请检查手机号是否正确'
-                )
+        this.props.popAlert('呜呜~', '获取验证码失败，请检查手机号是否正确')
       }
     } catch (error) {
       this.props.popAlert('呜呜~', '获取验证码失败，请检查网络是否良好')
     }
-  };
+  }
 
-  submit = async () => {
+  async submit () {
     const phoneNumber = this.state.phoneNumber
     const verifyCode = this.state.verifyCode
 
@@ -79,25 +83,22 @@ export default class Login extends React.Component {
       if (data && data.success) {
         this.props.afterLogin(data.data)
       } else {
-        this.props.popAlert(
-                    '呜呜~',
-                    '获取验证码失败，请检查手机号是否正确'
-                )
+        this.props.popAlert('呜呜~', '获取验证码失败，请检查手机号是否正确')
       }
     } catch (error) {
       this.props.popAlert('呜呜~', '获取验证码失败，请检查网络是否良好')
     }
-  };
+  }
   render () {
     const btnStyle = this.state.codeSent
-            ? style.btn('登录', this.submit)
-            : style.btn('获取验证码', this.sendVerifyCode)
+      ? style.btn('登录', this.submit)
+      : style.btn('获取验证码', this.sendVerifyCode)
     return (
       <ImageBackground
         source={require('../../static/images/WechatIMG21.jpeg')}
         style={styles.container}
         onPress={() => this.this.input.blur()}
-            >
+      >
         <View style={{ width: '100%' }}>
           <FormInput
             containerStyle={styles.inputField}
@@ -109,10 +110,10 @@ export default class Login extends React.Component {
                 phoneNumber: text
               })
             }}
-                    />
+          />
 
-          {this.state.codeSent ? (
-            <View style={styles.verifyCodeBox}>
+          {this.state.codeSent
+            ? <View style={styles.verifyCodeBox}>
               <FormInput
                 containerStyle={styles.verifyCodeInput}
                 placeholder='请输入验证码'
@@ -122,30 +123,24 @@ export default class Login extends React.Component {
                     verifyCode: text
                   })
                 }}
-                            />
-              {this.state.countingDone ? (
-                <Button
-                  {...style.btn(
-                                        '获取验证码',
-                                        this.sendVerifyCode,
-                    {
+                />
+              {this.state.countingDone
+                  ? <Button
+                    {...style.btn('获取验证码', this.sendVerifyCode, {
                       width: 'auto',
                       marginLeft: 0,
                       marginRight: 0
-                    }
-                                    )}
-                  fontSize={14}
-                                />
-                            ) : (
-                              <CountDown
-                                buttonStyle={styles.countBtn}
-                                afterEnd={this.countingDone} // 结束回调
-                                time={5} // 正向计时 时间起点为0秒
-                                text={sec => `剩余(${sec})秒`} // 定时的文本回调
-                                />
-                            )}
+                    })}
+                    fontSize={14}
+                    />
+                  : <CountDown
+                    buttonStyle={styles.countBtn}
+                    afterEnd={this.countingDone} // 结束回调
+                    time={5} // 正向计时 时间起点为0秒
+                    text={sec => `剩余(${sec})秒`} // 定时的文本回调
+                    />}
             </View>
-                    ) : null}
+            : null}
           <Button {...btnStyle} />
         </View>
 

@@ -2,16 +2,21 @@ import React from 'react'
 import { Text, View, StyleSheet } from 'react-native'
 
 export default class CountDown extends React.Component {
-  setTimeout = GLOBAL.setTimeout;
-  clearTimeout = GLOBAL.clearTimeout;
-  time = this.props.time ? this.props.time : 60;
-  countdownTimeout;
-  state = {
-    text: this.props.text ? this.props.text(this.time) : '',
-    disabled: true
-  };
+  constructor () {
+    super()
+    this.setTimeout = GLOBAL.setTimeout
+    this.clearTimeout = GLOBAL.clearTimeout
+    this.time = this.props.time ? this.props.time : 60
+    this.countdownTimeout = null
+    this.state = {
+      text: this.props.text ? this.props.text(this.time) : '',
+      disabled: true
+    }
+    this.countdown = this.countdown.bind(this)
+    this.onPress = this.onPress.bind(this)
+  }
 
-  countdown = () => {
+  countdown () {
     const timer = () => {
       this.time -= 1
       this.setState({ text: this.props.text(this.time) })
@@ -25,11 +30,11 @@ export default class CountDown extends React.Component {
       }
     }
     this.countdownTimeout = this.setTimeout(timer, 1000)
-  };
+  }
 
-  onPress = () => {
+  onPress () {
     if (this.state.disabled) {
-            // nothing
+      // nothing
     } else {
       this.setState({ disabled: true })
       this.countdown()
@@ -37,7 +42,7 @@ export default class CountDown extends React.Component {
         this.props.onPress()
       }
     }
-  };
+  }
 
   componentDidMount () {
     this.countdown()
@@ -55,11 +60,11 @@ export default class CountDown extends React.Component {
     if (disabled) {
       style.push(this.props.disabledTextStyle)
     }
-    return disabled ? (
-      <View style={buttonStyle}>
+    return disabled
+      ? <View style={buttonStyle}>
         <Text style={[style]}>{text}</Text>
       </View>
-        ) : null
+      : null
   }
 }
 

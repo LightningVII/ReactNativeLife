@@ -5,12 +5,12 @@ import util from '../../common/util'
 import CommentList from '../comment/list'
 
 import {
-    StyleSheet,
-    Text,
-    View,
-    TouchableOpacity,
-    Dimensions,
-    ActivityIndicator
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  Dimensions,
+  ActivityIndicator
 } from 'react-native'
 
 const { width } = Dimensions.get('window')
@@ -20,7 +20,7 @@ export default class Detail extends React.Component {
     super(props)
 
     this.state = {
-            // video loads
+      // video loads
       videoOk: true,
       videoLoaded: false,
       playing: false,
@@ -28,19 +28,22 @@ export default class Detail extends React.Component {
       videoTotal: 0.0,
       currentTime: 0.0,
 
-            // video player
+      // video player
       rate: 1,
       muted: false,
       resizeMode: 'contain',
       repeat: false
     }
+    this.statusUpdate = this.statusUpdate.bind(this)
+    this.rePlay = this.rePlay.bind(this)
+    this.pause = this.pause.bind(this)
   }
 
-  statusUpdate = async status => {
+  async statusUpdate (status) {
     const { positionMillis, playableDurationMillis, isLoaded } = status
     const { isRecording } = this.state
     if (isLoaded) {
-            // console.log(status);
+      // console.log(status);
       this.setState({
         currentTime: positionMillis,
         duration: positionMillis / playableDurationMillis
@@ -85,7 +88,7 @@ export default class Detail extends React.Component {
         await this.videoPlayer.stopAsync()
       }
     }
-  };
+  }
 
   _onEnd () {
     this.setState({
@@ -100,14 +103,14 @@ export default class Detail extends React.Component {
     })
   }
 
-  rePlay = () => {
+  rePlay () {
     this.setState({
       paused: false
     })
     this.videoPlayer.playFromPositionAsync(0)
-  };
+  }
 
-  _pause = () => {
+  pause () {
     if (this.state.paused) {
       this.videoPlayer.playAsync()
       this.setState({
@@ -119,7 +122,7 @@ export default class Detail extends React.Component {
         paused: true
       })
     }
-  };
+  }
 
   render () {
     const data = this.props.rowData
@@ -141,56 +144,41 @@ export default class Detail extends React.Component {
             style={styles.video}
             onPlaybackStatusUpdate={this.statusUpdate}
             onError={this.onError}
-                    />
+          />
 
-          {!this.state.videoOk && (
-          <Text style={styles.failText}>视频出错了！很抱歉</Text>
-                    )}
+          {!this.state.videoOk &&
+            <Text style={styles.failText}>视频出错了！很抱歉</Text>}
 
-          {!this.state.videoLoaded && (
-          <ActivityIndicator
-            color='#eeeeee'
-            style={styles.loading}
-                        />
-                    )}
+          {!this.state.videoLoaded &&
+            <ActivityIndicator color='#eeeeee' style={styles.loading} />}
 
-          {this.state.videoLoaded && !this.state.playing ? (
-            <Icon
+          {this.state.videoLoaded && !this.state.playing
+            ? <Icon
               onPress={this.rePlay}
               name='ios-play'
               size={48}
               style={styles.resumeIcon}
-                        />
-                    ) : null}
+              />
+            : null}
 
-          {this.state.videoLoaded && this.state.playing ? (
-            <TouchableOpacity
-              onPress={this._pause}
-              style={styles.pauseBtn}
-                        >
-              {this.state.paused ? (
-                <Icon
-                  size={48}
-                  name='ios-play'
-                  style={styles.resumeIcon}
-                                />
-                            ) : null}
+          {this.state.videoLoaded && this.state.playing
+            ? <TouchableOpacity onPress={this.pause} style={styles.pauseBtn}>
+              {this.state.paused
+                  ? <Icon size={48} name='ios-play' style={styles.resumeIcon} />
+                  : null}
             </TouchableOpacity>
-                    ) : null}
+            : null}
 
           <View style={styles.progressBox}>
             <View
               style={[
                 styles.progressBar,
-                                { width: width * this.state.duration }
+                { width: width * this.state.duration }
               ]}
-                        />
+            />
           </View>
         </View>
-        <CommentList
-          rowData={data}
-          navigation={this.props.navigation}
-                />
+        <CommentList rowData={data} navigation={this.props.navigation} />
       </View>
     )
   }

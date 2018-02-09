@@ -9,25 +9,31 @@ import config from '../../common/config'
 import util from '../../common/util'
 
 import {
-    StyleSheet,
-    Text,
-    View,
-    TextInput,
-    Platform,
-    Image,
-    ImageBackground,
-    TouchableOpacity,
-    Dimensions
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  Platform,
+  Image,
+  ImageBackground,
+  TouchableOpacity,
+  Dimensions
 } from 'react-native'
 
 const width = Dimensions.get('window').width
 
 export default class AccountUpdate extends React.Component {
-  state = {
-    user: this.props.user,
-    avatarProgress: 0,
-    avatarUploading: false
-  };
+  constructor () {
+    super()
+    this.state = {
+      user: this.props.user,
+      avatarProgress: 0,
+      avatarUploading: false
+    }
+    this.pickImage = this.pickImage.bind(this)
+    this.upload = this.upload.bind(this)
+    this.asyncUser = this.asyncUser.bind(this)
+  }
 
   componentDidMount () {
     this.props.checkUserStatus()
@@ -38,17 +44,17 @@ export default class AccountUpdate extends React.Component {
     const signatureURL = config.api.signature
 
     return request
-            .post(signatureURL, {
-              accessToken,
-              type: 'avatar',
-              cloud: 'qiniu'
-            })
-            .catch(err => {
-              console.log(err)
-            })
+      .post(signatureURL, {
+        accessToken,
+        type: 'avatar',
+        cloud: 'qiniu'
+      })
+      .catch(err => {
+        console.log(err)
+      })
   }
 
-  pickImage = async () => {
+  async pickImage () {
     let result = await ImagePicker.launchImageLibraryAsync({
       allowsEditing: true,
       aspect: [4, 3]
@@ -61,7 +67,7 @@ export default class AccountUpdate extends React.Component {
         if (data && data.success) {
           const token = data.data.token
           const key = data.data.key
-          const {FormData} = window
+          const { FormData } = window
           let body = new FormData()
 
           body.append('token', token)
@@ -76,16 +82,16 @@ export default class AccountUpdate extends React.Component {
         }
       })
     }
-  };
+  }
 
-  upload = fromData => {
+  upload (fromData) {
     this.setState({
       avatarUploading: true,
       avatarProgress: 0
     })
 
     const uploadUrl = 'http://upload.qiniup.com'
-    const {XMLHttpRequest} = window
+    const { XMLHttpRequest } = window
     const xhr = new XMLHttpRequest()
     xhr.open('POST', uploadUrl, true)
 
@@ -109,14 +115,13 @@ export default class AccountUpdate extends React.Component {
       }
 
       if (
-                xhr.readyState === 4 &&
-                xhr.status === 200 &&
-                xhr.responseText !== ''
-            ) {
+        xhr.readyState === 4 &&
+        xhr.status === 200 &&
+        xhr.responseText !== ''
+      ) {
         let user = this.state.user
         if (res.key) {
-          user.avatar =
-                        'http://7xpwuf.com1.z0.glb.clouddn.com/' + res.key
+          user.avatar = 'http://7xpwuf.com1.z0.glb.clouddn.com/' + res.key
         }
 
         this.setState({
@@ -132,9 +137,7 @@ export default class AccountUpdate extends React.Component {
     if (xhr.upload) {
       xhr.upload.addEventListener('progress', event => {
         if (event.lengthComputable) {
-          let percent = Number(
-                        (event.loaded / event.total).toFixed(2)
-                    )
+          let percent = Number((event.loaded / event.total).toFixed(2))
 
           this.setState({
             avatarProgress: percent
@@ -144,13 +147,13 @@ export default class AccountUpdate extends React.Component {
     }
 
     xhr.send(fromData)
-  };
+  }
 
-  asyncUser = () => {
+  asyncUser () {
     this.props.updateUserInfo(this.state.user).then(() => {
       this.props.popAlert('汪汪~', '头像更新成功')
     })
-  };
+  }
 
   _changeUserState (key, value) {
     let user = this.state.user
@@ -166,60 +169,51 @@ export default class AccountUpdate extends React.Component {
     const user = this.state.user
     return (
       <View style={styles.container}>
-        {user.avatar ? (
-          <TouchableOpacity
+        {user.avatar
+          ? <TouchableOpacity
             onPress={this.pickImage}
             style={styles.avatarContainer}
-                    >
+            >
             <ImageBackground
               source={{ uri: util.avatar(user.avatar, 'image') }}
               style={styles.avatarContainer}
-                        >
+              >
               <View style={styles.avatarBox}>
-                {this.state.avatarUploading ? (
-                  <Circle
-                    showsText
-                    size={75}
-                    color={'#eeeeee'}
-                    progress={this.state.avatarProgress}
-                                    />
-                                ) : (
-                                  <Image
-                                    source={{
-                                      uri: util.avatar(
-                                                user.avatar,
-                                                'image'
-                                            )
-                                    }}
-                                    style={styles.avatar}
-                                    />
-                                )}
+                {this.state.avatarUploading
+                    ? <Circle
+                      showsText
+                      size={75}
+                      color={'#eeeeee'}
+                      progress={this.state.avatarProgress}
+                      />
+                    : <Image
+                      source={{
+                        uri: util.avatar(user.avatar, 'image')
+                      }}
+                      style={styles.avatar}
+                      />}
               </View>
               <Text style={styles.avatarTip}>戳这里换头像</Text>
             </ImageBackground>
           </TouchableOpacity>
-                ) : (
-                  <TouchableOpacity
-                    onPress={this.pickImage.bind(this)}
-                    style={styles.avatarContainer}
-                    >
-                    <Text style={styles.avatarTip}>添加狗狗头像</Text>
-                    <View style={styles.avatarBox}>
-                      {this.state.avatarUploading ? (
-                        <Circle
-                          showsText
-                          size={75}
-                          progress={this.state.avatarProgress}
-                                />
-                            ) : (
-                              <Icon
-                                name='ios-cloud-upload-outline'
-                                style={styles.plusIcon}
-                                />
-                            )}
-                    </View>
-                  </TouchableOpacity>
-                )}
+          : <TouchableOpacity
+            onPress={this.pickImage.bind(this)}
+            style={styles.avatarContainer}
+            >
+            <Text style={styles.avatarTip}>添加狗狗头像</Text>
+            <View style={styles.avatarBox}>
+              {this.state.avatarUploading
+                  ? <Circle
+                    showsText
+                    size={75}
+                    progress={this.state.avatarProgress}
+                    />
+                  : <Icon
+                    name='ios-cloud-upload-outline'
+                    style={styles.plusIcon}
+                    />}
+            </View>
+          </TouchableOpacity>}
 
         <View style={styles.modalContainer}>
           <View style={styles.fieldItem}>
@@ -234,7 +228,7 @@ export default class AccountUpdate extends React.Component {
               onChangeText={text => {
                 this._changeUserState('nickname', text)
               }}
-                        />
+            />
           </View>
 
           <View style={styles.fieldItem}>
@@ -249,7 +243,7 @@ export default class AccountUpdate extends React.Component {
               onChangeText={text => {
                 this._changeUserState('breed', text)
               }}
-                        />
+            />
           </View>
 
           <View style={styles.fieldItem}>
@@ -264,7 +258,7 @@ export default class AccountUpdate extends React.Component {
               onChangeText={text => {
                 this._changeUserState('age', text)
               }}
-                        />
+            />
           </View>
 
           <View style={styles.fieldItem}>
@@ -278,9 +272,9 @@ export default class AccountUpdate extends React.Component {
                 user.gender === 'male' && styles.genderChecked
               ]}
               name='ios-paw'
-                        >
-                            男
-                        </Icon.Button>
+            >
+              男
+            </Icon.Button>
             <Icon.Button
               onPress={() => {
                 this._changeUserState('gender', 'female')
@@ -290,9 +284,9 @@ export default class AccountUpdate extends React.Component {
                 user.gender === 'female' && styles.genderChecked
               ]}
               name='ios-paw-outline'
-                        >
-                            女
-                        </Icon.Button>
+            >
+              女
+            </Icon.Button>
           </View>
 
           <Button
@@ -308,7 +302,7 @@ export default class AccountUpdate extends React.Component {
             }}
             onPress={this.asyncUser}
             title={'保存资料'}
-                    />
+          />
         </View>
 
         <Popup {...this.props} />

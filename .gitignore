@@ -5,6 +5,7 @@
 
 # dependencies
 /node_modules
+components/chameleon
 
 # misc
 .env.local

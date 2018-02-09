@@ -23,9 +23,10 @@ class Comment extends Component {
     this.state = {
       content: ''
     }
+    this.submit = this.submit.bind(this)
   }
 
-  submit = () => {
+  submit () {
     if (!this.state.content) {
       return this.props.popAlert('呜呜~', '留言不能为空')
     }

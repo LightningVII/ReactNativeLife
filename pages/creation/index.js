@@ -12,18 +12,26 @@ import * as appActions from '../../actions/app'
 import { StyleSheet, View, FlatList, RefreshControl } from 'react-native'
 
 class List extends React.Component {
+  constructor (props) {
+    super(props)
+    this.renderRow = this.renderRow.bind(this)
+    this.renderFooter = this.renderFooter.bind(this)
+  }
+
   _popup (title, content) {
     this.props.popAlert(title, content)
   }
 
-  renderRow = ({ item: row }) => (
-    <Item
-      user={this.props.user}
-      popAlert={this._popup.bind(this)}
-      onSelect={() => this.props.onLoadItem(row)}
-      row={row}
-        />
-    );
+  renderRow ({ item: row }) {
+    return (
+      <Item
+        user={this.props.user}
+        popAlert={this._popup.bind(this)}
+        onSelect={() => this.props.onLoadItem(row)}
+        row={row}
+      />
+    )
+  }
 
   _hasMore () {
     const { videoList, videoTotal } = this.props
@@ -43,7 +51,7 @@ class List extends React.Component {
     this.props.fetchCreations('recent')
   }
 
-  renderFooter = () => {
+  renderFooter () {
     const { videoTotal, isLoadingTail } = this.props
 
     if (!this._hasMore() && videoTotal !== 0) {
@@ -71,13 +79,13 @@ class List extends React.Component {
             <RefreshControl
               refreshing={isRefreshing}
               onRefresh={this._onRefresh.bind(this)}
-                        />
-                    }
+            />
+          }
           onEndReachedThreshold={20}
           enableEmptySections
           showsVerticalScrollIndicator={false}
           automaticallyAdjustContentInsets={false}
-                />
+        />
         <Popup {...this.props} />
       </View>
     )

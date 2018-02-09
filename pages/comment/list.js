@@ -7,29 +7,36 @@ import Loading from '../../components/loading'
 import * as util from '../../common/util'
 
 import {
-    StyleSheet,
-    Text,
-    View,
-    Dimensions,
-    FlatList,
-    Image,
-    TextInput
+  StyleSheet,
+  Text,
+  View,
+  Dimensions,
+  FlatList,
+  Image,
+  TextInput
 } from 'react-native'
 
 const { width } = Dimensions.get('window')
 
 class Comment extends React.Component {
+  constructor (props) {
+    super(props)
+    this.renderRow = this.renderRow.bind(this)
+    this.renderHeader = this.renderHeader.bind(this)
+    this.renderFooter = this.renderFooter.bind(this)
+  }
+
   componentDidMount () {
     this.props.fetchComments(this.props.rowData._id)
   }
 
-  renderRow = ({ item: row }) => {
+  renderRow ({ item: row }) {
     return (
       <View style={styles.replyBox}>
         <Image
           style={styles.replyAvatar}
           source={{ uri: util.avatar(row.replyBy.avatar) }}
-                />
+        />
         <View style={styles.reply}>
           <Text style={styles.replyNickname}>
             {row.replyBy.nickname}
@@ -38,7 +45,7 @@ class Comment extends React.Component {
         </View>
       </View>
     )
-  };
+  }
 
   _focus () {
     this.props.navigation.navigate('Comment', {
@@ -46,7 +53,7 @@ class Comment extends React.Component {
     })
   }
 
-  renderHeader = () => {
+  renderHeader () {
     const data = this.props.rowData
 
     return (
@@ -55,7 +62,7 @@ class Comment extends React.Component {
           <Image
             style={styles.avatar}
             source={{ uri: util.avatar(data.author.avatar) }}
-                    />
+          />
           <View style={styles.descBox}>
             <Text style={styles.nickname}>
               {data.author.nickname}
@@ -71,7 +78,7 @@ class Comment extends React.Component {
               style={styles.content}
               multiline
               onFocus={this._focus.bind(this)}
-                        />
+            />
           </View>
         </View>
 
@@ -80,9 +87,9 @@ class Comment extends React.Component {
         </View>
       </View>
     )
-  };
+  }
 
-  renderFooter = () => {
+  renderFooter () {
     const { commentTotal, isCommentLoadingTail } = this.props
 
     if (!this._hasMore() || commentTotal === 0) {
@@ -94,7 +101,7 @@ class Comment extends React.Component {
     }
 
     return null
-  };
+  }
 
   _hasMore () {
     const { commentList, commentTotal } = this.props
@@ -129,7 +136,7 @@ class Comment extends React.Component {
         enableEmptySections
         showsVerticalScrollIndicator={false}
         automaticallyAdjustContentInsets={false}
-            />
+      />
     )
   }
 }
@@ -138,13 +145,13 @@ function mapStateToProps (state) {
   const { user } = state.get('app')
 
   const {
-        isCommentRefreshing,
-        isCommentLoadingTail,
-        commentList,
-        commentTotal,
-        popup,
-        page
-    } = state.get('comments')
+    isCommentRefreshing,
+    isCommentLoadingTail,
+    commentList,
+    commentTotal,
+    popup,
+    page
+  } = state.get('comments')
 
   return {
     isCommentRefreshing,
