@@ -27,6 +27,7 @@ export default {
   },
   api: {
     creations: baseUrl + 'api/creations',
+    movies: baseUrl + 'api/movies',
     comment: baseUrl + 'api/comments',
     up: baseUrl + 'api/up',
     video: baseUrl + 'api/creations/video',

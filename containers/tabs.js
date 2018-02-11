@@ -4,8 +4,10 @@ import { StackNavigator, TabNavigator } from 'react-navigation'
 
 import Ionicons from 'react-native-vector-icons/Ionicons'
 
-import List from './creation'
+import Movie from './movie'
+import Chart from './chart'
 import Detail from './detail'
+import MovieDetail from './movieDetail'
 import Comment from './comment'
 import Edit from './edit'
 import Account from './account'
@@ -16,7 +18,7 @@ const addNewProps = (WrappedComponent, newProps) => {
     render () {
       return <WrappedComponent {...this.props} {...newProps} />
     }
-    }
+  }
 }
 
 const TabBarIcon = ({ tintColor, focused, defaultIcon, focusedIcon }) => (
@@ -24,7 +26,7 @@ const TabBarIcon = ({ tintColor, focused, defaultIcon, focusedIcon }) => (
     name={focused ? defaultIcon : focusedIcon}
     size={26}
     style={{ color: tintColor }}
-    />
+  />
 )
 
 const tabBarIcon = (d, f) => ({ tintColor, focused }) => {
@@ -34,7 +36,7 @@ const tabBarIcon = (d, f) => ({ tintColor, focused }) => {
 
 const headerAttr = {
   headerStyle: {
-    backgroundColor: '#444'
+    backgroundColor: '#777'
   },
   headerTitleStyle: {
     color: '#eee'
@@ -44,13 +46,23 @@ const headerAttr = {
 const TabNav = TabNavigator(
   {
     MainTab: {
-      screen: List,
+      screen: Movie,
       path: '/',
       navigationOptions: {
-        title: '狗狗说',
+        title: '爱看广告',
         tabBarLabel: 'Home',
         ...headerAttr,
         tabBarIcon: tabBarIcon('ios-home', 'ios-home-outline')
+      }
+    },
+    ChartTab: {
+      screen: Chart,
+      path: '/',
+      navigationOptions: {
+        title: '图表',
+        tabBarLabel: 'Chart',
+        ...headerAttr,
+        tabBarIcon: tabBarIcon('ios-stats', 'ios-stats-outline')
       }
     },
     EditTab: {
@@ -75,10 +87,10 @@ const TabNav = TabNavigator(
           <Text
             style={{ color: '#eeeeee', paddingRight: 10 }}
             onPress={() => navigation.navigate('AccountUpdate')}
-                    >
-                        编辑
-                    </Text>
-                ),
+          >
+            编辑
+          </Text>
+        ),
         tabBarIcon: tabBarIcon('ios-settings', 'ios-settings-outline')
       })
     }
@@ -109,6 +121,12 @@ const StacksOverTabs = StackNavigator({
   },
   Detail: {
     screen: Detail,
+    navigationOptions: ({ navigation }) => ({
+      title: `${navigation.state.params.rowData.author.nickname} 的创意`
+    })
+  },
+  MovieDetail: {
+    screen: MovieDetail,
     navigationOptions: ({ navigation }) => ({
       title: `${navigation.state.params.rowData.author.nickname} 的创意`
     })

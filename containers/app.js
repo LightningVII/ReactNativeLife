@@ -7,7 +7,6 @@ import Boot from '../components/boot'
 import Tabs from './tabs'
 import * as appActions from '../actions/app'
 
-// import Repast from '../Repast'
 // import { AsyncStorage } from 'react-native'
 
 // AsyncStorage.multiRemove(['booted', 'user', 'logined', 'entered'])
@@ -29,8 +28,6 @@ class App extends React.Component {
     if (!this.props.logined) {
       return <Login {...this.props} />
     }
-
-    // <Repast title={'asd'} />
 
     return <Tabs />
   }
