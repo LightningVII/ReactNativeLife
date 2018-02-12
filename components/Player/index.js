@@ -8,6 +8,7 @@ import {
 } from 'react-native-gesture-handler'
 import { Text, View, TouchableOpacity, ActivityIndicator } from 'react-native'
 import ProgressBar from './ProgressBar'
+import Volume from './Volume'
 import styles from './styles'
 export default class Detail extends React.Component {
   constructor (props) {
@@ -167,11 +168,6 @@ export default class Detail extends React.Component {
     }
     if (!videoOk) status = <Text style={styles.failText}>视频出错了！很抱歉</Text>
 
-    let volumeIcon = ''
-
-    volumeIcon = volume > 50 ? 'ios-volume-up' : 'ios-volume-down'
-    volumeIcon = volume === 0 ? 'ios-volume-off' : volumeIcon
-
     return (
       <View style={styles.container}>
         <View style={styles.videoBox}>
@@ -206,36 +202,16 @@ export default class Detail extends React.Component {
           </TapGestureHandler>
           {status}
           <ProgressBar duration={duration} />
-          <View
+          <Volume
+            showVolume={showVolume}
+            volume={volume}
             style={{
               opacity: showVolume,
-              width: 40,
               position: 'absolute',
               left: 100,
-              alignSelf: 'center',
-              alignItems: 'center'
+              alignSelf: 'center'
             }}
-          >
-            <ProgressBar
-              style={{
-                overflow: 'hidden',
-                borderRadius: 5
-              }}
-              duration={volume / 100}
-              height={100}
-              width={10}
-              horizontal={false}
-            />
-            <Icon
-              name={volumeIcon}
-              size={24}
-              style={{
-                color: '#DDD',
-                textAlign: 'center',
-                backgroundColor: 'transparent'
-              }}
-            />
-          </View>
+          />
         </View>
       </View>
     )
