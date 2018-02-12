@@ -17,7 +17,8 @@ export default class ProgressBar extends React.Component {
         style={[
           styles.progressBox,
           {
-            height
+            height,
+            width
           },
           style
         ]}

@@ -8,14 +8,14 @@ export default StyleSheet.create({
 
   videoBox: {
     width: screenWidth,
-    height: screenWidth * 0.56,
+    height: screenWidth * 1.5,
     justifyContent: 'center',
     backgroundColor: '#000'
   },
 
   video: {
     width: screenWidth,
-    height: screenWidth * 0.56,
+    height: screenWidth * 1.5,
     backgroundColor: '#000'
   },
 

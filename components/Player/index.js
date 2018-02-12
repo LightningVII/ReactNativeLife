@@ -125,7 +125,15 @@ export default class Detail extends React.Component {
   }
 
   render () {
-    const { videoOk, videoLoaded, playing, paused } = this.state
+    const {
+      videoOk,
+      videoLoaded,
+      playing,
+      paused,
+      volume,
+      showVolume,
+      duration
+    } = this.state
 
     let status = null
 
@@ -158,6 +166,11 @@ export default class Detail extends React.Component {
       status = <ActivityIndicator color='#eee' style={styles.loading} />
     }
     if (!videoOk) status = <Text style={styles.failText}>视频出错了！很抱歉</Text>
+
+    let volumeIcon = ''
+
+    volumeIcon = volume > 50 ? 'ios-volume-up' : 'ios-volume-down'
+    volumeIcon = volume === 0 ? 'ios-volume-off' : volumeIcon
 
     return (
       <View style={styles.container}>
@@ -192,21 +205,37 @@ export default class Detail extends React.Component {
             </PanGestureHandler>
           </TapGestureHandler>
           {status}
-          <ProgressBar duration={this.state.duration} />
-          <ProgressBar
+          <ProgressBar duration={duration} />
+          <View
             style={{
-              opacity: this.state.showVolume,
+              opacity: showVolume,
+              width: 40,
               position: 'absolute',
               left: 100,
-              top: 45,
-              overflow: 'hidden',
-              borderRadius: 5
+              alignSelf: 'center',
+              alignItems: 'center'
             }}
-            duration={this.state.volume / 100}
-            height={100}
-            width={10}
-            horizontal={false}
-          />
+          >
+            <ProgressBar
+              style={{
+                overflow: 'hidden',
+                borderRadius: 5
+              }}
+              duration={volume / 100}
+              height={100}
+              width={10}
+              horizontal={false}
+            />
+            <Icon
+              name={volumeIcon}
+              size={24}
+              style={{
+                color: '#DDD',
+                textAlign: 'center',
+                backgroundColor: 'transparent'
+              }}
+            />
+          </View>
         </View>
       </View>
     )
