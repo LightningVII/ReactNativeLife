@@ -34,9 +34,10 @@ export default class Detail extends React.Component {
       resizeMode: 'contain',
       repeat: false
     }
+    this.videoPlayer = null
     this.statusUpdate = this.statusUpdate.bind(this)
     this.rePlay = this.rePlay.bind(this)
-    this.pause = this.pause.bind(this)
+    this.playOrPause = this.playOrPause.bind(this)
   }
 
   async statusUpdate (status) {
@@ -73,6 +74,7 @@ export default class Detail extends React.Component {
       }
 
       if (status.didJustFinish) {
+        console.log(this.videoPlayer)
         let newState = {}
         console.log(isRecording)
         if (isRecording) {
@@ -110,7 +112,7 @@ export default class Detail extends React.Component {
     this.videoPlayer.playFromPositionAsync(0)
   }
 
-  pause () {
+  playOrPause () {
     if (this.state.paused) {
       this.videoPlayer.playAsync()
       this.setState({
@@ -129,22 +131,22 @@ export default class Detail extends React.Component {
     return (
       <View style={styles.container}>
         <View style={styles.videoBox}>
-          <Video
-            ref={ref => {
-              this.videoPlayer = ref
-            }}
-            source={{
-              uri: util.video(data.video)
-            }}
-            rate={1.0}
-            volume={1.0}
-            muted={false}
-            resizeMode={'cover'}
-            shouldPlay
-            style={styles.video}
-            onPlaybackStatusUpdate={this.statusUpdate}
-            onError={this.onError}
-          />
+          <TouchableOpacity activeOpacity={1} onPress={this.playOrPause}>
+            <Video
+              ref={ref => (this.videoPlayer = ref)}
+              source={{
+                uri: util.video(data.video)
+              }}
+              rate={1.0}
+              volume={1.0}
+              muted={false}
+              resizeMode={'cover'}
+              shouldPlay
+              style={styles.video}
+              onPlaybackStatusUpdate={this.statusUpdate}
+              onError={this.onError}
+            />
+          </TouchableOpacity>
 
           {!this.state.videoOk &&
             <Text style={styles.failText}>视频出错了！很抱歉</Text>}
@@ -153,19 +155,25 @@ export default class Detail extends React.Component {
             <ActivityIndicator color='#eeeeee' style={styles.loading} />}
 
           {this.state.videoLoaded && !this.state.playing
-            ? <Icon
-              onPress={this.rePlay}
-              name='ios-play'
-              size={48}
-              style={styles.resumeIcon}
-              />
+            ? <TouchableOpacity style={styles.resumeIcon} onPress={this.rePlay}>
+              <Icon
+                name='ios-play'
+                size={24}
+                style={{ color: '#DDD', textAlign: 'center' }}
+                />
+            </TouchableOpacity>
             : null}
 
-          {this.state.videoLoaded && this.state.playing
-            ? <TouchableOpacity onPress={this.pause} style={styles.pauseBtn}>
-              {this.state.paused
-                  ? <Icon size={48} name='ios-play' style={styles.resumeIcon} />
-                  : null}
+          {this.state.videoLoaded && this.state.playing && this.state.paused
+            ? <TouchableOpacity
+              onPress={this.playOrPause}
+              style={styles.resumeIcon}
+              >
+              <Icon
+                name='ios-play'
+                size={24}
+                style={{ color: '#DDD', textAlign: 'center' }}
+                />
             </TouchableOpacity>
             : null}
 
@@ -193,6 +201,7 @@ const styles = StyleSheet.create({
   videoBox: {
     width: width,
     height: width * 0.56,
+    justifyContent: 'center',
     backgroundColor: '#000'
   },
 
@@ -235,17 +244,14 @@ const styles = StyleSheet.create({
 
   resumeIcon: {
     position: 'absolute',
-    top: 80,
-    left: width / 2 - 30,
-    width: 60,
-    height: 60,
-    paddingTop: 8,
-    paddingLeft: 22,
+    width: 40,
+    height: 40,
+    justifyContent: 'center',
+    alignSelf: 'center',
     backgroundColor: 'transparent',
-    borderColor: '#fff',
-    borderWidth: 1,
-    borderRadius: 30,
-    color: '#ed7b66'
+    borderColor: '#DDD',
+    borderWidth: 4,
+    borderRadius: 20
   },
 
   pauseBtn: {

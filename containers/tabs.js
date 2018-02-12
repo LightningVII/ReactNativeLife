@@ -128,7 +128,7 @@ const StacksOverTabs = StackNavigator({
   MovieDetail: {
     screen: MovieDetail,
     navigationOptions: ({ navigation }) => ({
-      title: `${navigation.state.params.rowData.author.nickname} 的创意`
+      title: `${navigation.state.params.rowData.author.nickname} 的广告`
     })
   },
   Comment: {
