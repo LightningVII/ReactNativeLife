@@ -1,15 +1,16 @@
 import React from 'react'
-import Ceiling from './index'
-import { Text } from 'react-native'
-export default class CeilingExample extends React.Component {
+import StickyHeader from './index'
+import { StyleSheet, Text } from 'react-native'
+
+export default class StickyHeaderExample extends React.Component {
   constructor () {
     super()
     this.state = {
       text: 'suctorial',
-      color: '#CCC',
-      arr: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+      color: '#ddd',
+      listItems: []
     }
-    this.count = 18
+    this.count = 0
     this.sucked = this.sucked.bind(this)
     this.separate = this.separate.bind(this)
     this.addCount = this.addCount.bind(this)
@@ -23,64 +24,66 @@ export default class CeilingExample extends React.Component {
   separate () {
     this.setState({
       text: 'separate',
-      color: '#CCC'
+      color: '#ddd'
     })
   }
   componentDidMount () {
-    const arr = []
-    for (let i = 0; i < this.count; i++) {
-      arr.push(i)
-    }
-    this.setState({
-      arr
-    })
+    this.addCount(0, 8)
   }
-  addCount () {
-    const arr = []
-    this.count += 10
+  addCount (increment, defaultVal) {
+    this.count = defaultVal || this.count
+    this.count += increment || 5
+    const listItems = []
     for (let i = 0; i < this.count; i++) {
-      arr.push(i)
+      listItems.push(i)
     }
     this.setState({
-      arr
+      listItems
     })
   }
   render () {
     return (
-      <Ceiling
+      <StickyHeader
         onSucked={this.sucked}
         onSeparate={this.separate}
         onAddItem={this.addCount}
+        top={120}
       >
-        <Text style={{ height: 150, backgroundColor: '#c3b' }}>
+        <Text
+          style={{ height: 150, marginBottom: 20, backgroundColor: '#c3b' }}
+        >
           Hello World
         </Text>
         <Text
           suctorial
-          style={{
-            width: '100%',
-            height: 40,
-            zIndex: 1,
-            top: 0,
-            backgroundColor: this.state.color
-          }}
+          style={[
+            styles.suckedItem,
+            {
+              backgroundColor: this.state.color
+            }
+          ]}
         >
           {this.state.text}
         </Text>
-        {this.state.arr.map(_ => (
-          <Text
-            key={_}
-            style={{
-              width: '100%',
-              height: 40,
-              marginTop: 10,
-              backgroundColor: '#FFF'
-            }}
-          >
+        {this.state.listItems.map(_ => (
+          <Text key={_} style={styles.listItem}>
             {_}
           </Text>
         ))}
-      </Ceiling>
+      </StickyHeader>
     )
   }
 }
+
+const styles = StyleSheet.create({
+  listItem: {
+    width: '100%',
+    height: 40,
+    marginTop: 10,
+    backgroundColor: '#FFF'
+  },
+  suckedItem: {
+    width: '100%',
+    height: 40
+  }
+})

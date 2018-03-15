@@ -1,14 +1,18 @@
 import React from 'react'
-// import AppContainer from './containers/app'
-// import Player from './components/Player'
 import Scroll from './Scroll'
 import { StyleSheet, View } from 'react-native'
-export default class App extends React.Component {
+
+export default class StickyHeader extends React.Component {
   constructor () {
     super()
+    this.state = {
+      top: 0
+    }
     this.topRef = null
+    this.topWithProps = null
     this.setTopRef = this.setTopRef.bind(this)
     this.setTop = this.setTop.bind(this)
+    this.layoutInfo = this.layoutInfo.bind(this)
   }
   setTop (type) {
     this.topRef.setNativeProps({
@@ -20,36 +24,36 @@ export default class App extends React.Component {
   setTopRef (ref) {
     this.topRef = ref
   }
+  layoutInfo (e) {
+    this.setState({ top: e.nativeEvent.layout.y })
+  }
   render () {
-    const childrenWithProps = React.Children.map(
-      this.props.children,
-      child =>
-        (child.props.suctorial
-          ? React.cloneElement(child, {
-            style: {
-              ...child.props.style,
-              ...{
-                display: 'none',
-                zIndex: 1,
-                top: 0,
-                position: 'absolute'
-              }
-            },
-            ref: this.setTopRef
-          })
-          : null)
-    )
+    const childrenWithProps = React.Children.map(this.props.children, child => {
+      if (child.props.suctorial) {
+        this.topWithProps = React.cloneElement(child, {
+          style: [child.props.style, styles.suckedStyle],
+          ref: this.setTopRef,
+          suctorial: void 0
+        })
+
+        return React.cloneElement(child, {
+          onLayout: this.layoutInfo
+        })
+      }
+      return child
+    })
 
     return (
       <View style={styles.container}>
-        {childrenWithProps}
+        {this.topWithProps}
         <Scroll
+          top={this.state.top}
           setTop={this.setTop}
           sucked={this.props.onSucked}
           separate={this.props.onSeparate}
           addItems={this.props.onAddItem}
         >
-          {this.props.children}
+          {childrenWithProps}
         </Scroll>
       </View>
     )
@@ -61,5 +65,11 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#ccc',
     flexDirection: 'column'
+  },
+  suckedStyle: {
+    display: 'none',
+    zIndex: 1,
+    top: 0,
+    position: 'absolute'
   }
 })

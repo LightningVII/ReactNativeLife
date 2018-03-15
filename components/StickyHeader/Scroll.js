@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
-import { ScrollView, Alert } from 'react-native'
+import { ScrollView } from 'react-native'
 
 export default class Scroll extends Component {
   constructor () {
     super()
+    this.top = 0
     this.flag = false
     this.sole = false
     this.onScroll = this.onScroll.bind(this)
@@ -17,18 +18,10 @@ export default class Scroll extends Component {
       this.sole !== true
     ) {
       this.sole = true
-      Alert.alert('Alert Title', null, [
-        {
-          text: 'Foo',
-          onPress: () => {
-            this.props.addItems()
-            this.sole = false
-          }
-        }
-      ])
+      this.props.addItems()
+      setTimeout(() => (this.sole = false), 100)
     }
-
-    if (y > 150) {
+    if (y > this.top) {
       if (this.flag === true) {
         this.props.setTop('flex')
         this.props.sucked()
@@ -43,11 +36,15 @@ export default class Scroll extends Component {
     }
   }
 
+  componentDidUpdate (prevProps, prevState) {
+    this.top = this.top || this.props.top
+  }
+
   render () {
     return (
       <ScrollView
+        bounces={false}
         scrollEventThrottle={20}
-        style={{ flex: 1 }}
         onScroll={this.onScroll}
       >
         {this.props.children}
