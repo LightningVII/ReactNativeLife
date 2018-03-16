@@ -1,9 +1,9 @@
 import React from 'react'
 import { Provider } from 'react-redux'
-// import AppContainer from './containers/app'
-import Player from './components/Player'
-// import StickyHeaderExample from './components/StickyHeader/example'
-import configureStore from './store'
+// import AppContainer from './src/containers/app'
+import Player from './src/components/Player'
+// import StickyHeaderExample from './src/components/StickyHeader/example'
+import configureStore from './src/store'
 import { StyleSheet, View } from 'react-native'
 const store = configureStore()
 export default class App extends React.Component {
@@ -12,7 +12,7 @@ export default class App extends React.Component {
       <Provider store={store}>
         <View style={styles.container}>
           {/* <AppContainer /> */}
-          <Player source={require('./static/movie.mp4')} />
+          <Player source={require('./src/static/movie.mp4')} />
           {/* <StickyHeaderExample /> */}
         </View>
       </Provider>
