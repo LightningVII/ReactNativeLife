@@ -3,11 +3,22 @@
   "version": "0.1.0",
   "private": true,
   "main": "node_modules/expo/AppEntry.js",
-  "devDependencies": {
-    "pre-commit": "^1.2.2",
-    "react-native-scripts": "1.11.1",
-    "jest-expo": "25.0.0",
-    "react-test-renderer": "16.2.0"
+  "dependencies": {
+    "expo": "^25.0.0",
+    "immutable": "^3.8.2",
+    "query-string": "^5.0.1",
+    "react": "16.2.0",
+    "react-native": "https://github.com/expo/react-native/archive/sdk-25.0.0.tar.gz",
+    "react-native-elements": "^0.18.4",
+    "react-native-progress": "^3.4.0",
+    "react-native-swiper": "^1.5.13",
+    "react-native-vector-icons": "^4.4.2",
+    "react-navigation": "^1.0.0-beta.27",
+    "react-redux": "^5.0.6",
+    "redux": "^3.7.2",
+    "redux-immutable": "^4.0.0",
+    "redux-logger": "^3.0.6",
+    "redux-thunk": "^2.2.0"
   },
   "scripts": {
     "start": "react-native-scripts start",
@@ -19,26 +30,6 @@
   },
   "jest": {
     "preset": "jest-expo"
-  },
-  "dependencies": {
-    "expo": "^25.0.0",
-    "immutable": "^3.8.2",
-    "query-string": "^5.0.1",
-    "react": "16.2.0",
-    "react-native": "https://github.com/expo/react-native/archive/sdk-25.0.0.tar.gz",
-    "react-native-elements": "^0.18.4",
-    "react-native-progress": "^3.4.0",
-    "react-native-swiper": "^1.5.13",
-    "react-native-vector-icons": "^4.4.2",
-    "react-native-video": "^2.0.0",
-    "react-navigation": "^1.0.0-beta.27",
-    "react-redux": "^5.0.6",
-    "redux": "^3.7.2",
-    "redux-immutable": "^4.0.0",
-    "redux-logger": "^3.0.6",
-    "redux-promise": "^0.5.3",
-    "redux-thunk": "^2.2.0",
-    "sha1": "^1.1.1"
   },
   "pre-commit": [
     "standard"
