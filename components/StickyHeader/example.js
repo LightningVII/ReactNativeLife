@@ -1,6 +1,6 @@
 import React from 'react'
 import StickyHeader from './index'
-import { StyleSheet, Text } from 'react-native'
+import { StyleSheet, Text, View } from 'react-native'
 
 export default class StickyHeaderExample extends React.Component {
   constructor () {
@@ -46,15 +46,10 @@ export default class StickyHeaderExample extends React.Component {
       <StickyHeader
         onSucked={this.sucked}
         onSeparate={this.separate}
-        onAddItem={this.addCount}
-        top={120}
+        onAddItems={this.addCount}
       >
-        <Text
-          style={{ height: 150, marginBottom: 20, backgroundColor: '#c3b' }}
-        >
-          Hello World
-        </Text>
-        <Text
+        <View style={{ height: 150, backgroundColor: '#ec4' }} />
+        <View
           suctorial
           style={[
             styles.suckedItem,
@@ -63,12 +58,12 @@ export default class StickyHeaderExample extends React.Component {
             }
           ]}
         >
-          {this.state.text}
-        </Text>
+          <Text>{this.state.text}</Text>
+        </View>
         {this.state.listItems.map(_ => (
-          <Text key={_} style={styles.listItem}>
-            {_}
-          </Text>
+          <View key={_} style={styles.listItem}>
+            <Text>{_}</Text>
+          </View>
         ))}
       </StickyHeader>
     )
@@ -80,9 +75,13 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 40,
     marginTop: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor: '#FFF'
   },
   suckedItem: {
+    justifyContent: 'center',
+    alignItems: 'center',
     width: '100%',
     height: 40
   }
