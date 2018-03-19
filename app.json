@@ -11,8 +11,10 @@
     "icon": "./assets/icon.png",
     "splash": {
       "image": "./assets/splash.png",
-      "resizeMode": "cover",
-      "backgroundColor": "#ffffff"
+      "resizeMode": "cover"
+    },
+    "packagerOpts": {
+      "assetExts": ["ttf", "mp4"]
     },
     "ios": {
       "supportsTablet": true,
@@ -20,6 +22,7 @@
     },
     "android": {
       "package": "com.lightningvii.husky"
-    }
+    },
+    "assetBundlePatterns": ["assets/**"]
   }
 }
