@@ -1,47 +1,65 @@
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import SocketIOClient from 'socket.io-client';
+import React from 'react'
+import { StyleSheet, Text, View } from 'react-native'
+import socket from './socket.io'
+import Message from './Message'
+import ToolBar from './ToolBar'
 
 // Replace this URL with your own, if you want to run the backend locally!
-const SocketEndpoint = 'http://localhost:4000';
+const SocketEndpoint = 'http://2e6abe4e.ngrok.io'
 
-export default class App extends React.Component {
-  state = {
-    isConnected: false,
-    data: null,
-  };
-  componentDidMount() {
-    const socket = SocketIOClient(SocketEndpoint, {
-      transports: ['websocket'],
-    });
-
-    socket.on('connect', () => {
-      this.setState({ isConnected: true });
-    });
-
-    socket.on('ping', data => {
-      this.setState(data);
-    });
+class IM extends React.Component {
+  constructor () {
+    super()
+    this.state = {
+      isConnected: false,
+      data: ['121212121212121212121212121212121212']
+    }
+    this.scroll = null
+    this.handlePress = this.handlePress.bind(this)
+    this.getScroll = this.getScroll.bind(this)
   }
 
-  render() {
+  getScroll (ref) {
+    this.scroll = ref
+  }
+
+  componentDidMount () {
+    this.props.socket.on('ping', data => {
+      data &&
+        data.data &&
+        this.setState(
+          {
+            data: [...this.state.data, data.data]
+          },
+          _ => this.scroll.scrollToEnd({ animated: true })
+        )
+    })
+  }
+
+  handlePress () {
+    console.log(this.props)
+    this.props.socket.emit('listen event', 'press button')
+  }
+
+  render () {
     return (
       <View style={styles.container}>
-        <Text>connected: {this.state.isConnected ? 'true' : 'false'}</Text>
-        {this.state.data &&
-          <Text>
-            ping response: {this.state.data}
-          </Text>}
+        <Text>connected: {this.props.status}</Text>
+        <Message getScroll={this.getScroll} messages={this.state.data} />
+        <ToolBar handleEvent={this.handlePress} />
       </View>
-    );
+    )
   }
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingTop: 20,
+    paddingBottom: 30,
     backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+    justifyContent: 'center'
+  }
+})
+
+export default socket(IM, SocketEndpoint)

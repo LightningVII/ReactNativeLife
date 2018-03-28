@@ -40,7 +40,7 @@ export default class App extends React.Component {
     return (
       <Provider store={store}>
         <View style={styles.container}>
-          {/* <AppContainer /> */}
+          <AppContainer />
           <IM />
           {/* <Player source={require('./src/static/movie.mp4')} /> */}
           {/* <StickyHeaderExample /> */}
