@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { View } from 'react-native'
 import PropTypes from 'prop-types'
-import Button from '../../Button'
 
 export default class ToolBar extends Component {
   render () {
@@ -16,13 +15,13 @@ export default class ToolBar extends Component {
           bottom: 0
         }}
       >
-        <Button onPress={this.props.handleEvent} style={{ marginBottom: 60 }}>
-          我是一个button
-        </Button>
+        {this.props.children}
       </View>
     )
   }
 }
+
+export * from './plugins'
 
 ToolBar.defaultProps = {
   messages: []

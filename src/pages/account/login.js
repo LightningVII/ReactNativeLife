@@ -123,22 +123,22 @@ export default class Login extends React.Component {
                     verifyCode: text
                   })
                 }}
-                />
+              />
               {this.state.countingDone
-                  ? <Button
-                    {...style.btn('获取验证码', this.sendVerifyCode, {
-                      width: 'auto',
-                      marginLeft: 0,
-                      marginRight: 0
-                    })}
-                    fontSize={14}
-                    />
-                  : <CountDown
-                    buttonStyle={styles.countBtn}
-                    afterEnd={this.countingDone} // 结束回调
-                    time={5} // 正向计时 时间起点为0秒
-                    text={sec => `剩余(${sec})秒`} // 定时的文本回调
-                    />}
+                ? <Button
+                  {...style.btn('获取验证码', this.sendVerifyCode, {
+                    width: 'auto',
+                    marginLeft: 0,
+                    marginRight: 0
+                  })}
+                  fontSize={14}
+                />
+                : <CountDown
+                  buttonStyle={styles.countBtn}
+                  afterEnd={this.countingDone} // 结束回调
+                  time={5} // 正向计时 时间起点为0秒
+                  text={sec => `剩余(${sec})秒`} // 定时的文本回调
+                />}
             </View>
             : null}
           <Button {...btnStyle} />

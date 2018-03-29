@@ -43,11 +43,11 @@ const socket = (WrappedComponent, SocketEndpoint) => {
       })
     }
     render () {
-      return (<WrappedComponent socket={
-          this.socket
-        } {...this.state
-        } {...this.props
-        }
+      return (
+        <WrappedComponent
+          socket={this.socket}
+          {...this.state}
+          {...this.props}
         />
       )
     }

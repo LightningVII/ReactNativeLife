@@ -5,12 +5,12 @@ import config from '../../common/config'
 import util from '../../common/util'
 
 import {
-    StyleSheet,
-    Text,
-    View,
-    TouchableHighlight,
-    ImageBackground,
-    Dimensions
+  StyleSheet,
+  Text,
+  View,
+  TouchableHighlight,
+  ImageBackground,
+  Dimensions
 } from 'react-native'
 
 const width = Dimensions.get('window').width
@@ -39,19 +39,19 @@ export default class Item extends React.Component {
     }
 
     request
-            .post(url, body)
-            .then(function (data) {
-              if (data && data.success) {
-                that.setState({
-                  up: up
-                })
-              } else {
-                that.props.popAlert('失败', '点赞失败，稍后重试')
-              }
-            })
-            .catch(function () {
-              that.props.popAlert('失败', '点赞失败，稍后重试')
-            })
+      .post(url, body)
+      .then(function (data) {
+        if (data && data.success) {
+          that.setState({
+            up: up
+          })
+        } else {
+          that.props.popAlert('失败', '点赞失败，稍后重试')
+        }
+      })
+      .catch(function () {
+        that.props.popAlert('失败', '点赞失败，稍后重试')
+      })
   }
 
   render () {
@@ -63,37 +63,37 @@ export default class Item extends React.Component {
           <ImageBackground
             source={{ uri: util.thumb(row.qiniu_thumb) }}
             style={styles.thumb}
-                    >
+          >
             <Icon name='ios-play' size={28} style={styles.play} />
           </ImageBackground>
           <View style={styles.itemFooter}>
             <View style={styles.handleBox}>
               <Icon
                 name={
-                                    this.state.up
-                                        ? 'ios-heart'
-                                        : 'ios-heart-outline'
-                                }
+                  this.state.up
+                    ? 'ios-heart'
+                    : 'ios-heart-outline'
+                }
                 size={28}
                 onPress={this._up.bind(this)}
                 style={[
                   styles.up,
                   this.state.up ? null : styles.down
                 ]}
-                            />
+              />
               <Text
                 style={styles.handleText}
                 onPress={this._up.bind(this)}
-                            >
+              >
                                 喜欢
-                            </Text>
+              </Text>
             </View>
             <View style={styles.handleBox}>
               <Icon
                 name='ios-chatboxes-outline'
                 size={28}
                 style={styles.commentIcon}
-                            />
+              />
               <Text style={styles.handleText}>评论</Text>
             </View>
           </View>
@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
   thumb: {
     width: width,
     height: width * 0.56
-        // resizeMode: 'cover'
+    // resizeMode: 'cover'
   },
 
   title: {

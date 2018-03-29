@@ -13,28 +13,28 @@ export const sendComment = comment => {
     }
 
     return request
-            .post(url, body)
-            .then(data => {
-              if (data && data.success) {
-                let commentList = data.data
+      .post(url, body)
+      .then(data => {
+        if (data && data.success) {
+          let commentList = data.data
 
-                dispatch({
-                  type: types.SEND_COMMENTS_FULLFILLED,
-                  payload: {
-                    commentList: commentList,
-                    commentTotal: data.total
-                  }
-                })
-              }
-            })
-            .catch(err => {
-              dispatch({
-                type: types.SEND_COMMENTS_REJECTED,
-                payload: {
-                  err: err
-                }
-              })
-            })
+          dispatch({
+            type: types.SEND_COMMENTS_FULLFILLED,
+            payload: {
+              commentList: commentList,
+              commentTotal: data.total
+            }
+          })
+        }
+      })
+      .catch(err => {
+        dispatch({
+          type: types.SEND_COMMENTS_REJECTED,
+          payload: {
+            err: err
+          }
+        })
+      })
   }
 }
 
@@ -43,14 +43,14 @@ export const fetchComments = (cid, feed) => {
     let url = config.api.comment
     let isCommentLoadingTail = false
     let isCommentRefreshing = false
-        // let comment;
+    // let comment;
     let id = ''
 
-        // const { creationId, commentList } = getState().get('comments');
+    // const { creationId, commentList } = getState().get('comments');
 
     const { user: { accessToken } } = getState().get('app')
 
-        /* if (feed === 'recent') {
+    /* if (feed === 'recent') {
             isCommentRefreshing = true;
             comment = commentList[0];
         } else {
@@ -58,13 +58,13 @@ export const fetchComments = (cid, feed) => {
             comment = commentList[commentList.length - 1];
         } */
 
-        // if (comment && comment._id) {
-        //     if (cid === creationId) {
-        //         id = comment._id;
-        //     }
-        // }
+    // if (comment && comment._id) {
+    //     if (cid === creationId) {
+    //         id = comment._id;
+    //     }
+    // }
 
-        // console.log('=======commentList=========', commentList)
+    // console.log('=======commentList=========', commentList)
 
     dispatch({
       type: types.FETCH_COMMENTS_START,
@@ -76,48 +76,48 @@ export const fetchComments = (cid, feed) => {
     })
 
     request
-            .get(url, {
-              accessToken,
-              feed,
-              cid,
-              id
-            })
-            .then(data => {
-              if (data && data.success) {
-                    // let newCommentList = [];
+      .get(url, {
+        accessToken,
+        feed,
+        cid,
+        id
+      })
+      .then(data => {
+        if (data && data.success) {
+          // let newCommentList = [];
 
-                    // if (data.data.length > 0) {
-                    //     if (feed === 'recent') {
-                    //         newCommentList = data.data.concat(commentList);
-                    //     } else {
-                    //         newCommentList = commentList.concat(data.data);
-                    //     }
+          // if (data.data.length > 0) {
+          //     if (feed === 'recent') {
+          //         newCommentList = data.data.concat(commentList);
+          //     } else {
+          //         newCommentList = commentList.concat(data.data);
+          //     }
 
-                    //     if (cid !== creationId) {
-                    //         newCommentList = data.data;
-                    //     }
-                    // }
+          //     if (cid !== creationId) {
+          //         newCommentList = data.data;
+          //     }
+          // }
 
-                dispatch({
-                  type: types.FETCH_COMMENTS_FULLFILLED,
-                  payload: {
-                    commentList: data.data,
-                    commentTotal: data.total,
-                    isCommentLoadingTail: false,
-                    isCommentRefreshing: false
-                  }
-                })
-              }
-            })
-            .catch(err => {
-              dispatch({
-                type: types.FETCH_COMMENTS_REJECTED,
-                payload: {
-                  err: err,
-                  isCommentLoadingTail: false,
-                  isCommentRefreshing: false
-                }
-              })
-            })
+          dispatch({
+            type: types.FETCH_COMMENTS_FULLFILLED,
+            payload: {
+              commentList: data.data,
+              commentTotal: data.total,
+              isCommentLoadingTail: false,
+              isCommentRefreshing: false
+            }
+          })
+        }
+      })
+      .catch(err => {
+        dispatch({
+          type: types.FETCH_COMMENTS_REJECTED,
+          payload: {
+            err: err,
+            isCommentLoadingTail: false,
+            isCommentRefreshing: false
+          }
+        })
+      })
   }
 }

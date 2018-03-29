@@ -12,15 +12,15 @@ export default class Slider extends React.Component {
     const bannersSlider = banners.map((item, i) => (
       <ImageBackground key={i} style={styles.image} source={item}>
         {i + 1 === banners.length && (
-        <Button
-          {...style.btn('马上体验', enteredSlide, {
-            position: 'absolute',
-            bottom: 60
-          })}
-                    />
-                )}
+          <Button
+            {...style.btn('马上体验', enteredSlide, {
+              position: 'absolute',
+              bottom: 60
+            })}
+          />
+        )}
       </ImageBackground>
-        ))
+    ))
 
     return (
       <Swiper
@@ -28,7 +28,7 @@ export default class Slider extends React.Component {
         activeDot={<View style={styles.activeDot} />}
         paginationStyle={styles.pagination}
         loop={sliderLoop}
-            >
+      >
         {bannersSlider}
       </Swiper>
     )

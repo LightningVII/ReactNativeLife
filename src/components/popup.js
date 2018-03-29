@@ -22,14 +22,14 @@ export default class Popup extends React.Component {
                   {popup.title}
                 </Text>
               </View>
-                        ) : null}
+            ) : null}
             {popup.content ? (
               <View style={styles.tipContentBox}>
                 <Text style={styles.tipContent}>
                   {popup.content}
                 </Text>
               </View>
-                        ) : null}
+            ) : null}
           </View>
         </View>
       </View>

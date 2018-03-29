@@ -2,11 +2,9 @@ import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import socket from './socket.io'
 import Message from './Message'
-import ToolBar from './ToolBar'
-
+import ToolBar, { plugins, PluginInput } from './ToolBar'
 // Replace this URL with your own, if you want to run the backend locally!
-const SocketEndpoint = 'http://2e6abe4e.ngrok.io'
-
+const SocketEndpoint = 'http://db7bdf27.ngrok.io'
 class IM extends React.Component {
   constructor () {
     super()
@@ -17,6 +15,7 @@ class IM extends React.Component {
     this.scroll = null
     this.handlePress = this.handlePress.bind(this)
     this.getScroll = this.getScroll.bind(this)
+    this.directive = this.directive.bind(this)
   }
 
   getScroll (ref) {
@@ -36,17 +35,24 @@ class IM extends React.Component {
     })
   }
 
-  handlePress () {
+  handlePress (val) {
     console.log(this.props)
-    this.props.socket.emit('listen event', 'press button')
+    this.props.socket.emit('listen event', val)
+  }
+
+  directive () {
+    return plugins(PluginInput, this.handlePress)
   }
 
   render () {
+    const Plugins = this.directive()
     return (
       <View style={styles.container}>
         <Text>connected: {this.props.status}</Text>
         <Message getScroll={this.getScroll} messages={this.state.data} />
-        <ToolBar handleEvent={this.handlePress} />
+        <ToolBar>
+          <Plugins />
+        </ToolBar>
       </View>
     )
   }

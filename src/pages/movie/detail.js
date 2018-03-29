@@ -160,7 +160,7 @@ export default class Detail extends React.Component {
                 name='ios-play'
                 size={24}
                 style={{ color: '#DDD', textAlign: 'center' }}
-                />
+              />
             </TouchableOpacity>
             : null}
 
@@ -168,12 +168,12 @@ export default class Detail extends React.Component {
             ? <TouchableOpacity
               onPress={this.playOrPause}
               style={styles.resumeIcon}
-              >
+            >
               <Icon
                 name='ios-play'
                 size={24}
                 style={{ color: '#DDD', textAlign: 'center' }}
-                />
+              />
             </TouchableOpacity>
             : null}
 

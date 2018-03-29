@@ -173,25 +173,25 @@ export default class AccountUpdate extends React.Component {
           ? <TouchableOpacity
             onPress={this.pickImage}
             style={styles.avatarContainer}
-            >
+          >
             <ImageBackground
               source={{ uri: util.avatar(user.avatar, 'image') }}
               style={styles.avatarContainer}
-              >
+            >
               <View style={styles.avatarBox}>
                 {this.state.avatarUploading
-                    ? <Circle
-                      showsText
-                      size={75}
-                      color={'#eeeeee'}
-                      progress={this.state.avatarProgress}
-                      />
-                    : <Image
-                      source={{
-                        uri: util.avatar(user.avatar, 'image')
-                      }}
-                      style={styles.avatar}
-                      />}
+                  ? <Circle
+                    showsText
+                    size={75}
+                    color={'#eeeeee'}
+                    progress={this.state.avatarProgress}
+                  />
+                  : <Image
+                    source={{
+                      uri: util.avatar(user.avatar, 'image')
+                    }}
+                    style={styles.avatar}
+                  />}
               </View>
               <Text style={styles.avatarTip}>戳这里换头像</Text>
             </ImageBackground>
@@ -199,19 +199,19 @@ export default class AccountUpdate extends React.Component {
           : <TouchableOpacity
             onPress={this.pickImage.bind(this)}
             style={styles.avatarContainer}
-            >
+          >
             <Text style={styles.avatarTip}>添加狗狗头像</Text>
             <View style={styles.avatarBox}>
               {this.state.avatarUploading
-                  ? <Circle
-                    showsText
-                    size={75}
-                    progress={this.state.avatarProgress}
-                    />
-                  : <Icon
-                    name='ios-cloud-upload-outline'
-                    style={styles.plusIcon}
-                    />}
+                ? <Circle
+                  showsText
+                  size={75}
+                  progress={this.state.avatarProgress}
+                />
+                : <Icon
+                  name='ios-cloud-upload-outline'
+                  style={styles.plusIcon}
+                />}
             </View>
           </TouchableOpacity>}
 

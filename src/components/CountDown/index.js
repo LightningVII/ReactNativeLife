@@ -4,8 +4,8 @@ import { Text, View, StyleSheet } from 'react-native'
 export default class CountDown extends React.Component {
   constructor () {
     super()
-    this.setTimeout = GLOBAL.setTimeout
-    this.clearTimeout = GLOBAL.clearTimeout
+    this.setTimeout = global.setTimeout
+    this.clearTimeout = global.clearTimeout
     this.time = this.props.time ? this.props.time : 60
     this.countdownTimeout = null
     this.state = {

@@ -8,17 +8,17 @@ import * as commentActions from '../actions/comment'
 class CommentContainer extends React.Component {
   _submit (content) {
     this.props
-            .sendComment({
-              creation: this.props.navigation.state.params.rowData._id,
-              content: content
-            })
-            .then(() => {
-              this.props.navigation.goBack()
-            })
+      .sendComment({
+        creation: this.props.navigation.state.params.rowData._id,
+        content: content
+      })
+      .then(() => {
+        this.props.navigation.goBack()
+      })
   }
 
   render () {
-        // const rowData = this.props.navigation.state.params.rowData
+    // const rowData = this.props.navigation.state.params.rowData
 
     return <Comment submit={this._submit.bind(this)} {...this.props} />
   }

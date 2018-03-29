@@ -24,12 +24,12 @@ export const popAlert = (title, content) => {
 export const logout = () => {
   return dispatch => {
     AsyncStorage.multiRemove(['user', 'logined', 'booted', 'entered']).then(
-            () => {
-              dispatch({
-                type: types.USER_LOGOUT
-              })
-            }
-        )
+      () => {
+        dispatch({
+          type: types.USER_LOGOUT
+        })
+      }
+    )
   }
 }
 

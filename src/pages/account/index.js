@@ -15,7 +15,7 @@ export default class Account extends React.Component {
             <Image
               source={{ uri: util.avatar(user.avatar, 'image') }}
               style={styles.avatar}
-                        />
+            />
           </View>
         </View>
         <View style={styles.fieldItem}>
@@ -33,31 +33,31 @@ export default class Account extends React.Component {
         <View style={styles.fieldItem}>
           <Text style={styles.label}>性别</Text>
           {user.gender === 'male' && (
-          <Text style={styles.content}>男</Text>
-                    )}
+            <Text style={styles.content}>男</Text>
+          )}
           {user.gender === 'female' && (
-          <Text style={styles.content}>女</Text>
-                    )}
+            <Text style={styles.content}>女</Text>
+          )}
         </View>
 
         {Platform.OS === 'android' && (
-        <Button
-          raised
-          containerViewStyle={{
-            marginTop: 20,
-            marginLeft: 20,
-            marginRight: 20
-          }}
-          buttonStyle={{
-            backgroundColor: '#aaaaaa',
-            borderRadius: 4
-          }}
-          onPress={() =>
-                            this.props.navigation.navigate('AccountUpdate')
-                        }
-          title={'编辑资料'}
-                    />
-                )}
+          <Button
+            raised
+            containerViewStyle={{
+              marginTop: 20,
+              marginLeft: 20,
+              marginRight: 20
+            }}
+            buttonStyle={{
+              backgroundColor: '#aaaaaa',
+              borderRadius: 4
+            }}
+            onPress={() =>
+              this.props.navigation.navigate('AccountUpdate')
+            }
+            title={'编辑资料'}
+          />
+        )}
         <Button
           raised
           containerViewStyle={{
@@ -71,7 +71,7 @@ export default class Account extends React.Component {
           }}
           onPress={() => this.props.logout()}
           title={'退出登录'}
-                />
+        />
       </View>
     )
   }

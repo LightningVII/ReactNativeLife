@@ -1,6 +1,6 @@
 import React from 'react'
 import { Provider } from 'react-redux'
-import AppContainer from './src/containers/app'
+// import AppContainer from './src/containers/app'
 import IM from './src/components/IM'
 // import Player from './src/components/Player'
 // import StickyHeaderExample from './src/components/StickyHeader/example'
@@ -40,7 +40,7 @@ export default class App extends React.Component {
     return (
       <Provider store={store}>
         <View style={styles.container}>
-          <AppContainer />
+          {/* <AppContainer /> */}
           <IM />
           {/* <Player source={require('./src/static/movie.mp4')} /> */}
           {/* <StickyHeaderExample /> */}

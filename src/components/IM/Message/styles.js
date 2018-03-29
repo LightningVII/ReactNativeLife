@@ -59,7 +59,7 @@ const rtl = StyleSheet.create({
   avatarContainer: { marginLeft: 10 },
   talkAboutContainer: { marginRight: -4, backgroundColor: '#1890ff' },
   wordStyle: { color: '#FFF' },
-  triangleCoverBorder: { right: 1, backgroundColor: '#1890ff' }
+  triangleCoverBorder: { right: 2, backgroundColor: '#1890ff' }
 })
 
 const ltr = StyleSheet.create({
@@ -69,7 +69,7 @@ const ltr = StyleSheet.create({
   avatorGroup: { flexDirection: 'row' },
   avatarContainer: { marginRight: 10 },
   talkAboutContainer: { marginLeft: -4, backgroundColor: '#fff' },
-  triangleCoverBorder: { left: 1, backgroundColor: '#fff' }
+  triangleCoverBorder: { left: 2, backgroundColor: '#fff' }
 })
 
 const merge = (arr, dir) => {

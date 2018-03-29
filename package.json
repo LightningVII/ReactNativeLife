@@ -25,7 +25,9 @@
     "socket.io-client": "^2.0.4"
   },
   "devDependencies": {
-    "pre-commit": "^1.2.2"
+    "babel-eslint": "^8.2.2",
+    "pre-commit": "^1.2.2",
+    "standard": "^11.0.1"
   },
   "pre-commit": [
     "standard"

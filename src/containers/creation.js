@@ -21,7 +21,7 @@ class CreationContainer extends React.Component {
       <CreationList
         onLoadItem={this._onLoadItem.bind(this)}
         {...this.props}
-            />
+      />
     )
   }
 }

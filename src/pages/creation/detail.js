@@ -158,14 +158,14 @@ export default class Detail extends React.Component {
               name='ios-play'
               size={48}
               style={styles.resumeIcon}
-              />
+            />
             : null}
 
           {this.state.videoLoaded && this.state.playing
             ? <TouchableOpacity onPress={this.pause} style={styles.pauseBtn}>
               {this.state.paused
-                  ? <Icon size={48} name='ios-play' style={styles.resumeIcon} />
-                  : null}
+                ? <Icon size={48} name='ios-play' style={styles.resumeIcon} />
+                : null}
             </TouchableOpacity>
             : null}
 

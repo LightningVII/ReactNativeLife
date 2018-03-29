@@ -8,10 +8,10 @@ import * as appActions from '../../actions/app'
 import Popup from '../../components/popup'
 
 import {
-    StyleSheet,
-    View,
-    Dimensions,
-    TextInput
+  StyleSheet,
+  View,
+  Dimensions,
+  TextInput
 } from 'react-native'
 
 const { width } = Dimensions.get('window')
@@ -50,7 +50,7 @@ class Comment extends Component {
                   content: text
                 })
               }}
-                        />
+            />
           </View>
         </View>
         <Button
@@ -67,7 +67,7 @@ class Comment extends Component {
           }}
           onPress={this.submit}
           title={'评论'}
-                />
+        />
         <Popup {...this.props} />
       </View>
     )

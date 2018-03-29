@@ -80,7 +80,7 @@ const ModalPublic = ({
             autoCorrect={false}
             defaultValue={title}
             onChangeText={title => setTitle(title)}
-            />
+          />
           <Button
             raised
             containerViewStyle={{
@@ -95,26 +95,26 @@ const ModalPublic = ({
             }}
             onPress={submit}
             title={'发布视频'}
-            />
+          />
         </View>
         : <View style={styles.loadingBox}>
           <Text style={styles.loadingText}>
               耐心等一下，拼命为您生成专属视频中...
-            </Text>
+          </Text>
           {willPublish
-              ? <Text style={styles.loadingText}>
+            ? <Text style={styles.loadingText}>
                   正在合并视频音频...
-                </Text>
-              : null}
+            </Text>
+            : null}
           {publishProgress > 0.3
-              ? <Text style={styles.loadingText}>开始上传喽！...</Text>
-              : null}
+            ? <Text style={styles.loadingText}>开始上传喽！...</Text>
+            : null}
           <Circle
             showsText
             size={60}
             color={'#eeeeee'}
             progress={publishProgress}
-            />
+          />
         </View>}
     </View>
   </Modal>
@@ -664,7 +664,7 @@ class Edit extends React.Component {
         <Text style={styles.noPermissionsText}>
             You must enable audio recording permissions in order to use
             this app.
-          </Text>
+        </Text>
         <View />
       </View>
       : <View style={styles.container}>
@@ -675,125 +675,125 @@ class Edit extends React.Component {
             {previewVideo ? '点击按钮配音' : '理解狗狗，从配音开始'}
           </Text>
           {previewVideo && videoUploaded
-              ? <Text style={styles.toolbarExtra} onPress={this.pickVideo}>
+            ? <Text style={styles.toolbarExtra} onPress={this.pickVideo}>
                   更换视频
-                </Text>
-              : null}
+            </Text>
+            : null}
         </View>
 
         <View style={styles.page}>
           {previewVideo
-              ? <View style={styles.videoContainer}>
-                <View style={styles.videoBox}>
-                  <Video
-                    ref={ref => {
-                      this.videoPlayer = ref
-                    }}
-                    source={{
-                      uri: previewVideo
-                    }}
-                    rate={1.0}
-                    volume={1.0}
-                    muted={false}
-                    resizeMode={'cover'}
-                      // shouldPlay
-                    style={styles.video}
-                    onPlaybackStatusUpdate={this.statusUpdate}
-                    onError={this.onError}
-                    />
-                  {!videoUploaded && videoUploading
-                      ? <View style={styles.progressTipBox}>
-                        <StatusBar progress={videoProgress} />
-                        <Text style={styles.progressTip}>
+            ? <View style={styles.videoContainer}>
+              <View style={styles.videoBox}>
+                <Video
+                  ref={ref => {
+                    this.videoPlayer = ref
+                  }}
+                  source={{
+                    uri: previewVideo
+                  }}
+                  rate={1.0}
+                  volume={1.0}
+                  muted={false}
+                  resizeMode={'cover'}
+                  // shouldPlay
+                  style={styles.video}
+                  onPlaybackStatusUpdate={this.statusUpdate}
+                  onError={this.onError}
+                />
+                {!videoUploaded && videoUploading
+                  ? <View style={styles.progressTipBox}>
+                    <StatusBar progress={videoProgress} />
+                    <Text style={styles.progressTip}>
                             正在生成静音视频，已完成
-                            {(videoUploadedProgress * 100).toFixed(2)}
+                      {(videoUploadedProgress * 100).toFixed(2)}
                             %
-                          </Text>
-                      </View>
-                      : null}
+                    </Text>
+                  </View>
+                  : null}
 
-                  {isRecording || audioPlaying
-                      ? <View style={styles.progressTipBox}>
-                        <StatusBar progress={videoProgress} />
-                        {isRecording
-                            ? <Text style={styles.progressTip}>
+                {isRecording || audioPlaying
+                  ? <View style={styles.progressTipBox}>
+                    <StatusBar progress={videoProgress} />
+                    {isRecording
+                      ? <Text style={styles.progressTip}>
                                 录制声音中
-                              </Text>
-                            : null}
-                      </View>
+                      </Text>
                       : null}
+                  </View>
+                  : null}
 
-                  {recordDone
-                      ? <View style={styles.previewBox}>
-                        <Icon name='ios-play' style={styles.previewIcon} />
-                        <Text
-                          style={styles.previewText}
-                          onPress={this.preview}
-                          >
+                {recordDone
+                  ? <View style={styles.previewBox}>
+                    <Icon name='ios-play' style={styles.previewIcon} />
+                    <Text
+                      style={styles.previewText}
+                      onPress={this.preview}
+                    >
                             预览
-                          </Text>
-                      </View>
-                      : null}
-                </View>
+                    </Text>
+                  </View>
+                  : null}
               </View>
-              : <TouchableOpacity
-                style={styles.uploadContainer}
-                onPress={this.pickVideo}
-                >
-                <View style={styles.uploadBox}>
-                  <Image
-                    source={require('../../static/images/record.png')}
-                    style={styles.uploadIcon}
-                    />
-                  <Text style={styles.uploadTitle}>
+            </View>
+            : <TouchableOpacity
+              style={styles.uploadContainer}
+              onPress={this.pickVideo}
+            >
+              <View style={styles.uploadBox}>
+                <Image
+                  source={require('../../static/images/record.png')}
+                  style={styles.uploadIcon}
+                />
+                <Text style={styles.uploadTitle}>
                       点我上传视频
-                    </Text>
-                  <Text style={styles.uploadDesc}>
+                </Text>
+                <Text style={styles.uploadDesc}>
                       建议时长不超过 15 秒
-                    </Text>
-                </View>
-              </TouchableOpacity>}
+                </Text>
+              </View>
+            </TouchableOpacity>}
 
           {videoUploaded
-              ? <View style={styles.recordBox}>
-                <View
-                  style={[
-                    styles.recordIconBox,
-                    (isRecording || audioPlaying) && styles.recordOn
-                  ]}
-                  >
-                  {counting && !isRecording
-                      ? <Text style={styles.countBtn}>
-                        {countText}
-                      </Text>
-                      : <TouchableOpacity onPress={this.counting}>
-                        <Icon name='ios-mic' style={styles.recordIcon} />
-                      </TouchableOpacity>}
-                </View>
+            ? <View style={styles.recordBox}>
+              <View
+                style={[
+                  styles.recordIconBox,
+                  (isRecording || audioPlaying) && styles.recordOn
+                ]}
+              >
+                {counting && !isRecording
+                  ? <Text style={styles.countBtn}>
+                    {countText}
+                  </Text>
+                  : <TouchableOpacity onPress={this.counting}>
+                    <Icon name='ios-mic' style={styles.recordIcon} />
+                  </TouchableOpacity>}
               </View>
-              : null}
+            </View>
+            : null}
 
           {videoUploaded && recordDone
-              ? <View style={styles.uploadAudioBox}>
-                {!audioUploading
-                    ? <Text
-                      style={styles.uploadAudioText}
-                      onPress={this.uploadAudio}
-                      >
+            ? <View style={styles.uploadAudioBox}>
+              {!audioUploading
+                ? <Text
+                  style={styles.uploadAudioText}
+                  onPress={this.uploadAudio}
+                >
                         下一步
-                      </Text>
-                    : null}
+                </Text>
+                : null}
 
-                {audioUploading
-                    ? <Circle
-                      showsText
-                      size={60}
-                      color={'#eeeeee'}
-                      progress={audioUploadedProgress}
-                      />
-                    : null}
-              </View>
-              : null}
+              {audioUploading
+                ? <Circle
+                  showsText
+                  size={60}
+                  color={'#eeeeee'}
+                  progress={audioUploadedProgress}
+                />
+                : null}
+            </View>
+            : null}
         </View>
         <Popup {...this.props} />
       </View>
