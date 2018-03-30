@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { View } from 'react-native'
 import PropTypes from 'prop-types'
+import * as Plugins from './plugins'
 
 export default class ToolBar extends Component {
   render () {
@@ -21,8 +22,6 @@ export default class ToolBar extends Component {
   }
 }
 
-export * from './plugins'
-
 ToolBar.defaultProps = {
   messages: []
 }
@@ -30,3 +29,18 @@ ToolBar.defaultProps = {
 ToolBar.propTypes = {
   messages: PropTypes.array
 }
+
+Plugins.get = (WrappedComponent, event) => {
+  console.log(event)
+  return class WrappingComponent extends React.Component {
+    constructor (param) {
+      super()
+    }
+
+    render () {
+      return <WrappedComponent event={event} {...this.props} />
+    }
+  }
+}
+export {Plugins}
+// export const Plugins;

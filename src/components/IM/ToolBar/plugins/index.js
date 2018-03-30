@@ -1,8 +1,8 @@
-import React from 'react'
-
+// import React from 'react'
 export { default as Confirm } from './Confirm'
 export { default as PluginInput } from './PluginInput'
-export const plugins = (WrappedComponent, event) => {
+
+/* export const plugins = (WrappedComponent, event) => {
   return class WrappingComponent extends React.Component {
     constructor (param) {
       super()
@@ -12,4 +12,4 @@ export const plugins = (WrappedComponent, event) => {
       return <WrappedComponent event={event} {...this.props} />
     }
   }
-}
+} */

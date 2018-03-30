@@ -1,19 +1,12 @@
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
-import socket from './socket.io'
 import Message from './Message'
-import ToolBar, { plugins, PluginInput } from './ToolBar'
+import ToolBar, { Plugins } from './ToolBar'
 // Replace this URL with your own, if you want to run the backend locally!
-const SocketEndpoint = 'http://db7bdf27.ngrok.io'
 class IM extends React.Component {
   constructor () {
     super()
-    this.state = {
-      isConnected: false,
-      data: ['121212121212121212121212121212121212']
-    }
     this.scroll = null
-    this.handlePress = this.handlePress.bind(this)
     this.getScroll = this.getScroll.bind(this)
     this.directive = this.directive.bind(this)
   }
@@ -22,34 +15,21 @@ class IM extends React.Component {
     this.scroll = ref
   }
 
-  componentDidMount () {
-    this.props.socket.on('ping', data => {
-      data &&
-        data.data &&
-        this.setState(
-          {
-            data: [...this.state.data, data.data]
-          },
-          _ => this.scroll.scrollToEnd({ animated: true })
-        )
-    })
+  directive (component) {
+    console.log(this.props.handlePress)
+    return Plugins.get(Plugins[component], this.props.handlePress)
   }
 
-  handlePress (val) {
-    console.log(this.props)
-    this.props.socket.emit('listen event', val)
-  }
-
-  directive () {
-    return plugins(PluginInput, this.handlePress)
+  componentDidUpdate () {
+    this.scroll.scrollToEnd({ animated: true })
   }
 
   render () {
-    const Plugins = this.directive()
+    const Plugins = this.directive(this.props.component)
     return (
       <View style={styles.container}>
         <Text>connected: {this.props.status}</Text>
-        <Message getScroll={this.getScroll} messages={this.state.data} />
+        <Message getScroll={this.getScroll} messages={this.props.message} />
         <ToolBar>
           <Plugins />
         </ToolBar>
@@ -68,4 +48,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default socket(IM, SocketEndpoint)
+export default IM
