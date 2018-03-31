@@ -2,7 +2,7 @@ import React from 'react'
 import IM from '../../components/IM'
 import socket from '../../components/socket.io'
 // Replace this URL with your own, if you want to run the backend locally!
-class Robot extends React.Component {
+class Robot extends React.PureComponent {
   constructor () {
     super()
     this.state = {
@@ -13,7 +13,6 @@ class Robot extends React.Component {
   }
 
   handlePress (val) {
-    console.log(this.props)
     this.props.socket.emit('listen event', val)
   }
 
@@ -21,13 +20,13 @@ class Robot extends React.Component {
     this.props.socket.on('ping', data => {
       if (data && data.data) {
         data.data === 'Y' &&
-          this.setState({
-            component: 'PluginInput'
-          })
+                    this.setState({
+                      component: 'PluginInput'
+                    })
         data.data === 'N' &&
-          this.setState({
-            component: 'Confirm'
-          })
+                    this.setState({
+                      component: 'Confirm'
+                    })
         this.setState({
           data: [...this.state.data, data.data]
         })
@@ -35,8 +34,13 @@ class Robot extends React.Component {
     })
   }
 
+  componentDidUpdate () {
+    if (this.props.status === ('disconnect' || 'reconnect_error')) {
+      this.props.socket.io.uri = 'http://0340ef4c.ngrok.io'
+    }
+  }
+
   render () {
-    console.log(this.props)
     const { data, component } = this.state
     return (
       <IM

@@ -2,7 +2,7 @@ import React from 'react'
 import SocketIOClient from 'socket.io-client'
 
 const socket = (WrappedComponent, SocketEndpoint) => {
-  return class WrappingComponent extends React.Component {
+  return class WrappingComponent extends React.PureComponent {
     constructor (param) {
       super()
       this.state = {
