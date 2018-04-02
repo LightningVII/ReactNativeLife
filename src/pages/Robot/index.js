@@ -7,7 +7,10 @@ class Robot extends React.PureComponent {
     super()
     this.state = {
       component: 'PluginInput',
-      data: ['121212121212121212121212121212121212']
+      data: [{
+        type: 'text',
+        data: '121212121212121212121212121212121212'
+      }]
     }
     this.handlePress = this.handlePress.bind(this)
   }
@@ -18,7 +21,8 @@ class Robot extends React.PureComponent {
 
   componentDidMount () {
     this.props.socket.on('ping', data => {
-      if (data && data.data) {
+      console.log(data)
+      /* if (data && data.data) {
         data.data === 'Y' &&
                     this.setState({
                       component: 'PluginInput'
@@ -30,13 +34,18 @@ class Robot extends React.PureComponent {
         this.setState({
           data: [...this.state.data, data.data]
         })
+      } */
+      if (data && data.data) {
+        this.setState({
+          data: [...this.state.data, data.data]
+        })
       }
     })
   }
 
   componentDidUpdate () {
-    if (this.props.status === ('disconnect' || 'reconnect_error')) {
-      this.props.socket.io.uri = 'http://0340ef4c.ngrok.io'
+    if (this.props.status === 'disconnect' || this.props.status === 'reconnect_error') {
+      this.props.socket.io.uri = 'http://253e3589.ngrok.io'
     }
   }
 

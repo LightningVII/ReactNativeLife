@@ -1,8 +1,7 @@
 import React from 'react'
 import { Provider } from 'react-redux'
 // import AppContainer from './src/containers/app'
-// import Robot from './src/pages/Robot'
-import Dialog from './src/components/Dialog'
+import Robot from './src/pages/Robot'
 
 // import Player from './src/components/Player'
 // import StickyHeaderExample from './src/components/StickyHeader/example'
@@ -43,8 +42,7 @@ export default class App extends React.Component {
       <Provider store={store}>
         <View style={styles.container}>
           {/* <AppContainer /> */}
-          {/* <Robot /> */}
-          <Dialog />
+          <Robot />
           {/* <Player source={require('./src/static/movie.mp4')} /> */}
           {/* <StickyHeaderExample /> */}
         </View>

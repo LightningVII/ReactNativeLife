@@ -20,10 +20,7 @@ export default class App extends React.Component {
       .moveTo(startX, startY)
       .lineTo(startX + width, startY)
       .arc(radius, radius, radius)
-      .lineTo(
-        startX + width + radius,
-        startY + radius + height - triangle.top
-      )
+      .lineTo(startX + width + radius, startY + radius + height - triangle.top)
       .lineTo(
         startX + width + radius + triangle.width,
         startY + radius + height - triangle.top + triangle.height / 2
@@ -59,19 +56,19 @@ export default class App extends React.Component {
       .lineTo(startX - radius, startY + radius)
       .arc(radius, -radius, radius)
 
-    const pattern = new ART.Pattern(
-      resolveAssetSource(require('../../../assets/splash.png')),
-      140,
-      200,
-      140,
-      200
-    )
+    console.log(path2)
+
+    const pattern = new ART.Pattern(this.props.message || resolveAssetSource(require('../../../static/images/WechatIMG21.jpeg')), 140, 200, 140, 200)
     return (
-      <View>
+      <View
+        style={{
+          height: 200
+        }}
+      >
         <View
           style={{
-            backgroundColor: 'red',
             width: 160,
+            height: 200,
             transform: [
               { rotate: '180deg' }
               // { translateX: 340 - 160 }
@@ -87,9 +84,8 @@ export default class App extends React.Component {
             />
           </ART.Surface>
         </View>
-        <View
+        {/* <View
           style={{
-            backgroundColor: 'blue',
             width: 160,
             transform: [
               { rotate: '180deg' }
@@ -105,7 +101,7 @@ export default class App extends React.Component {
               strokeWidth={0}
             />
           </ART.Surface>
-        </View>
+        </View> */}
       </View>
     )
   }
