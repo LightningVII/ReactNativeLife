@@ -20,11 +20,7 @@ const styles = StyleSheet.create({
   talkAboutContainer: {
     borderColor: '#ccc',
     maxWidth: 240,
-    borderRadius: 8,
-    paddingRight: 15,
-    paddingLeft: 15,
-    paddingBottom: 15,
-    paddingTop: Platform.OS === 'android' ? 10 : 15
+    borderRadius: 8
   },
   triangleCoverBorder: {
     top: 16,
@@ -58,8 +54,8 @@ const ltr = StyleSheet.create({
   },
   avatorGroup: { flexDirection: 'row' },
   avatarContainer: { marginRight: 10 },
-  talkAboutContainer: { backgroundColor: '#eee' },
-  triangleCoverBorder: { backgroundColor: '#eee' }
+  talkAboutContainer: { backgroundColor: '#fff' },
+  triangleCoverBorder: { backgroundColor: '#fff' }
 })
 
 const merge = (arr, dir) => {

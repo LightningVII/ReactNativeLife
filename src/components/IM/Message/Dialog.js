@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity } from 'react-native'
 import Avator from './Avator'
 import PropTypes from 'prop-types'
 import { reverse } from './styles'
+// import Card from './Card'
 
 const triangleIcon = (wordStyle, dir = 'ltr') => {
   const distance = dir === 'ltr'
@@ -28,9 +29,12 @@ export default class Dialog extends Component {
             <View
               style={[reverse[dir].talkAboutContainer, wordStyle, { right: 5 }]}
             >
-              <Text style={[reverse[dir].wordStyle, textStyle]}>
-                {message}
-              </Text>
+              <View style={{ padding: 10 }}>
+                <Text style={[reverse[dir].wordStyle, textStyle]}>
+                  {message}
+                </Text>
+              </View>
+              {/* <Card /> */}
             </View>
           </View>
         </TouchableOpacity>
