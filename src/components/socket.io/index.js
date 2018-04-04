@@ -6,17 +6,26 @@ const socket = (WrappedComponent, SocketEndpoint) => {
     constructor (param) {
       super()
       this.state = {
-        status: 'disconnect'
+        status: 'disconnect',
+        uri: SocketEndpoint
       }
       this.socket = SocketIOClient(SocketEndpoint, {
         transports: ['websocket']
       })
+      this.socket.setUri = this.setUri.bind(this)
+    }
+
+    setUri (uri) {
+      this.socket.close()
+      this.socket.io.uri = uri
+      this.socket.open()
     }
 
     componentDidMount () {
       this.socket.on('connect', () => {
         this.setState({
-          status: 'connected'
+          status: 'connected',
+          uri: this.socket.io.uri
         })
         console.log('you have been connected')
       })
@@ -46,6 +55,7 @@ const socket = (WrappedComponent, SocketEndpoint) => {
       return (
         <WrappedComponent
           socket={this.socket}
+          setUri={this.setUri}
           {...this.state}
           {...this.props}
         />

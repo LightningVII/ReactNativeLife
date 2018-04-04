@@ -31,7 +31,6 @@ ToolBar.propTypes = {
 }
 
 Plugins.get = (WrappedComponent, event) => {
-  console.log(event)
   return class WrappingComponent extends React.Component {
     constructor (param) {
       super()

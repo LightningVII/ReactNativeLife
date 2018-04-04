@@ -2,19 +2,14 @@ import { StyleSheet, Platform } from 'react-native'
 
 const styles = StyleSheet.create({
   wordContainer: {
-    marginBottom: 20,
-    flexDirection: 'row'
+    marginBottom: 20
   },
   avatorGroup: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    height: 40,
-    zIndex: 1
+    flexDirection: 'row'
   },
   avatarContainer: {
     borderWidth: 0,
-    borderRadius: 20,
-    marginRight: 10
+    borderRadius: 20
   },
   avatar: {
     width: 40,
@@ -22,17 +17,9 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
     borderRadius: 20
   },
-  triangleIcon: {
-    borderColor: '#ccc',
-    width: 8,
-    height: 8,
-    borderRadius: 2,
-    transform: [{ rotate: '45deg' }]
-  },
   talkAboutContainer: {
     borderColor: '#ccc',
-    borderWidth: 1,
-    maxWidth: 260,
+    maxWidth: 240,
     borderRadius: 8,
     paddingRight: 15,
     paddingLeft: 15,
@@ -40,8 +27,12 @@ const styles = StyleSheet.create({
     paddingTop: Platform.OS === 'android' ? 10 : 15
   },
   triangleCoverBorder: {
-    borderWidth: 0,
-    position: 'absolute'
+    top: 16,
+    zIndex: 1,
+    width: 8,
+    height: 8,
+    borderRadius: 1,
+    transform: [{ rotate: '45deg' }]
   },
   wordStyle: {
     textAlign: 'justify',
@@ -56,9 +47,9 @@ const rtl = StyleSheet.create({
   },
   avatorGroup: { flexDirection: 'row-reverse' },
   avatarContainer: { marginLeft: 10 },
-  talkAboutContainer: { marginRight: -4, backgroundColor: '#1890ff' },
+  talkAboutContainer: { backgroundColor: '#1890ff' },
   wordStyle: { color: '#FFF' },
-  triangleCoverBorder: { right: 2, backgroundColor: '#1890ff' }
+  triangleCoverBorder: { backgroundColor: '#1890ff' }
 })
 
 const ltr = StyleSheet.create({
@@ -67,8 +58,8 @@ const ltr = StyleSheet.create({
   },
   avatorGroup: { flexDirection: 'row' },
   avatarContainer: { marginRight: 10 },
-  talkAboutContainer: { marginLeft: -4, backgroundColor: '#fff' },
-  triangleCoverBorder: { left: 2, backgroundColor: '#fff' }
+  talkAboutContainer: { backgroundColor: '#eee' },
+  triangleCoverBorder: { backgroundColor: '#eee' }
 })
 
 const merge = (arr, dir) => {

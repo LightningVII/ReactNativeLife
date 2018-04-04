@@ -16,7 +16,6 @@ class IM extends React.Component {
   }
 
   directive (component) {
-    console.log(this.props.handlePress)
     return Plugins.get(Plugins[component], this.props.handlePress)
   }
 
@@ -28,7 +27,7 @@ class IM extends React.Component {
     const Plugins = this.directive(this.props.component)
     return (
       <View style={styles.container}>
-        <Text>connected: {this.props.status}</Text>
+        <Text>connected: {this.props.status} || socketUrl: {this.props.socketUrl}</Text>
         <Message getScroll={this.getScroll} messages={this.props.message} />
         <ToolBar>
           <Plugins />

@@ -1,22 +1,17 @@
 import React, { Component } from 'react'
-import { View, Text, Image } from 'react-native'
+import { View, Text, TouchableOpacity } from 'react-native'
+import Avator from './Avator'
 import PropTypes from 'prop-types'
-import styles, { reverse } from './styles'
+import { reverse } from './styles'
 
 const triangleIcon = (wordStyle, dir = 'ltr') => {
+  const distance = dir === 'ltr'
+    ? { left: 1, position: 'absolute' }
+    : { right: 1, position: 'absolute' }
   return (
-    <View>
-      <View style={[styles.triangleIcon, wordStyle]} />
-      {wordStyle &&
-        wordStyle.borderWidth > 0 && (
-          <View
-            style={[
-              styles.triangleIcon,
-              styles.triangleCoverBorder,
-              reverse[dir].triangleCoverBorder
-            ]}
-          />
-        )}
+    <View style={{ position: 'relative', zIndex: 1 }}>
+      <View style={[reverse[dir].triangleCoverBorder, wordStyle]} />
+      <View style={[reverse[dir].triangleCoverBorder, distance]} />
     </View>
   )
 }
@@ -24,21 +19,21 @@ const triangleIcon = (wordStyle, dir = 'ltr') => {
 export default class Dialog extends Component {
   render () {
     const { wordStyle, textStyle, message, avatar, dir } = this.props
-
     return (
       <View style={[reverse[dir].wordContainer]}>
-        <View style={[reverse[dir].avatorGroup]}>
-          <View style={[reverse[dir].avatarContainer]}>
-            <Image style={styles.avatar} source={avatar} />
+        <Avator dir={dir} src={avatar} />
+        <TouchableOpacity activeOpacity={0.6}>
+          <View style={reverse[dir].avatorGroup}>
+            {triangleIcon(wordStyle, dir)}
+            <View
+              style={[reverse[dir].talkAboutContainer, wordStyle, { right: 5 }]}
+            >
+              <Text style={[reverse[dir].wordStyle, textStyle]}>
+                {message}
+              </Text>
+            </View>
           </View>
-          {triangleIcon(wordStyle, dir)}
-        </View>
-
-        <View style={[reverse[dir].talkAboutContainer, wordStyle]}>
-          <Text style={[reverse[dir].wordStyle, textStyle]}>
-            {message}
-          </Text>
-        </View>
+        </TouchableOpacity>
       </View>
     )
   }
@@ -47,7 +42,7 @@ export default class Dialog extends Component {
 Dialog.defaultProps = {
   dir: 'ltr',
   wordStyle: {
-    // backgroundColor: "#fee",
+    borderColor: '#ccc',
     borderWidth: 1
   },
   textStyle: {
