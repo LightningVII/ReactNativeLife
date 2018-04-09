@@ -8,7 +8,7 @@ class Robot extends React.PureComponent {
   constructor () {
     super()
     this.state = {
-      component: 'PluginInput',
+      component: 'DatePicker',
       data: [
         {
           type: 'text',
@@ -83,6 +83,11 @@ class Robot extends React.PureComponent {
             onPress={_ => this.setState({ component: 'Confirm' })}
           >
             <Text>button</Text>
+          </TouchableHighlight>
+          <TouchableHighlight
+            onPress={_ => this.setState({ component: 'DatePicker' })}
+          >
+            <Text>picker</Text>
           </TouchableHighlight>
         </View>
         <IM

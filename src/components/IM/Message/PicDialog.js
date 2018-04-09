@@ -1,45 +1,40 @@
 import React from 'react'
-import resolveAssetSource from 'resolveAssetSource'
-import { View, ART, TouchableOpacity } from 'react-native'
+import { View, ART, TouchableOpacity, ImageBackground } from 'react-native'
 import Avator from './Avator'
 export default class PicDialog extends React.Component {
   artPath (dir, radius, w, h, triangle) {
-    const startY = 0
-    const startX = radius + (dir === 'rtl' ? triangle.width : 0)
-    const width = w - radius * 2
-    const height = h - radius * 2
-
-    const triangleInitY = startY + h - triangle.top
-    const triangleStart = triangleInitY - triangle.height / 2
-    const triangleEnd = triangleInitY + triangle.height / 2
-    const lineX = startX + w - radius
-    const path = new ART.Path()
-      .moveTo(startX, startY)
-      .lineTo(startX + width, startY)
-      .arc(radius, radius, radius)
+    const width = w + triangle.width // width
+    const height = h // 140
+    const triangleX = radius + triangle.width // 15
+    const rTriangleX = width - triangleX
 
     if (dir === 'ltr') {
-      return path
-        .lineTo(lineX, triangleStart)
-        .lineTo(lineX + triangle.width, triangleInitY)
-        .lineTo(lineX, triangleEnd)
-        .lineTo(lineX, startY + radius + height)
-        .arc(-radius, radius, radius)
-        .lineTo(startX, startY + h)
+      return new ART.Path()
+        .moveTo(triangleX, height)
         .arc(-radius, -radius, radius)
-        .lineTo(lineX - w, startY + radius)
+        .lineTo(triangle.width, triangle.top + triangle.height / 2)
+        .lineTo(0, triangle.top)
+        .lineTo(triangle.width, triangle.top - triangle.height / 2)
+        .lineTo(triangle.width, radius)
         .arc(radius, -radius, radius)
+        .moveTo(triangleX, 0)
+        .lineTo(0, 0)
+        .lineTo(0, height)
+        .lineTo(triangleX, height)
     } else {
-      return path
-        .lineTo(lineX, startY + radius + height)
+      return new ART.Path()
+        .moveTo(rTriangleX, 0)
+        .arc(radius, radius, radius)
+        .lineTo(w, radius)
+        .lineTo(w, triangle.top - triangle.height / 2)
+        .lineTo(width, triangle.top)
+        .lineTo(w, triangle.top + triangle.height / 2)
+        .lineTo(w, height - radius)
         .arc(-radius, radius, radius)
-        .lineTo(startX, startY + h)
-        .arc(-radius, -radius, radius)
-        .lineTo(lineX - w, triangleEnd)
-        .lineTo(lineX - w - triangle.width, triangleInitY)
-        .lineTo(lineX - w, triangleStart)
-        .lineTo(lineX - w, startY + radius)
-        .arc(radius, -radius, radius)
+        .moveTo(rTriangleX, height)
+        .lineTo(width, height)
+        .lineTo(width, 0)
+        .lineTo(rTriangleX, 0)
     }
   }
 
@@ -55,16 +50,6 @@ export default class PicDialog extends React.Component {
     }
 
     const path = this.artPath(dir, radius, width, height, triangle)
-
-    const pattern = new ART.Pattern(
-      this.props.message ||
-        resolveAssetSource(require('../../../static/images/WechatIMG21.jpeg')),
-      140,
-      200,
-      140,
-      200
-    )
-
     return (
       <View
         style={{
@@ -75,22 +60,30 @@ export default class PicDialog extends React.Component {
       >
         <Avator dir={dir} src={avatar} />
         <TouchableOpacity activeOpacity={0.6}>
-          <View
+          <ImageBackground
+            source={require('../../../static/images/WechatIMG21.jpeg')}
             style={{
-              width: width + triangle.width,
-              height,
-              transform: [{ rotate: '180deg' }]
+              borderRadius: 10,
+              overflow: 'hidden',
+              width: width + triangle.width - 1,
+              height
             }}
           >
-            <ART.Surface width={width + triangle.width} height={height}>
+            <ART.Surface
+              fill={'#fff'}
+              width={width + triangle.width}
+              height={height}
+            >
               <ART.Shape
-                d={path}
                 stroke='#000000'
-                fill={pattern}
+                d={path}
+                fill={'#fff'}
                 strokeWidth={0}
-              />
+              >
+                <ART.Pattern />
+              </ART.Shape>
             </ART.Surface>
-          </View>
+          </ImageBackground>
         </TouchableOpacity>
       </View>
     )

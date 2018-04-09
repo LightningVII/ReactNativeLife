@@ -7,11 +7,22 @@ import { reverse } from './styles'
 
 const triangleIcon = (wordStyle, dir = 'ltr') => {
   const distance = dir === 'ltr'
-    ? { left: 1, position: 'absolute' }
-    : { right: 1, position: 'absolute' }
+    ? { left: 3, position: 'absolute' }
+    : { right: 3, position: 'absolute' }
+
+  const distance1 = dir === 'ltr'
+    ? { left: 1, backgroundColor: '#ccc' }
+    : { right: 1 }
+
   return (
     <View style={{ position: 'relative', zIndex: 1 }}>
-      <View style={[reverse[dir].triangleCoverBorder, wordStyle]} />
+      <View
+        style={[
+          reverse[dir].triangleCoverBorder,
+          // wordStyle,
+          distance1
+        ]}
+      />
       <View style={[reverse[dir].triangleCoverBorder, distance]} />
     </View>
   )
@@ -27,7 +38,7 @@ export default class Dialog extends Component {
           <View style={reverse[dir].avatorGroup}>
             {triangleIcon(wordStyle, dir)}
             <View
-              style={[reverse[dir].talkAboutContainer, wordStyle, { right: 5 }]}
+              style={[reverse[dir].talkAboutContainer, wordStyle, { right: 3 }]}
             >
               <View style={{ padding: 10 }}>
                 <Text style={[reverse[dir].wordStyle, textStyle]}>

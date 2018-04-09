@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { View } from 'react-native'
 import Button from '../../../Button'
 
-export default class componentName extends Component {
+export default class Confirm extends Component {
   constructor (props) {
     super(props)
     this.handleYEvent = this.handleYEvent.bind(this)
