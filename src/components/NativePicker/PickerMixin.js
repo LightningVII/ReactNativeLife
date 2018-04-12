@@ -4,10 +4,10 @@ import React from 'react'
 const Item = _props => null
 
 export default function (ComposedComponent) {
-  return class extends React.Component {
+  return class extends React.PureComponent {
     static Item = Item
 
-    select = (value, itemHeight, scrollTo) => {
+    select = (value, itemHeight, scrollTo = _ => _) => {
       const children = React.Children.toArray(this.props.children)
       for (let i = 0, len = children.length; i < len; i++) {
         if (children[i].props.value === value) {
@@ -45,7 +45,7 @@ export default function (ComposedComponent) {
       const index = this.coumputeChildIndex(top, itemHeight, children.length)
       const child = children[index]
       if (child) {
-        fireValueChange(child.props.value)
+        fireValueChange(child.props.value, index)
       } else if (console.warn) {
         console.warn('child not found', children, index)
       }

@@ -65,8 +65,8 @@ export default class PicDialog extends React.Component {
             style={{
               borderRadius: 10,
               overflow: 'hidden',
-              width: width + triangle.width - 1,
-              height
+              width: width + triangle.width - 0.5,
+              height: height - 0.5
             }}
           >
             <ART.Surface
